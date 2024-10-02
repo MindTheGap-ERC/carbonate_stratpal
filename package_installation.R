@@ -62,5 +62,4 @@ seq(0.1, 1.9, by  = 0.1) |>
   time_to_strat(adm) |>
   reduce_to_paleoTS() |>
   fit3models()
-
-
+test test
