@@ -63,4 +63,42 @@ seq(0.1, 1.9, by  = 0.1) |>
   reduce_to_paleoTS() |>
   fit3models()
 
-#testing
+####### Age Depth model defined per distance
+# h[i] is the stratigraphic position at time t[i]
+adm_2km = tp_to_adm(t = scenarioA$t_myr,    # 2 km from shore
+                    h = scenarioA$h_m[,"2km"],
+                    T_unit = "Myr",
+                    L_unit = "m")
+adm_4km = tp_to_adm(t = scenarioA$t_myr,    # 4 km from shore
+                    h = scenarioA$h_m[,"4km"],
+                    T_unit = "Myr",
+                    L_unit = "m")
+adm_6km = tp_to_adm(t = scenarioA$t_myr,    # 6 km from shore
+                    h = scenarioA$h_m[,"6km"],
+                    T_unit = "Myr",
+                    L_unit = "m")
+adm_8km = tp_to_adm(t = scenarioA$t_myr,   # 8 km from shore
+                    h = scenarioA$h_m[,"8km"],
+                    T_unit = "Myr",
+                    L_unit = "m")
+adm_10km = tp_to_adm(t = scenarioA$t_myr,   # 10 km from shore
+                     h = scenarioA$h_m[,"10km"],
+                     T_unit = "Myr",
+                     L_unit = "m")
+adm_12km = tp_to_adm(t = scenarioA$t_myr,   # 12 km from shore
+                     h = scenarioA$h_m[,"12km"],
+                     T_unit = "Myr",
+                     L_unit = "m")
+adm <- list(adm_2km,adm_4km,adm_6km,adm_8km,adm_10km,adm_12km)
+
+#Duration of gaps per distance from scenarioA
+for(completeness in adm){
+  test_completeness <- get_completeness(completeness)
+  print(test_completeness)
+}
+
+#Number of gaps per distance from scenarioA
+for(gaps_no in adm){
+  test_gaps_no <- get_hiat_no(gaps_no)
+  print(test_gaps_no)
+}
