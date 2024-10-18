@@ -27,25 +27,37 @@ adm_12km = tp_to_adm(t = scenarioA$t_myr,   # 12 km from shore
 adm <- list(adm_2km,adm_4km,adm_6km,adm_8km,adm_10km,adm_12km)
 
 #Height of stratigraphic column at ~2 Myr for scenarioA
-for(str_height in adm){
+v_str_height <- c()
+for (str_height in adm){
   test_str_height <- get_height(str_height,1.999,destructive = FALSE)
-  print(test_str_height)
+  v_str_height <- c(v_str_height,test_str_height)
 }
+print(v_str_height)
 
 #Average hiatus duration from scenarioA
+v_hiat_dur <- c()
 for(hiat_dur in adm){
   test_hiat_dur <- mean(get_hiat_duration(hiat_dur))
-  print(test_hiat_dur)
+  v_hiat_dur <- c(v_hiat_dur,test_hiat_dur)
 }
+print(v_hiat_dur)
 
 #Completeness percentage from scenarioA
+v_completeness <- c()
 for(completeness in adm){
   test_completeness <- get_completeness(completeness)
-  print(test_completeness)
+  v_completeness <- c(v_completeness,test_completeness)
 }
+print(v_completeness)
 
 #Number of gaps per distance from scenarioA
-for(gaps_no in adm){
-  test_gaps_no <- get_hiat_no(gaps_no)
-  print(test_gaps_no)
+v_hiat_no <- c()
+for(hiat_no in adm){
+  test_hiat_no <- get_hiat_no(hiat_no)
+  v_hiat_no <- c(v_hiat_no,test_hiat_no)
 }
+print(v_hiat_no)
+
+#Overview of 4 factors for every distance from shore for scenarioA
+overview <- data.frame(v_str_height,v_hiat_dur,v_completeness,v_hiat_no)
+print(overview)
