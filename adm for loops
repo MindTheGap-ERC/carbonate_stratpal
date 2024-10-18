@@ -25,3 +25,27 @@ adm_12km = tp_to_adm(t = scenarioA$t_myr,   # 12 km from shore
                      T_unit = "Myr",
                      L_unit = "m")
 adm <- list(adm_2km,adm_4km,adm_6km,adm_8km,adm_10km,adm_12km)
+
+#Height of stratigraphic column at ~2 Myr for scenarioA
+for(str_height in adm){
+  test_str_height <- get_height(str_height,1.999,destructive = FALSE)
+  print(test_str_height)
+}
+
+#Average hiatus duration from scenarioA
+for(hiat_dur in adm){
+  test_hiat_dur <- mean(get_hiat_duration(hiat_dur))
+  print(test_hiat_dur)
+}
+
+#Completeness percentage from scenarioA
+for(completeness in adm){
+  test_completeness <- get_completeness(completeness)
+  print(test_completeness)
+}
+
+#Number of gaps per distance from scenarioA
+for(gaps_no in adm){
+  test_gaps_no <- get_hiat_no(gaps_no)
+  print(test_gaps_no)
+}
