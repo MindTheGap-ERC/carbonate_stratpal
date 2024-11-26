@@ -1,0 +1,52 @@
+---
+title: "sea level end cretaceous"
+author: "Sidney"
+date: "2024-11-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see [http://rmarkdown.rstudio.com](#0){.uri style="font-size: 11pt;"}.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+## Review of literature that look at the sea level curve around the K/Pb. 
+
+-   Miller et al., 2005\
+    Phanerozoic record of global sl. Good review but resolution is way too low.
+
+```{=html}
+<!-- -->
+```
+-   Miller et al., 2020\
+    Cenozoic sea level. \
+    Sl from \~66 Mya to recent. Based on Mg/Ca paleotemperatures and δ18O. Milankovic scale resolution. Reproduce-able data. But perhaps does not predate the K/Pb.
+
+-   Jaiprakash et al., 2016\
+    Forams in canyon in India.\
+    Looks at the absence/presence of foram species in wells across a canyon. They show a hiatus starting at \~69.5 Mya. This lasts between 1.8 Mya and 9.1 Mya depending on the well. Meaning, it's often longer than the runtime of CarboKitten and will be difficult to compare to model results. Only the timing of the 1.8 Mya hiatus could make a usefull comparison for in the discussion. They do not plot the sl. They do mention "sl fall began at the boundary of planktic zones CF6-CF5 (69.6 Ma) (Nagendra et al., 2002, 2011)." This exposed the Kallankurichhi Formation at 68.8 Ma, and remain exposed to this day. The sl fall was of the order of 100m. In some wells, the hiatus starts \~69 Ma, in some wells later \~67.5 Ma.
+
+-   Ray et al., 2019\
+    Short-term Cretaceous sl change.\
+    "No consensus currently exists regarding the magnitude of Cretaceous short-term (less than 3 Ma in duration) eustatic sea-level change."\
+    Potentially reproduce-able SL change for the Cretaceous. Could perhaps use Miller et al., 2020 and Ray et al., 2019 combination. This paper shows timing of transgression and regression (and SL) during Cretaceous according to 3 other papers. The locations that document estimates of short-term SL are Canada (Northern Alberta), New Jersey, Spain, France, Denmark, Yemen and Egypt. Ray et al., 2019 also shows a great overview of who studied what part of the Cretaceous and how, i.e., Backstripping, Fossil assemblages etc.\
+    They say that the maximum short-term sl change during the Maastrichtian is less than 60m.
