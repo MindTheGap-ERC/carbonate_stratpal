@@ -38,10 +38,25 @@ Note that the `echo = FALSE` parameter was added to the code chunk to prevent pr
 <!-- -->
 ```
 -   Signor & Lipps
-"During periods of regression, when no deposits of marine sediments are developed on continental areas, there is no possibility of finding the last occurrences of taxa which go extinct during the regression. This will have the effect of pushing artificial range truncations further back in time to when there is a record to sample. If the regressions are gradual, they could have the effect of amplifying the apparent gradual nature of the extinctions, simply by reducing sample size as the regression progresses, at least in continental sequences." 
-Matsumoto, 1980, found that the K/P extinction occurred during a major regression. Perhaps this is the first person to find this? Therefore, worth mentioning. Nearly everywhere in the world, there is an unconformity during the K/Pb.
-"Hallam (1971) documented a decline in the areal extent of Late Cretaceous rocks, relative to the abundant mid-Cretaceous rock record. From this alone we would expect to find a gradual increase in the apparent extinctions, regardless of the actual pattern of mass extinctions." 
-The gradual decrease of species diversity before the K/Pb includes marine and terrestrial biotas.
+"During periods of regression, when no deposits of marine sediments are
+developed on continental areas, there is no possibility of finding the last
+occurrences of taxa which go extinct during the regression. 
+This will have the effect of pushing artificial range truncations further back
+in time to when there is a record to sample.
+If the regressions are gradual, they could have the effect of amplifying the
+apparent gradual nature of the extinctions, 
+simply by reducing sample size as the regression progresses, 
+at least in continental sequences." 
+Matsumoto, 1980, found that the K/P extinction occurred during a major
+regression. Perhaps this is the first person to find this? Therefore, 
+worth mentioning. Nearly everywhere in the world, there is an 
+unconformity during the K/Pb.
+"Hallam (1971) documented a decline in the areal extent of 
+Late Cretaceous rocks, relative to the abundant mid-Cretaceous rock record.
+From this alone we would expect to find a gradual increase in the apparent
+extinctions, regardless of the actual pattern of mass extinctions." 
+The gradual decrease of species diversity before the K/Pb includes marine and
+terrestrial biotas.
 
 "Evidence contradicting a catastrophic mass extinction might not be derivable from fossil range data alone. Because the disappearance of taxa from the fossil record may not be due to simultaneous extinction, the range data mustw be supplemented with other information, for example the existence of numerous deposits where the taxa should be found but are not."
 
@@ -59,8 +74,7 @@ The gradual decrease of species diversity before the K/Pb includes marine and te
     "No consensus currently exists regarding the magnitude of Cretaceous short-term (less than 3 Ma in duration) eustatic sea-level change."\
     Potentially reproduce-able SL change for the Cretaceous. Could perhaps use Miller et al., 2020 and Ray et al., 2019 combination. This paper shows timing of transgression and regression (and SL) during Cretaceous according to 3 other papers. The locations that document estimates of short-term SL are Canada (Northern Alberta), New Jersey, Spain, France, Denmark, Yemen and Egypt. Ray et al., 2019 also shows a great overview of who studied what part of the Cretaceous and how, i.e., Backstripping, Fossil assemblages etc.\
     They say that the maximum short-term sl change during the Maastrichtian is less than 60m.
-
-The overall data coverage of SL change of the Santonian to the Maastrichtian is relatively poor. 
+    The overall data coverage of SL change of the Santonian to the Maastrichtian is relatively poor. 
 The SL change magnitude highly depends on the research method.
 Backstripping leads to magnitudes between 1 & 40 m. 
 Foraminiferal studies (both in New Jersey margin) leads to magnitudes of 25 to 75 m in the Campanian. 
