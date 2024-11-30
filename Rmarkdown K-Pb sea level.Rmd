@@ -124,21 +124,22 @@ whereas the Maastrichtian represents a shift to maximum magnitudes limits of app
   (2), in Tunisia (6), on the New Jersey margin (3), and in New Zealand (4).
   KMa5 has an amplitude of ~75 m, Haq calls this "medium amplitude".
 
-1. Hardenbol, J., Robaszynski, F., 1998. Introduction to the Upper Cretaceous. In: de
-Graciansky, P.-C., et al. (Eds.), Mesozoic and Cenozoic Sequence Stratigraphy of
-European Basins. SEPM Special Publication, 60, pp. 329–332.
-Hardenbol, J., Thierry, J., Farley, M.B., et al., 1998. Mesozoic and Cenozoic sequence
-chronostratigraphic framework of European Basins. In: de Graciansky, P.-C., et al.
-(Eds.), Mesozoic and Cenozoic Sequence Stratigraphy of European Basins. SEPM
-Special Publication, 60, pp. 3–13 (Chart 5, “Cretaceous Chronostratigraphy”).
+1. Hardenbol, J., Robaszynski, F., 1998. Introduction to the Upper Cretaceous. In: de Graciansky, P.-C., et al. (Eds.), Mesozoic and Cenozoic Sequence Stratigraphy of European Basins. SEPM Special Publication, 60, pp. 329–332.
+NO SEA LEVEL CURVE
+Hardenbol, J., Thierry, J., Farley, M.B., et al., 1998. Mesozoic and Cenozoic sequence chronostratigraphic framework of European Basins. In: de Graciansky, P.-C., et al. (Eds.), Mesozoic and Cenozoic Sequence Stratigraphy of European Basins. SEPM Special Publication, 60, pp. 3–13 (Chart 5, “Cretaceous Chronostratigraphy”).
+NO ACCESS
 
 2. Haq, B.U., Al-Qahtani, A.M., 2005. Phanerozoic cycles of sea-level change on the Arabian
 Platform. GeoArabia 10, 127–160.
+NO SEA LEVEL CURVE
 
 3. Miller, K.G., Sugarman, P.J., Browning, J.V., et al., 2003. Late Cretaceous chronology of large, rapid sea-level changes: glacioeustasy during the greenhouse world. Geology 31, 585–588.
+NO ACCESS
 Miller, K.G., Kominz, M.A., Browning, J.V., et al., 2005b. The Phanerozoic record of global sea-level change. Science 312, 1293–1298.
+REPRODUCEABLE!!!! Resolution of 5 kyrs. 
 
 4. Crampton, J.S., Schioler, P., Roncaglia, L., 2006. Detection of Late Cretaceous eustatic signature using quantitative biostratigraphy. Geol. Soc. Am. Bull. 118, 975–990.
+NO ACCESS
 
 5. Haq, B.U., Hardenbol, J., Vail, P.R., 1988. Mesozoic and Cenozoic chronostratigraphy and cycles of sea-level change. Soc. Econ. Paleontol. Mineral. 42, 71–108.
 
