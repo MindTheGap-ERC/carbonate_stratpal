@@ -63,7 +63,8 @@ terrestrial biotas.
 
 -   Miller et al., 2020\
     Cenozoic sea level. \
-    Sl from \~66 Mya to recent. Based on Mg/Ca paleotemperatures and δ18O. Milankovic scale resolution. Reproduce-able data. But perhaps does not predate the K/Pb.
+    Sl from ~66 Mya to recent. Based on Mg/Ca paleotemperatures and δ18O. Milankovic scale resolution, 1 data point every
+    10 ky. Reproduce-able data. But perhaps does not predate the K/Pb.
 
 -   Jaiprakash et al., 2016\
     Forams in canyon in India.\
@@ -87,3 +88,58 @@ The Maastrichtian contains SL changes of higher magnitudes.
 Santonian to Campanian contains  magnitudes at the upper limit of approx. 40 m,
 whereas the Maastrichtian represents a shift to maximum magnitudes limits of approx. 50 m.
 
+- El-Azabi & Farouk
+  Study in the Kharga Oasis in Wester Egypt. They find a well-defined hiatus at
+  the K/Pg boundary marked by a conglomerate. the latest Maastrichtian through
+  to the mid-Danian biostratigraphic zones are absent.They find that the shale
+  on each side of the boundary is very different. the lower shale unit is
+  "restricted, shallower marine sub-tidal facies, devoid of planktonic
+  foraminifera but containing a few agglutinated benthonic foraminifera of low
+  species diversity". "The upper unit is an open marine, deeper sub-tidal
+  facies flooded with well-diversified planktonic and benthonic foraminifera.
+  The number of planktonic foraminifera is 80-90% higher than that of
+  benthonic foraminifera."
+  
+- Jain & Farouk 2017 state that the boundary is at a time of transgression.
+  According to their SL the hiatus should be before the boundary (still late
+  Maastrichtian) during the Falling Stage system Tract and forced regression.
+  They call the time before the boundary where there is SL rise, Highstand
+  system tract. And the maximum SL, which falls slightly after K/Pb is a
+  Transgressive System Tract to them. But if you'd ask me the SL shows that
+  the time directly before the K/Pb clearly shows a Transgressive System Tract
+  followed by a Highstand System Tract after the K/Pb, so the other way round.
+  But who am I.
+
+  The SL in fig.10 seems to fall a couple MY sooner than in fig.11. 
+  The data seems reproduceable, however, I don't fully understand the           supplementary material.
+
+- Haq 2014
+  Mentions in the appendix who studied the Maastrichtian eustatic evenets and
+  where. Events Events KMa3 (69.4 Ma), KMa4 (68.8 Ma), and KMa5 (66.8 Ma) are
+  the 3 most recent Maastrichtian eustatic events. KMa3 can be tract in
+  western European basins (1), on the Arabian Platform (2), in New Jersey (3)
+  and in O2-isotopic trends. KMa4 can be tract in Western Europe (1), the
+  Arabian Platform (2) and in New Zealand (4). KMa3 & KMa4 have an amplitude
+  of 25-75m. KMa5 can be tract in Western Europe (5), on the Arabian Platform
+  (2), in Tunisia (6), on the New Jersey margin (3), and in New Zealand (4).
+  KMa5 has an amplitude of ~75 m, Haq calls this "medium amplitude".
+
+1. Hardenbol, J., Robaszynski, F., 1998. Introduction to the Upper Cretaceous. In: de
+Graciansky, P.-C., et al. (Eds.), Mesozoic and Cenozoic Sequence Stratigraphy of
+European Basins. SEPM Special Publication, 60, pp. 329–332.
+Hardenbol, J., Thierry, J., Farley, M.B., et al., 1998. Mesozoic and Cenozoic sequence
+chronostratigraphic framework of European Basins. In: de Graciansky, P.-C., et al.
+(Eds.), Mesozoic and Cenozoic Sequence Stratigraphy of European Basins. SEPM
+Special Publication, 60, pp. 3–13 (Chart 5, “Cretaceous Chronostratigraphy”).
+
+2. Haq, B.U., Al-Qahtani, A.M., 2005. Phanerozoic cycles of sea-level change on the Arabian
+Platform. GeoArabia 10, 127–160.
+
+3. Miller, K.G., Sugarman, P.J., Browning, J.V., et al., 2003. Late Cretaceous chronology of large, rapid sea-level changes: glacioeustasy during the greenhouse world. Geology 31, 585–588.
+Miller, K.G., Kominz, M.A., Browning, J.V., et al., 2005b. The Phanerozoic record of global sea-level change. Science 312, 1293–1298.
+
+4. Crampton, J.S., Schioler, P., Roncaglia, L., 2006. Detection of Late Cretaceous eustatic signature using quantitative biostratigraphy. Geol. Soc. Am. Bull. 118, 975–990.
+
+5. Haq, B.U., Hardenbol, J., Vail, P.R., 1988. Mesozoic and Cenozoic chronostratigraphy and cycles of sea-level change. Soc. Econ. Paleontol. Mineral. 42, 71–108.
+
+6. Li, L., Keller, G., Adatte, G., Stinnesbeck, W., 2000. Late Cretaceous sea level changes in Tunisia: a multi-disciplinary approach. Geol. Soc. Lond. 157, 447–458.
