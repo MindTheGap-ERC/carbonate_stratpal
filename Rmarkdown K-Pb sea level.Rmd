@@ -145,3 +145,10 @@ NO ACCESS
 
 6. Li, L., Keller, G., Adatte, G., Stinnesbeck, W., 2000. Late Cretaceous sea level changes in Tunisia: a multi-disciplinary approach. Geol. Soc. Lond. 157, 447–458.
 NO ACCESS
+
+
+REPRODUCEABLE SEA LEVELS:
+- Haq et al. 1987        RANGE(Mya) = 244.8-0.15      RES(Mya) = ~0.15
+- Miller et al. 2005     RANGE(Mya) = 172.02-0        RES(Mya) = ~0.05
+- Ray et al. 2019        RANGE(Mya) = 145-65          RES(Mya) =  0.5
+- Miller et al. 2020     RANGE(Mya) = 66-0            RES(Mya) = ~0.009
