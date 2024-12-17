@@ -30,7 +30,9 @@ plot(pressure)
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
 **Introduction summaries of different papers**
-This markdown contains a summery of introductions from several papers to use for my own intro. For Holland & Patzkowsky 2015, I go deeper on how they explain clusters of last occurrences in different settings and summerise each mass extinction.
+This markdown contains a summery of introductions from several papers to use for my own intro. 
+For Holland & Patzkowsky 2015, I go deeper on how they explain clusters of last occurrences in 
+different settings and summerise each mass extinction.
 
 *Holland & Patzkowsky 2015*
 With the possible exception of the end-Cretaceous, mass extinctions in the
