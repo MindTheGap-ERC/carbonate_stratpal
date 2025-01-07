@@ -1,3 +1,4 @@
+
 ---
 title: "Rmarkdown Holland & Patskowsky notes"
 author: "Sidney"
@@ -196,3 +197,202 @@ deposition profile allowing for the accumulation and erosion of nonmarine
 fossils. Just like Holland & Patzkowsky 2015, this is done in a siliciclastic
 profile. They also include eustatic sea level change to simulate a marine
 profile and a coastal-plain profile.
+
+---
+title: "Rmarkdown Holland & Patskowsky notes"
+author: "Sidney"
+date: "2024-12-17"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+**Introduction summaries of different papers**
+This markdown contains a summery of introductions from several papers to use for my own intro. 
+For Holland & Patzkowsky 2015, I go deeper on how they explain clusters of last occurrences in 
+different settings and summerise each mass extinction.
+
+*Holland & Patzkowsky 2015*
+With the possible exception of the end-Cretaceous, mass extinctions in the
+fossil record are characterized by clusters of last occurrences at these
+sequence stratigraphical horizons. Although these clusters of last occurrences
+may represent brief pulses of elevated extinction, they are equally likely to
+form by stratigraphical processes during a protracted period (more than several
+hundred thousand years) of elevated extinction rate.
+We propose three tests for distinguishing pulses of extinction from clusters of
+last occurrences produced by stratigraphical processes.
+In 1984 Raup and Sepkoski found periodicity in mass extinctions. They could be
+sudden, pulsed or gradual. Major evidence for which manner fits a mass
+extinction is the last occurrence of species in stratigraphical columns (Huber
+1986; Macellari 1986; Kauffman 1988; Marshall and Ward 1996). But soon it was
+found that it is not so simple and that a last occurrence does not always
+depict the time of extinction. This is partly due to the Signor-Lipps effect,
+by which incomplete sampling causes abrupt extinction events to appear gradual
+in the stratigraphical record (Signor & Lipps 1982). I’m guessing they don’t
+sample enough to show how many species died in a short amount of time. Patterns
+of Last occurrences are still plainly used to infer timing and patterns of mass
+extinctions (Finney et al. 1999; Jin et al. 2000; Brookfield et al. 2003; Shen
+et al. 2011; Yan et al. 2013; Wang et al. 2014). 
+
+The pattern of last occurrences in the stratigraphical record lies more complex
+than how it’s often inferred. It does not directly represent time of
+extinction. Facies change, changes in the rate of sedimentation, and hiatuses
+exert a control on the occurrence of fossils that frequently overwhelms that of
+sampling. Changing sedimentation rate and erosion exert a surprising amount of
+complexity facies and how well last occurrences represent time of extinction
+(Holland and  Patzkowsky 1999). Distortion of the stratigraphical record
+through change in rate of sedimentation and facies change causes pulses of
+extinction to seem like one event. Prolonged increased rates of extinction may
+seem to occur in several pulses.
+They plot an arbitrary sea level change with third order and fourth order
+fluctuations. Then they look at 3 mass extinction scenarios and how they are
+portrayed in the stratigraphical record on a siliciclastic platform.
+stratigraphical columns are made at different locations on this siliciclastic
+platform.
+The first scenario depicts a mass extinction during slow rise in sea level
+during Lowstand system tract. Last occurrences are elevated throughout LST.
+There is a steady decrease of extinction (downward smearing) after the peak of
+extinction. However, there is no steady increase from the onset to the peak of
+extinction. Rather, it stays relatively flat through this interval. The
+downward smearing is simply the result of the Signor-Lipps effect: surfaces and
+intervals of major facies change will accumulate last occurrences. Such
+surfaces can give the impression of additional pulses of extinction prior to
+the actual extinction. This is because of the following of the FSST where there
+is low to no deposition.
+They then go through the 5 main mass extinctions on earth and place them into
+context of those 3 scenarios. The sea level change is the same in all
+scenarios. The model runs for 8 My. The first sea level cycle should not be
+used as the model is still getting its chape. The last few My should also not
+be looked at to avoid end model bias. Because the model does not continue after
+the run, the last occurrences accumulate near the end of the run. They plot the
+number of last occurrences in the depth domain. 
+That there was an increased extinction rate is often clear. The question lies
+in what extinction scenarios are consistent with the observed stratigraphical
+pattern of last occurrences. If we know the sea level and the pattern of last
+occurrences at the time we know the extinction scenario.
+Subaerial unconformity = hiatus causes clustering of last occurrences
+Major flooding surface = deepening & stratigraphical condensation causes
+clustering.
+
+*Late Ordovician* 
+One or two clusters of last occurrences. Single cluster found in
+depositionally updip settings. Found at subaerial unconformities and flooding
+surfaces. Pair of clusters is found in downdip settings. This has led people
+to believe the Ordovician mass extinction was a two-phase event.
+The first phase: deep to shallow water facies. Primarily effected nektonic and
+planktonic forms.
+The second phase: major flooding surface. Deep-water mudstones overlying
+shallow-water carbonates. Developed on a subaerial unconformity. Primarily
+affected conodonts and shallow-water benthic taxa.
+Two clusters is consistent with a prolonged extinction event spanning the
+FSST, LST and earliest TST before the end of the Ordovician. The first cluster
+is then produced by the forced regression of FSST. Disappearance of deep-water
+planktonic taxa. The second cluster would lie at the transgressive surface,
+the first flooding surface following the LST. Disappearance of shallow-water
+taxa.
+In updip areas FSST, LST and early TST are all within the hiatus resulting in
+one cluster under the sequence-bounding unconformity.
+
+*Late Devonian*
+Possibly just decreased origination instead of elevated extinction rate
+(Bambach et al., 2004). Faunal changes in three episodes. Second one is the
+largest. 
+Second event: In updip areas, the event consists of a sequence-bounding
+unconformity merged with a flooding surface. Shallow-water carbonate deposits
+to deeper-water organic-rich mudstone and shale. In downdip areas, there are
+two clusters. One at the base of the FSST, with a loss of deeper-water pelagic
+species, and one at the transgressive surface at op the LST, with a loss of
+shallower-water species. 
+Overall, greater loss of shallow-water taxa. Most last occurrences are
+clustered at a major flooding surface. Possible that extinction was more
+protracted than previously thought.
+
+*End Permian*
+Associated with a series of major flooding surfaces within the TST in which
+last occurrences are distributed. The interval below the flooding surfaces
+contains at least two subaerial unconformities. The extinction horizon and the
+P/T boundary appear to be major flooding surfaces. The boundary has been
+described as a second extinction horizon. Basal Triassic strata are highly
+condensed. It’s all very complex. But, last occurrences have probably been
+clustered.
+The extinction event takes place over a longer period in the TST than
+generally thought. Facies control plays an important role in the occurrence of
+faunas as some species (i.e. conodonts) reappear later in the section. 
+
+*End Triassic*
+The boundary is divided in two parts. The lower part is a FSST capped by a
+subaerial unconformity. The upper part is the lowest part of the TST and
+contains several flooding surfaces. This part also contains several debris
+flows during the early TST.
+The boundary lies within a narrow (~3 m) interval characterized by a subaerial
+unconformity and major flooding surfaces. Meaning that many of the last
+occurrences lie at particular surfaces as a result of facies changes, hiatuses
+and stratigraphical condensation.
+Taxa prefer different facies causing last occurrences lie at different
+horizons. The expression of the extinction in outcrops likely seems more
+punctuated as a result of stratigraphical architecture. This makes it hard to
+estimate the duration of the extinction event. But it was likely protracted. 
+
+**Zimmt et al., 2020**
+Clusters of last occurrences in the fossil record are frequently used to infer
+the pattern (single or multiple extinction pulses), timing (age), and tempo
+(prolonged or abrupt) of extinction events.
+The structure of the stratigraphic record controls the distribution of fossil
+occurrences in a stratigraphic column (Signor & Lipps 1982; Holland 1995;
+Marshall 1997) typically producing clusters of last occurrences at
+sequence-stratigraphic surfaces owing to changes in the preserved environment
+(facies effects), variable rates of sedimentation (condensation effects), and
+the presence of hiatuses (unconformity effects) in the measured sections
+(Holland & Patzkowsky 1999, 2015; Holland 2020).
+This potentially causes a single-pulsed or prolonged extinction event to be
+interpreted as a multiple phases or pulsed extinction event. The application
+of sequence-stratigraphic principles to the fossil record provides a
+predictive framework for identifying the locations of stratigraphically
+generated clusters of last occurrences. Clusters of last-occurrences that are
+generated stratigraphically rather than actual pulses of extinction can be
+identified using sequence-stratigraphic principles. You describe them in the
+context of facies change/shifts & sequence-stratigraphic architecture rather
+than purely taking them at face value.
+Sea level exerts control on stratigraphic architecture (Catuneanu 2006;
+Patzkowsky & Holland 2012; Holland 1995, 2020). When an extinction event
+coincides with a change in sea level, an elevated extinction rate can appear
+differently, for instance as multiple clusters of last occurrences, in the
+stratigraphic record than how the extinction event happened in real life. 
+Case study: Late Ordovician mass extinction
+
+**Holland 2022**
+Numerical models have been instrumental in understanding the stratigraphic
+paleobiology of marine systems, that is, how the structure of the
+stratigraphic record controls the expression of the fossil record (Holland
+1995, 2000, 2020; Holland and Patzkowsky 1999, 2002, 2015). 
+These models also guide the sampling of the fossil record, so that
+evolutionary and ecological patterns can be distinguished from patterns that
+have a stratigraphic origin (Patzkowsky and Holland  2007; Ivany et al. 2009).
+In this research Holland looks at nonmarine fossils through a fluvial
+deposition profile allowing for the accumulation and erosion of nonmarine
+fossils. Just like Holland & Patzkowsky 2015, this is done in a siliciclastic
+profile. They also include eustatic sea level change to simulate a marine
+profile and a coastal-plain profile.
+
