@@ -396,5 +396,3 @@ p3_var_rate(x = c(1,1.25,2.75,3), y = c(25,1,1,25), from = 1, to = 3, n = 100, f
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_15km), to = max_height(adm_15km), length.out = 20))
-
-
