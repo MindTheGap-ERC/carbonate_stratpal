@@ -145,6 +145,8 @@ plot(w_height,
 ###Plotting adm_4km off-shore
 plot(adm_4km); text(2,210,"age depth model at 4km")
 plot_sed_rate_t(adm_4km)
+plot_sed_rate_t(adm_9km)
+plot_sed_rate_l(adm_9km)
 
 ###Random walk evolution at adm_4km
 seq(from = min_time(adm_4km), to = max_time(adm_4km), by = 0.01) |> # sample every 10 kyr over the interval covered by the adm 
@@ -233,6 +235,7 @@ p3_var_rate(x = c(1,1.25,1.5,1.75,3), y = c(1,1,25,1,1), from = 1, to = 3, n = 1
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_9km), to = max_height(adm_9km), length.out = 20))
+
 #12km
 p3_var_rate(x = c(1,1.25,1.5,1.75,3), y = c(1,1,25,1,1), from = 1, to = 3, n = 100, f_max = 50) |>
   time_to_strat(adm_12km, destructive = TRUE) |>                     # transform into depth domain
@@ -396,3 +399,31 @@ p3_var_rate(x = c(1,1.25,2.75,3), y = c(25,1,1,25), from = 1, to = 3, n = 100, f
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_15km), to = max_height(adm_15km), length.out = 20))
+
+################ Stratigraphic range offset:
+t_ext = 1.5 # time of "true" extinction
+r = 25      # rate of fossil occurrences
+# simulate rate fossil occurrences of taxon 
+f_occ = p3(r, from = min_time(adm_4km), to = t_ext)
+hist(f_occ,
+     xlab = "Time [Myr]",
+     ylab = "# Fossils",
+     main = "Fossil abundance",
+     breaks = seq(from = min_time(adm_2km), to = max_time(adm_2km), length.out = 20))
+#Determine stratigraphic position of the highest preserved fossil
+highest_occ = f_occ |>                          # take fossil occ. in time domain
+  time_to_strat(adm_4km, destructive = TRUE) |> # transform into stratigraphic domain, destroying fossils that coincide with hiatuses
+  max(na.rm = TRUE)                             # find highest preserved fossil (destroyed fossils are NA)
+#Difference between position of last preserved fossil and stratifraphic position where 
+#the taxon actually goes extinct:
+h_true_ext = t_ext |>                           # stratigraphic position of "true" extinction
+  time_to_strat(adm_4km, destructive = FALSE) 
+
+# difference
+strat_range_offset_m = h_true_ext - highest_occ
+
+#Difference in time between age of last occurance and the actual time of extinction:
+t_last_occ = highest_occ |> # time when last preserved fossil lived
+  strat_to_time(adm_4km)
+# time offset between true extinction and time when last fossil lived.
+time_range_offset_myr = t_ext - t_last_occ
