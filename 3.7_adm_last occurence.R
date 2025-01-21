@@ -1,4 +1,4 @@
-data_kitten = read.csv("C:/Users/sidne/OneDrive/Documenten/AA Utrecht/Guided research/Git repositories/Stratigraphic Paleobiology for Phenotypic Evolution/CarboKitten.jl/data/output/alcap-example2_adm.csv")
+data_kitten = read.csv("C:/Users/sidne/OneDrive/Documenten/AA Utrecht/Guided research/Git repositories/Stratigraphic Paleobiology for Phenotypic Evolution/CarboKitten.jl/data/output/alcap-example3_adm.csv")
 #grid: 20km x 50km
 #time: 4 Myr
 #Sea level from Holland & Patzkowsky 2015
@@ -17,9 +17,10 @@ h4_mod_shifted = h4_mod - min(h4_mod)
 
 adm4_mod = tp_to_adm(t = t_mod, h4_mod)                    # adm modified to show 1.25-3.25 Myr
 adm_4km = tp_to_adm(t = t_mod_shifted, h4_mod_shifted)     # adm modified & shifted
+plot(adm4_mod)
 plot(adm_4km)
 ###         ###  9 km
-h9 = data_kitten$adm9..m.                                  # 9km
+h9 = data_kitten$adm18..m.                                  # 9km
 h9_mod = h9[ t >= 1.25 & t <= 3.25]
 h9_mod_shifted = h9_mod - min(h9_mod)
 
@@ -28,7 +29,7 @@ adm_9km = tp_to_adm(t = t_mod_shifted, h9_mod_shifted)     # adm modified & shif
 plot(adm_9km)
 ###         ###  12 km
 h12 = data_kitten$adm24..m.                                # 12km
-h12_mod = h3[ t >= 1.25 & t <= 3.25]
+h12_mod = h12[ t >= 1.25 & t <= 3.25]
 h12_mod_shifted = h12_mod - min(h12_mod)
 
 adm12_mod = tp_to_adm(t = t_mod, h12_mod)                  # adm modified to show 1.25-3.25 Myr
@@ -90,7 +91,7 @@ adm <- list(adm_1km,adm_2km,adm_3km,adm_4km,adm_5km,adm_6km,adm_7km,adm_8km,
 
 
 ###Plotting adm_4km off-shore
-plot(adm_4km); text(2,210,"age depth model at 4km")
+plot(adm_4km, text(0.5,90,"age depth model at 4km"))
 plot_sed_rate_t(adm_4km)
 
 ###Random walk evolution at adm_4km
@@ -104,13 +105,12 @@ seq(from = min_time(adm_4km), to = max_time(adm_4km), by = 0.01) |> # sample eve
        main = "Trait evolution 4 km from shore")
 
 ### Fossil abundance at adm_4km
-p3(rate = 200, from = min_time(adm_4km), to = max_time(adm_4km)) |> # constant rate in time domain
-  time_to_strat(adm_4km, destructive = TRUE) |>                     # transform into depth domain
+p3(rate = 500, from = min_time(adm_4km), to = max_time(adm_4km)) |> # constant rate in time domain
+  time_to_strat(adm_4km, destructive = FALSE) |>                     # transform into depth domain
   hist(xlab = "Stratigraphic height [m]",                           # plot
        main = "Fossil abundance 4 km offshore",
        ylab = "# Fossils",
-       breaks = seq(from = min_height(adm_4km), to = max_height(adm_4km), length.out = 20))
-
+       breaks = seq(from = min_height(adm_4km), to = max_height(adm_4km), length.out = 100))
 
 ########## Eustatic Sea Level
 AMP1 = 15
@@ -126,97 +126,107 @@ plot(t,sl,type='l',
      ylab="meter")
 
 ############### Scenario 1 Lowstand System Tract
-### time: 1.25 - 1.75 Myr
+### time: 1.25 - 1.75 Myr   #shifted: 0 - 0.5 Myr
 #4km
-p3_var_rate(x = c(1.25,1.5,1.75), y = c(1,25,1), from = 1.25, to = 3.25, n = 500, f_max = 50) |> 
-  time_to_strat(adm_4km, destructive = TRUE) |>                     # transform into depth domain
+p3_var_rate(x = c(0,0,0.25,0.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |> 
+  time_to_strat(adm_4km, destructive = FALSE) |>                     # transform into depth domain
   hist(main = "Fossil abundance 4 km offshore",
        sub = "Extinction during the Lowstand System Tract",
-       ylab = "# Fossils",
+       ylab = "Last occurrence",
        xlab = "Stratigraphic height [m]",
        font.axis = 1,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_4km), to = max_height(adm_4km), length.out = 100))
+time_to_strat(1.25,adm_4km)       #86.14923 m
+time_to_strat(1.75,adm_4km,destructive = FALSE)       #97.98534 m
+strat_to_time(97.98534,adm_4km)
+
 #9km
-p3_var_rate(x = c(1.25,1.5,1.75), y = c(1,25,1), from = 1.25, to = 3.25, n = 500, f_max = 50) |> 
-  time_to_strat(adm_9km, destructive = TRUE) |>                     # transform into depth domain
+p3_var_rate(x = c(0,0,0.25,0.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |> 
+  time_to_strat(adm_9km, destructive = FALSE) |>                     # transform into depth domain
   hist(main = "Fossil abundance 9 km offshore",
        sub = "Extinction during the Lowstand System Tract",
-       ylab = "# Fossils",
+       ylab = "Last occurrence",
        xlab = "Stratigraphic height [m]",
        font.axis = 1,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_9km), to = max_height(adm_9km), length.out = 100))
+time_to_strat(1.25,adm_9km,destructive = FALSE)
+strat_to_time(142.66,adm_9km)
+time_to_strat(1.75,adm_9km)
+strat_to_time(154.5,adm_9km)
+plot(adm_9km)
 
 #12km
-p3_var_rate(x = c(1.25,1.5,1.75), y = c(1,25,1), from = 1.25, to = 3.25, n = 500, f_max = 50) |>
-  time_to_strat(adm_12km, destructive = TRUE) |>                     # transform into depth domain
+p3_var_rate(x = c(0,0,0.25,0.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
+  time_to_strat(adm_12km, destructive = FALSE) |>                     # transform into depth domain
   hist(main = "Fossil abundance 12 km offshore",
        sub = "Extinction during the Lowstand System Tract",
-       ylab = "# Fossils",
-       xlab = "Stratigraphic height [m]",
-       font.axis = 1,
-       font.lab = 3,
-       font.sub = 2,
-       breaks = 100)
-
-seq(from = min_height(adm_12km), to = max_height(adm_12km), length.out = 100))
-#15km
-p3_var_rate(x = c(1.25,1.5,1.75), y = c(1,25,1), from = 1.25, to = 3.25, n = 500, f_max = 50) |> 
-  time_to_strat(adm_15km, destructive = TRUE) |>                     # transform into depth domain
-  hist(main = "Fossil abundance 15 km offshore",
-       sub = "Extinction during the Lowstand System Tract",
-       ylab = "# Fossils",
-       xlab = "Stratigraphic height [m]",
-       font.axis = 1,
-       font.lab = 3,
-       font.sub = 2,
-       breaks = 100)
-seq(from = min_height(adm_15km), to = max_height(adm_15km), length.out = 100))
-
-############### Scenario 2 Transgressive System Tract
-### time: 1.75 - 2.25 Myr
-#4km
-p3_var_rate(x = c(1,1.75,2,2.25,3), y = c(1,1,25,1,1), from = 1, to = 3, n = 100, f_max = 50) |>
-  time_to_strat(adm_4km, destructive = TRUE) |>                     # transform into depth domain
-  hist(main = "Fossil abundance 4 km offshore",
-       sub = "Extinction during the Transgressive System Tract",
-       ylab = "# Fossils",
-       xlab = "Stratigraphic height [m]",
-       font.axis = 1,
-       font.lab = 3,
-       font.sub = 2,
-       breaks = seq(from = min_height(adm_4km), to = max_height(adm_4km), length.out = 100))
-#9km
-p3_var_rate(x = c(1,1.75,2,2.25,3), y = c(1,1,25,1,1), from = 1, to = 3, n = 100, f_max = 50) |>
-  time_to_strat(adm_9km, destructive = TRUE) |>                     # transform into depth domain
-  hist(main = "Fossil abundance 9 km offshore",
-       sub = "Extinction during the Transgressive System Tract",
-       ylab = "# Fossils",
-       xlab = "Stratigraphic height [m]",
-       font.axis = 1,
-       font.lab = 3,
-       font.sub = 2,
-       breaks = seq(from = min_height(adm_9km), to = max_height(adm_9km), length.out = 100))
-#12km
-p3_var_rate(x = c(1,1.75,2,2.25,3), y = c(1,1,25,1,1), from = 1, to = 3, n = 100, f_max = 50) |>
-  time_to_strat(adm_12km, destructive = TRUE) |>                     # transform into depth domain
-  hist(main = "Fossil abundance 12 km offshore",
-       sub = "Extinction during the Transgressive System Tract",
-       ylab = "# Fossils",
+       ylab = "Last occurrence",
        xlab = "Stratigraphic height [m]",
        font.axis = 1,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_12km), to = max_height(adm_12km), length.out = 100))
 #15km
-p3_var_rate(x = c(1,1.75,2,2.25,3), y = c(1,1,25,1,1), from = 1, to = 3, n = 100, f_max = 50) |>
-  time_to_strat(adm_15km, destructive = TRUE) |>                     # transform into depth domain
+p3_var_rate(x = c(0,0,0.25,0.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |> 
+  time_to_strat(adm_15km, destructive = FALSE) |>                     # transform into depth domain
+  hist(main = "Fossil abundance 15 km offshore",
+       sub = "Extinction during the Lowstand System Tract",
+       ylab = "Last occurrence",
+       xlab = "Stratigraphic height [m]",
+       font.axis = 1,
+       font.lab = 3,
+       font.sub = 2,
+       breaks = seq(from = min_height(adm_15km), to = max_height(adm_15km), length.out = 100))
+
+############### Scenario 2 Transgressive System Tract
+### time: 1.75 - 2.25 Myr   # Shifted: 0.5 - 1 Myr
+#4km
+p3_var_rate(x = c(0,0.5,0.75,1,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
+  time_to_strat(adm_4km, destructive = FALSE) |>                     # transform into depth domain
+  hist(main = "Fossil abundance 4 km offshore",
+       sub = "Extinction during the Transgressive System Tract",
+       ylab = "Last occurrence",
+       xlab = "Stratigraphic height [m]",
+       font.axis = 1,
+       font.lab = 3,
+       font.sub = 2,
+       breaks = seq(from = min_height(adm_4km), to = max_height(adm_4km), length.out = 100))
+time_to_strat(1.75,adm4_mod)  #97.99
+strat_to_time(97.99,adm4_mod)
+time_to_strat(2.25,adm4_mod)
+strat_to_time(125,adm_4km)
+#9km
+p3_var_rate(x = c(0,0.5,0.75,1,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
+  time_to_strat(adm_9km, destructive = FALSE) |>                     # transform into depth domain
+  hist(main = "Fossil abundance 9 km offshore",
+       sub = "Extinction during the Transgressive System Tract",
+       ylab = "Last occurrence",
+       xlab = "Stratigraphic height [m]",
+       font.axis = 1,
+       font.lab = 3,
+       font.sub = 2,
+       breaks = seq(from = min_height(adm_9km), to = max_height(adm_9km), length.out = 100))
+#12km
+p3_var_rate(x = c(0,0.5,0.75,1,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
+  time_to_strat(adm_12km, destructive = FALSE) |>                     # transform into depth domain
+  hist(main = "Fossil abundance 12 km offshore",
+       sub = "Extinction during the Transgressive System Tract",
+       ylab = "Last occurrence",
+       xlab = "Stratigraphic height [m]",
+       font.axis = 1,
+       font.lab = 3,
+       font.sub = 2,
+       breaks = seq(from = min_height(adm_12km), to = max_height(adm_12km), length.out = 100))
+#15km
+p3_var_rate(x = c(0,0.5,0.75,1,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
+  time_to_strat(adm_15km, destructive = FALSE) |>                     # transform into depth domain
   hist(main = "Fossil abundance 15 km offshore",
        sub = "Extinction during the Transgressive System Tract",
-       ylab = "# Fossils",
+       ylab = "Last occurrence",
        xlab = "Stratigraphic height [m]",
        font.axis = 1,
        font.lab = 3,
@@ -224,46 +234,46 @@ p3_var_rate(x = c(1,1.75,2,2.25,3), y = c(1,1,25,1,1), from = 1, to = 3, n = 100
        breaks = seq(from = min_height(adm_15km), to = max_height(adm_15km), length.out = 100))
 
 ############### Scenario 3 Highstand System Tract
-### time: 2.25 - 2.75 Myr
+### time: 2.25 - 2.75 Myr     # Shifted: 1 - 1.5 Myr
 #4km
-p3_var_rate(x = c(1,2.25,2.5,2.75,3), y = c(1,1,25,1,1), from = 1, to = 3, n = 100, f_max = 50) |>
-  time_to_strat(adm_4km, destructive = TRUE) |>                     # transform into depth domain
+p3_var_rate(x = c(0,1,1.25,1.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
+  time_to_strat(adm_4km, destructive = FALSE) |>                     # transform into depth domain
   hist(main = "Fossil abundance 4 km offshore",
        sub = "Extinction during the Highstand System Tract",
-       ylab = "# Fossils",
+       ylab = "Last occurrence",
        xlab = "Stratigraphic height [m]",
        font.axis = 1,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_4km), to = max_height(adm_4km), length.out = 100))
 #9km
-p3_var_rate(x = c(1,2.25,2.5,2.75,3), y = c(1,1,25,1,1), from = 1, to = 3, f_max = 50) |>
-  time_to_strat(adm_9km, destructive = TRUE) |>                     # transform into depth domain
+p3_var_rate(x = c(0,1,1.25,1.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
+  time_to_strat(adm_9km, destructive = FALSE) |>                     # transform into depth domain
   hist(main = "Fossil abundance 9 km offshore",
        sub = "Extinction during the Highstand System Tract",
-       ylab = "# Fossils",
+       ylab = "Last occurrence",
        xlab = "Stratigraphic height [m]",
        font.axis = 1,
        font.lab = 3,
        font.sub = 2,
-       breaks = seq(from = min_height(adm_9km), to = max_height(adm_9km), length.out = 20))
+       breaks = seq(from = min_height(adm_9km), to = max_height(adm_9km), length.out = 100))
 #12km
-p3_var_rate(x = c(1,2.25,2.5,2.75,3), y = c(1,1,25,1,1), from = 1, to = 3, f_max = 50) |>
-  time_to_strat(adm_12km, destructive = TRUE) |>                     # transform into depth domain
+p3_var_rate(x = c(0,1,1.25,1.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
+  time_to_strat(adm_12km, destructive = FALSE) |>                     # transform into depth domain
   hist(main = "Fossil abundance 12 km offshore",
        sub = "Extinction during the Highstand System Tract",
-       ylab = "# Fossils",
+       ylab = "Last occurrence",
        xlab = "Stratigraphic height [m]",
        font.axis = 1,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_12km), to = max_height(adm_12km), length.out = 100))
 #15km
-p3_var_rate(x = c(1,2.25,2.5,2.75,3), y = c(1,1,25,1,1), from = 1, to = 3, n = 100, f_max = 50) |>
-  time_to_strat(adm_15km, destructive = TRUE) |>                     # transform into depth domain
+p3_var_rate(x = c(0,1,1.25,1.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
+  time_to_strat(adm_15km, destructive = FALSE) |>                     # transform into depth domain
   hist(main = "Fossil abundance 15 km offshore",
        sub = "Extinction during the Highstand System Tract",
-       ylab = "# Fossils",
+       ylab = "Last occurrence",
        xlab = "Stratigraphic height [m]",
        font.axis = 1,
        font.lab = 3,
@@ -271,46 +281,46 @@ p3_var_rate(x = c(1,2.25,2.5,2.75,3), y = c(1,1,25,1,1), from = 1, to = 3, n = 1
        breaks = seq(from = min_height(adm_15km), to = max_height(adm_15km), length.out = 100))
 
 ############### Scenario 4 Falling Stage System Tract
-### time: 2.75 - 3.25 Myr
+### time: 2.75 - 3.25 Myr       # Shifted: 1.5 - 2 Myr
 #4km
-p3_var_rate(x = c(2.75,3,3.25), y = c(1,25,1), from = 1.25, to = 3.25, n = 500, f_max = 50) |>
-  time_to_strat(adm_4km, destructive = TRUE) |>                     # transform into depth domain
+p3_var_rate(x = c(0,1.5,1.75,2,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
+  time_to_strat(adm_4km, destructive = FALSE) |>                     # transform into depth domain
   hist(main = "Fossil abundance 4 km offshore",
        sub = "Extinction during the Falling Stage System Tract",
-       ylab = "# Fossils",
+       ylab = "Last occurrence",
        xlab = "Stratigraphic height [m]",
        font.axis = 1,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_4km), to = max_height(adm_4km), length.out = 100))
 #9km
-p3_var_rate(x = c(2.75,3,3.25), y = c(1,25,1), from = 1.25, to = 3.25, n = 500, f_max = 50) |>
-  time_to_strat(adm_9km, destructive = TRUE) |>                     # transform into depth domain
+p3_var_rate(x = c(0,1.5,1.75,2,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
+  time_to_strat(adm_9km, destructive = FALSE) |>                     # transform into depth domain
   hist(main = "Fossil abundance 9 km offshore",
        sub = "Extinction during the Falling Stage System Tract",
-       ylab = "# Fossils",
+       ylab = "Last occurrence",
        xlab = "Stratigraphic height [m]",
        font.axis = 1,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_9km), to = max_height(adm_9km), length.out = 100))
 #12km
-p3_var_rate(x = c(2.75,3,3.25), y = c(1,25,1), from = 1.25, to = 3.25, n = 500, f_max = 50) |>
-  time_to_strat(adm_4km, destructive = TRUE) |>                     # transform into depth domain
+p3_var_rate(x = c(0,1.5,1.75,2,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
+  time_to_strat(adm_12km, destructive = FALSE) |>                     # transform into depth domain
   hist(main = "Fossil abundance 12 km offshore",
        sub = "Extinction during the Falling Stage System Tract",
-       ylab = "# Fossils",
+       ylab = "Last occurrence",
        xlab = "Stratigraphic height [m]",
        font.axis = 1,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_12km), to = max_height(adm_12km), length.out = 100))
 #15km
-p3_var_rate(x = c(2.75,3,3.25), y = c(1,25,1), from = 1.25, to = 3.25, n = 500, f_max = 50) |>
-  time_to_strat(adm_15km, destructive = TRUE) |>                     # transform into depth domain
+p3_var_rate(x = c(0,1.5,1.75,2,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
+  time_to_strat(adm_15km, destructive = FALSE) |>                     # transform into depth domain
   hist(main = "Fossil abundance 15 km offshore",
        sub = "Extinction during the Falling Stage System Tract",
-       ylab = "# Fossils",
+       ylab = "Last occurrence",
        xlab = "Stratigraphic height [m]",
        font.axis = 1,
        font.lab = 3,
