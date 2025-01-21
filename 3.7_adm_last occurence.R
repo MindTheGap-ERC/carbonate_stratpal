@@ -138,9 +138,10 @@ p3_var_rate(x = c(0,0,0.25,0.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_4km), to = max_height(adm_4km), length.out = 100))
-time_to_strat(1.25,adm_4km)       #86.14923 m
-time_to_strat(1.75,adm_4km,destructive = FALSE)       #97.98534 m
-strat_to_time(97.98534,adm_4km)
+time_to_strat(0,adm_4km)
+time_to_strat(0.25,adm_4km,destructive=FALSE)
+time_to_strat(0.5,adm_4km,destructive=FALSE)
+plot(adm_4km)
 
 #9km
 p3_var_rate(x = c(0,0,0.25,0.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |> 
@@ -153,10 +154,9 @@ p3_var_rate(x = c(0,0,0.25,0.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_9km), to = max_height(adm_9km), length.out = 100))
-time_to_strat(1.25,adm_9km,destructive = FALSE)
-strat_to_time(142.66,adm_9km)
-time_to_strat(1.75,adm_9km)
-strat_to_time(154.5,adm_9km)
+time_to_strat(0,adm_9km,destructive=FALSE)
+time_to_strat(0.25,adm_9km)
+time_to_strat(0.5,adm_9km,destructive=FALSE)
 plot(adm_9km)
 
 #12km
@@ -170,6 +170,11 @@ p3_var_rate(x = c(0,0,0.25,0.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_12km), to = max_height(adm_12km), length.out = 100))
+time_to_strat(0,adm_12km)
+time_to_strat(0.25,adm_12km,destructive=FALSE)
+time_to_strat(0.5,adm_12km)
+plot(adm_12km)
+
 #15km
 p3_var_rate(x = c(0,0,0.25,0.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |> 
   time_to_strat(adm_15km, destructive = FALSE) |>                     # transform into depth domain
@@ -181,6 +186,10 @@ p3_var_rate(x = c(0,0,0.25,0.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_15km), to = max_height(adm_15km), length.out = 100))
+time_to_strat(0,adm_15km)
+time_to_strat(0.25,adm_15km,destructive=FALSE)
+time_to_strat(0.5,adm_15km,destructive=FALSE)
+plot(adm_15km)
 
 ############### Scenario 2 Transgressive System Tract
 ### time: 1.75 - 2.25 Myr   # Shifted: 0.5 - 1 Myr
@@ -195,10 +204,11 @@ p3_var_rate(x = c(0,0.5,0.75,1,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_4km), to = max_height(adm_4km), length.out = 100))
-time_to_strat(1.75,adm4_mod)  #97.99
-strat_to_time(97.99,adm4_mod)
-time_to_strat(2.25,adm4_mod)
-strat_to_time(125,adm_4km)
+time_to_strat(0.5,adm_4km,destructive=FALSE)
+time_to_strat(0.75,adm_4km)
+time_to_strat(1,adm_4km)
+plot(adm_4km)
+
 #9km
 p3_var_rate(x = c(0,0.5,0.75,1,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
   time_to_strat(adm_9km, destructive = FALSE) |>                     # transform into depth domain
