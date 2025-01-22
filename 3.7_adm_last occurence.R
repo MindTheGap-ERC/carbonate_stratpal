@@ -45,50 +45,9 @@ adm_15km = tp_to_adm(t = t_mod_shifted, h15_mod_shifted)   # adm modified & shif
 plot(adm_15km)
 ### example of previous adm code:
 ## adm_6km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm12..m.)
-###
 
-
-# plotting
-plot(adm_1km); text(2,190,"age depth model at 1km")
-plot(adm_2km); text(2,190,"age depth model at 2km")
-plot(adm_3km); text(2,190,"age depth model at 3km")
-plot(adm_4km); text(2,190,"age depth model at 4km")
-hist(get_hiat_duration(adm_4km))
-#longer gaps should correspond to 4th order SL change
-plot(adm_5km); text(2,200,"age depth model at 5km")
-hist(get_hiat_duration(adm_5km))
-plot(adm_6km); text(2,200,"age depth model at 6km")
-hist(get_hiat_duration(adm_6km))
-plot(adm_7km); text(2,200,"age depth model at 7km")
-hist(get_hiat_duration(adm_7km))
-plot(adm_8km); text(2,210,"age depth model at 8km")
-hist(get_hiat_duration(adm_8km))
-plot(adm_9km); text(2,210,"age depth model at 9km")
-hist(get_hiat_duration(adm_9km))
-plot(adm_10km); text(2,210,"age depth model at 10km")
-hist(get_hiat_duration(adm_10km))
-plot(adm_11km); text(2,210,"age depth model at 11km")
-hist(get_hiat_duration(adm_11km))
-plot(adm_12km); text(2,210,"age depth model at 12km")
-hist(get_hiat_duration(adm_12km))
-plot(adm_13km); text(2,200,"age depth model at 13km")
-hist(get_hiat_duration(adm_13km))
-plot(adm_14km); text(2,90,"age depth model at 14km")
-hist(get_hiat_duration(adm_14km))
-plot(adm_15km); text(2,65,"age depth model at 15km")
-hist(get_hiat_duration(adm_15km))
-plot(adm_16km); text(2,60,"age depth model at 16km")
-plot(adm_17km); text(2,60,"age depth model at 17km")
-plot(adm_18km); text(2,65,"age depth model at 18km")
-plot(adm_19km); text(2,65,"age depth model at 19km")
-plot(adm_20km); text(2,65,"age depth model at 20km")
 #to destruct hiatus use: , lwd_destr = 0
 #use approxfun for linnear interpolation
-
-adm <- list(adm_1km,adm_2km,adm_3km,adm_4km,adm_5km,adm_6km,adm_7km,adm_8km,
-            adm_9km,adm_10km,adm_11km,adm_12km,adm_13km,adm_14km,adm_15km,
-            adm_16km,adm_17km,adm_18km,adm_19km,adm_20km)
-
 
 ###Plotting adm_4km off-shore
 plot(adm_4km, text(0.5,90,"age depth model at 4km"))
@@ -105,12 +64,36 @@ seq(from = min_time(adm_4km), to = max_time(adm_4km), by = 0.01) |> # sample eve
        main = "Trait evolution 4 km from shore")
 
 ### Fossil abundance at adm_4km
-p3(rate = 500, from = min_time(adm_4km), to = max_time(adm_4km)) |> # constant rate in time domain
-  time_to_strat(adm_4km, destructive = FALSE) |>                     # transform into depth domain
-  hist(xlab = "Stratigraphic height [m]",                           # plot
+p3(rate = 500, from = min_time(adm_4km), to = max_time(adm_4km)) |>    # constant rate in time domain
+  time_to_strat(adm_4km, destructive = FALSE) |>                       # transform into depth domain
+  hist(xlab = "Stratigraphic height [m]",                              # plot
        main = "Fossil abundance 4 km offshore",
-       ylab = "# Fossils",
+       ylab = "Last occurrence",
        breaks = seq(from = min_height(adm_4km), to = max_height(adm_4km), length.out = 100))
+
+### Fossil abundance at adm_9km
+p3(rate = 500, from = min_time(adm_9km), to = max_time(adm_9km)) |>    # constant rate in time domain
+  time_to_strat(adm_9km, destructive = FALSE) |>                       # transform into depth domain
+  hist(xlab = "Stratigraphic height [m]",                              # plot
+       main = "Fossil abundance 9 km offshore",
+       ylab = "Last occurrence",
+       breaks = seq(from = min_height(adm_9km), to = max_height(adm_9km), length.out = 100))
+
+### Fossil abundance at adm_12km
+p3(rate = 500, from = min_time(adm_12km), to = max_time(adm_12km)) |>  # constant rate in time domain
+  time_to_strat(adm_12km, destructive = FALSE) |>                      # transform into depth domain
+  hist(xlab = "Stratigraphic height [m]",                              # plot
+       main = "Fossil abundance 12 km offshore",
+       ylab = "Last occurrence",
+       breaks = seq(from = min_height(adm_12km), to = max_height(adm_12km), length.out = 100))
+
+### Fossil abundance at adm_15km
+p3(rate = 500, from = min_time(adm_15km), to = max_time(adm_15km)) |>  # constant rate in time domain
+  time_to_strat(adm_15km, destructive = FALSE) |>                      # transform into depth domain
+  hist(xlab = "Stratigraphic height [m]",                              # plot
+       main = "Fossil abundance 15 km offshore",
+       ylab = "Last occurrence",
+       breaks = seq(from = min_height(adm_15km), to = max_height(adm_15km), length.out = 100))
 
 ########## Eustatic Sea Level
 AMP1 = 15
@@ -128,67 +111,80 @@ plot(t,sl,type='l',
 ############### Scenario 1 Lowstand System Tract
 ### time: 1.25 - 1.75 Myr   #shifted: 0 - 0.5 Myr
 #4km
-p3_var_rate(x = c(0,0,0.25,0.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |> 
+h1.4 <- p3_var_rate(x = c(0,0,0.25,0.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |> 
   time_to_strat(adm_4km, destructive = FALSE) |>                     # transform into depth domain
-  hist(main = "Fossil abundance 4 km offshore",
-       sub = "Extinction during the Lowstand System Tract",
-       ylab = "Last occurrence",
-       xlab = "Stratigraphic height [m]",
-       font.axis = 1,
+  hist(font.axis = 1,                                                # histogram of last occurences
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_4km), to = max_height(adm_4km), length.out = 100))
-time_to_strat(0,adm_4km)
-time_to_strat(0.25,adm_4km,destructive=FALSE)
-time_to_strat(0.5,adm_4km,destructive=FALSE)
+time_to_strat(0,adm_4km)                                    # start of extinction in depth domain
+time_to_strat(0.25,adm_4km,destructive=FALSE)               # peak of extinction in depth domain
+time_to_strat(0.5,adm_4km,destructive=FALSE)                # end of extinction in depth domain
+time_to_strat(2,adm_4km,destructive=FALSE)
+ext1.4 <- cut(h1.4$breaks, c(-Inf,20.16365,Inf))            # separate extinction
+plot(h1.4,main = "Last occurrence of taxa at 4 km",          # histogram decoration
+     sub = "Extinction during the Lowstand System Tract",
+     ylab = "Last occurrence",
+     xlab = "Stratigraphic height [m]",
+     col=c("red","white")[ext1.4])                          # extinction is red, 
+  abline(v=6.228328,col="black",lwd=2,lty='dashed')      # line at peak of extinction                                                  # from peak-0.2Myr to peak+0.2Myr 
 plot(adm_4km)
 
 #9km
-p3_var_rate(x = c(0,0,0.25,0.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |> 
+h1.9 <- p3_var_rate(x = c(0,0,0.25,0.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |> 
   time_to_strat(adm_9km, destructive = FALSE) |>                     # transform into depth domain
-  hist(main = "Fossil abundance 9 km offshore",
-       sub = "Extinction during the Lowstand System Tract",
-       ylab = "Last occurrence",
-       xlab = "Stratigraphic height [m]",
-       font.axis = 1,
+  hist(font.axis = 1,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_9km), to = max_height(adm_9km), length.out = 100))
 time_to_strat(0,adm_9km,destructive=FALSE)
 time_to_strat(0.25,adm_9km)
 time_to_strat(0.5,adm_9km,destructive=FALSE)
+ext1.9 <- cut(h1.9$breaks, c(-Inf,60.40385,Inf))
+plot(h1.9,main = "Last occurrence of taxa at 9 km",
+     sub = "Extinction during the Lowstand System Tract",
+     ylab = "Last occurrence",
+     xlab = "Stratigraphic height [m]",
+     col=c("red","white")[ext1.9])
+  abline(v=5.515268,col="black",lwd=2,lty='dashed')
 plot(adm_9km)
 
 #12km
-p3_var_rate(x = c(0,0,0.25,0.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
+h1.12 <- p3_var_rate(x = c(0,0,0.25,0.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
   time_to_strat(adm_12km, destructive = FALSE) |>                     # transform into depth domain
-  hist(main = "Fossil abundance 12 km offshore",
-       sub = "Extinction during the Lowstand System Tract",
-       ylab = "Last occurrence",
-       xlab = "Stratigraphic height [m]",
-       font.axis = 1,
+  hist(font.axis = 1,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_12km), to = max_height(adm_12km), length.out = 100))
 time_to_strat(0,adm_12km)
 time_to_strat(0.25,adm_12km,destructive=FALSE)
 time_to_strat(0.5,adm_12km)
+ext1.12 <- cut(h1.12$breaks, c(-Inf,10.34304,Inf))
+plot(h1.12,main = "Last occurrence of taxa at 12 km",
+     sub = "Extinction during the Lowstand System Tract",
+     ylab = "Last occurrence",
+     xlab = "Stratigraphic height [m]",
+     col=c("red","white")[ext1.12])
+abline(v=6.542699,col="black",lwd=2,lty='dashed')
 plot(adm_12km)
 
 #15km
-p3_var_rate(x = c(0,0,0.25,0.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |> 
+h1.15 <- p3_var_rate(x = c(0,0,0.25,0.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |> 
   time_to_strat(adm_15km, destructive = FALSE) |>                     # transform into depth domain
-  hist(main = "Fossil abundance 15 km offshore",
-       sub = "Extinction during the Lowstand System Tract",
-       ylab = "Last occurrence",
-       xlab = "Stratigraphic height [m]",
-       font.axis = 1,
+  hist(font.axis = 1,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_15km), to = max_height(adm_15km), length.out = 100))
 time_to_strat(0,adm_15km)
 time_to_strat(0.25,adm_15km,destructive=FALSE)
 time_to_strat(0.5,adm_15km,destructive=FALSE)
+ext1.15 <- cut(h1.15$breaks, c(-Inf,9.168291,Inf))
+plot(h1.15,main= "Last occurrence of taxa at 4 km",
+     sub = "Extinction during the Lowstand system tract",
+     ylab = "Last occurrence frequency",
+     xlab = "Stratigraphic height [m]",
+     col=c("red","white")[ext1.15])
+abline(v=6.837498,col="black",lwd=2,lty='dashed')
 plot(adm_15km)
 
 ############### Scenario 2 Transgressive System Tract
@@ -207,7 +203,6 @@ p3_var_rate(x = c(0,0.5,0.75,1,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500,
 time_to_strat(0.5,adm_4km,destructive=FALSE)
 time_to_strat(0.75,adm_4km)
 time_to_strat(1,adm_4km)
-plot(adm_4km)
 
 #9km
 p3_var_rate(x = c(0,0.5,0.75,1,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
@@ -220,6 +215,10 @@ p3_var_rate(x = c(0,0.5,0.75,1,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_9km), to = max_height(adm_9km), length.out = 100))
+time_to_strat(0.5,adm_9km,destructive=FALSE)
+time_to_strat(0.75,adm_9km,destructive=FALSE)
+time_to_strat(1,adm_9km,destructive=FALSE)
+
 #12km
 p3_var_rate(x = c(0,0.5,0.75,1,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
   time_to_strat(adm_12km, destructive = FALSE) |>                     # transform into depth domain
@@ -231,6 +230,10 @@ p3_var_rate(x = c(0,0.5,0.75,1,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_12km), to = max_height(adm_12km), length.out = 100))
+time_to_strat(0.5,adm_12km)
+time_to_strat(0.75,adm_12km)
+time_to_strat(1,adm_12km)
+
 #15km
 p3_var_rate(x = c(0,0.5,0.75,1,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
   time_to_strat(adm_15km, destructive = FALSE) |>                     # transform into depth domain
@@ -242,6 +245,9 @@ p3_var_rate(x = c(0,0.5,0.75,1,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_15km), to = max_height(adm_15km), length.out = 100))
+time_to_strat(0.5,adm_15km,destructive=FALSE)
+time_to_strat(0.75,adm_15km,destructive=FALSE)
+time_to_strat(1,adm_15km,destructive=FALSE)
 
 ############### Scenario 3 Highstand System Tract
 ### time: 2.25 - 2.75 Myr     # Shifted: 1 - 1.5 Myr
@@ -256,6 +262,10 @@ p3_var_rate(x = c(0,1,1.25,1.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_4km), to = max_height(adm_4km), length.out = 100))
+time_to_strat(1,adm_4km)
+time_to_strat(1.25,adm_4km)
+time_to_strat(1.5,adm_4km,destructive=FALSE)
+
 #9km
 p3_var_rate(x = c(0,1,1.25,1.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
   time_to_strat(adm_9km, destructive = FALSE) |>                     # transform into depth domain
@@ -267,6 +277,10 @@ p3_var_rate(x = c(0,1,1.25,1.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_9km), to = max_height(adm_9km), length.out = 100))
+time_to_strat(1,adm_9km,destructive=FALSE)
+time_to_strat(1.25,adm_9km,destructive=FALSE)
+time_to_strat(1.5,adm_9km,destructive=FALSE)
+
 #12km
 p3_var_rate(x = c(0,1,1.25,1.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
   time_to_strat(adm_12km, destructive = FALSE) |>                     # transform into depth domain
@@ -278,6 +292,10 @@ p3_var_rate(x = c(0,1,1.25,1.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_12km), to = max_height(adm_12km), length.out = 100))
+time_to_strat(1,adm_12km)
+time_to_strat(1.25,adm_12km)
+time_to_strat(1.5,adm_12km)
+
 #15km
 p3_var_rate(x = c(0,1,1.25,1.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
   time_to_strat(adm_15km, destructive = FALSE) |>                     # transform into depth domain
@@ -289,6 +307,9 @@ p3_var_rate(x = c(0,1,1.25,1.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_15km), to = max_height(adm_15km), length.out = 100))
+time_to_strat(1,adm_15km)
+time_to_strat(1.25,adm_15km)
+time_to_strat(1.5,adm_15km,destructive=FALSE)
 
 ############### Scenario 4 Falling Stage System Tract
 ### time: 2.75 - 3.25 Myr       # Shifted: 1.5 - 2 Myr
@@ -303,6 +324,10 @@ p3_var_rate(x = c(0,1.5,1.75,2,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_4km), to = max_height(adm_4km), length.out = 100))
+time_to_strat(1.5,adm_4km,destructive=FALSE)
+time_to_strat(1.75,adm_4km,destructive=FALSE)
+time_to_strat(2,adm_4km)
+
 #9km
 p3_var_rate(x = c(0,1.5,1.75,2,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
   time_to_strat(adm_9km, destructive = FALSE) |>                     # transform into depth domain
@@ -314,6 +339,10 @@ p3_var_rate(x = c(0,1.5,1.75,2,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_9km), to = max_height(adm_9km), length.out = 100))
+time_to_strat(1.5,adm_9km)
+time_to_strat(1.75,adm_9km,destructive=FALSE)
+time_to_strat(2,adm_9km,destructive=FALSE)
+
 #12km
 p3_var_rate(x = c(0,1.5,1.75,2,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
   time_to_strat(adm_12km, destructive = FALSE) |>                     # transform into depth domain
@@ -325,6 +354,10 @@ p3_var_rate(x = c(0,1.5,1.75,2,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_12km), to = max_height(adm_12km), length.out = 100))
+time_to_strat(1.5,adm_12km,destructive=FALSE)
+time_to_strat(1.75,adm_12km)
+time_to_strat(2,adm_12km)
+
 #15km
 p3_var_rate(x = c(0,1.5,1.75,2,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
   time_to_strat(adm_15km, destructive = FALSE) |>                     # transform into depth domain
@@ -336,6 +369,10 @@ p3_var_rate(x = c(0,1.5,1.75,2,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_15km), to = max_height(adm_15km), length.out = 100))
+time_to_strat(1.5,adm_15km,destructive=FALSE)
+time_to_strat(1.75,adm_15km,destructive=FALSE)
+time_to_strat(2,adm_15km,destructive=FALSE)
+
 #subset
 t = data_kitten$time..Myr.
 h = data_kitten$adm30..m.
