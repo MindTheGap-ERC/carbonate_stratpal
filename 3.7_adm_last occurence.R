@@ -67,33 +67,37 @@ seq(from = min_time(adm_4km), to = max_time(adm_4km), by = 0.01) |> # sample eve
 p3(rate = 500, from = min_time(adm_4km), to = max_time(adm_4km)) |>    # constant rate in time domain
   time_to_strat(adm_4km, destructive = FALSE) |>                       # transform into depth domain
   hist(xlab = "Stratigraphic height [m]",                              # plot
-       main = "Fossil abundance 4 km offshore",
+       main = "Last occurrence with constant extinction rate at 4 km",
        ylab = "Last occurrence",
-       breaks = seq(from = min_height(adm_4km), to = max_height(adm_4km), length.out = 100))
+       breaks = seq(from = min_height(adm_4km), to = max_height(adm_4km), length.out = 100),
+       col="white")
 
 ### Fossil abundance at adm_9km
 p3(rate = 500, from = min_time(adm_9km), to = max_time(adm_9km)) |>    # constant rate in time domain
   time_to_strat(adm_9km, destructive = FALSE) |>                       # transform into depth domain
   hist(xlab = "Stratigraphic height [m]",                              # plot
-       main = "Fossil abundance 9 km offshore",
+       main = "Last occurrence with constant extinction rate at 9 km",
        ylab = "Last occurrence",
-       breaks = seq(from = min_height(adm_9km), to = max_height(adm_9km), length.out = 100))
+       breaks = seq(from = min_height(adm_9km), to = max_height(adm_9km), length.out = 100),
+       col="white")
 
 ### Fossil abundance at adm_12km
 p3(rate = 500, from = min_time(adm_12km), to = max_time(adm_12km)) |>  # constant rate in time domain
   time_to_strat(adm_12km, destructive = FALSE) |>                      # transform into depth domain
   hist(xlab = "Stratigraphic height [m]",                              # plot
-       main = "Fossil abundance 12 km offshore",
+       main = "Last occurrence with constant extinction rate at 12 km",
        ylab = "Last occurrence",
-       breaks = seq(from = min_height(adm_12km), to = max_height(adm_12km), length.out = 100))
+       breaks = seq(from = min_height(adm_12km), to = max_height(adm_12km), length.out = 100),
+       col="white")
 
 ### Fossil abundance at adm_15km
 p3(rate = 500, from = min_time(adm_15km), to = max_time(adm_15km)) |>  # constant rate in time domain
   time_to_strat(adm_15km, destructive = FALSE) |>                      # transform into depth domain
   hist(xlab = "Stratigraphic height [m]",                              # plot
-       main = "Fossil abundance 15 km offshore",
+       main = "Last occurrence with constant extinction rate at 15 km",
        ylab = "Last occurrence",
-       breaks = seq(from = min_height(adm_15km), to = max_height(adm_15km), length.out = 100))
+       breaks = seq(from = min_height(adm_15km), to = max_height(adm_15km), length.out = 100),
+       col="white")
 
 ########## Eustatic Sea Level
 AMP1 = 15
@@ -165,7 +169,7 @@ plot(h1.12,main = "Last occurrence of taxa at 12 km",
      ylab = "Last occurrence",
      xlab = "Stratigraphic height [m]",
      col=c("red","white")[ext1.12])
-abline(v=6.542699,col="black",lwd=2,lty='dashed')
+  abline(v=6.542699,col="black",lwd=2,lty='dashed')
 plot(adm_12km)
 
 #15km
@@ -179,199 +183,235 @@ time_to_strat(0,adm_15km)
 time_to_strat(0.25,adm_15km,destructive=FALSE)
 time_to_strat(0.5,adm_15km,destructive=FALSE)
 ext1.15 <- cut(h1.15$breaks, c(-Inf,9.168291,Inf))
-plot(h1.15,main= "Last occurrence of taxa at 4 km",
+plot(h1.15,main= "Last occurrence of taxa at 15 km",
      sub = "Extinction during the Lowstand system tract",
      ylab = "Last occurrence frequency",
      xlab = "Stratigraphic height [m]",
      col=c("red","white")[ext1.15])
-abline(v=6.837498,col="black",lwd=2,lty='dashed')
+  abline(v=6.837498,col="black",lwd=2,lty='dashed')
 plot(adm_15km)
 
 ############### Scenario 2 Transgressive System Tract
 ### time: 1.75 - 2.25 Myr   # Shifted: 0.5 - 1 Myr
 #4km
-p3_var_rate(x = c(0,0.5,0.75,1,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
+h2.4 <- p3_var_rate(x = c(0,0.5,0.75,1,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
   time_to_strat(adm_4km, destructive = FALSE) |>                     # transform into depth domain
-  hist(main = "Fossil abundance 4 km offshore",
-       sub = "Extinction during the Transgressive System Tract",
-       ylab = "Last occurrence",
-       xlab = "Stratigraphic height [m]",
-       font.axis = 1,
+  hist(font.axis = 1,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_4km), to = max_height(adm_4km), length.out = 100))
 time_to_strat(0.5,adm_4km,destructive=FALSE)
 time_to_strat(0.75,adm_4km)
 time_to_strat(1,adm_4km)
+ext2.4 <- cut(h2.4$breaks, c(-Inf,20.16365,69.7831,Inf))
+plot(h2.4,main= "Last occurrence of taxa at 4 km",
+     sub = "Extinction during the Transgressive system tract",
+     ylab = "Last occurrence frequency",
+     xlab = "Stratigraphic height [m]",
+     col=c("white","red","white")[ext2.4])
+  abline(v=45.33873,col="black",lwd=2,lty='dashed')
 
 #9km
-p3_var_rate(x = c(0,0.5,0.75,1,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
+h2.9 <- p3_var_rate(x = c(0,0.5,0.75,1,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
   time_to_strat(adm_9km, destructive = FALSE) |>                     # transform into depth domain
-  hist(main = "Fossil abundance 9 km offshore",
-       sub = "Extinction during the Transgressive System Tract",
-       ylab = "Last occurrence",
-       xlab = "Stratigraphic height [m]",
-       font.axis = 1,
+  hist(font.axis = 1,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_9km), to = max_height(adm_9km), length.out = 100))
 time_to_strat(0.5,adm_9km,destructive=FALSE)
 time_to_strat(0.75,adm_9km,destructive=FALSE)
 time_to_strat(1,adm_9km,destructive=FALSE)
+ext2.9 <- cut(h2.9$breaks, c(-Inf,60.40385,123.6621,Inf))
+plot(h2.9,main= "Last occurrence of taxa at 9 km",
+     sub = "Extinction during the Transgressive system tract",
+     ylab = "Last occurrence frequency",
+     xlab = "Stratigraphic height [m]",
+     col=c("white","red","white")[ext2.9])
+  abline(v=89.86919,col="black",lwd=2,lty='dashed')
 
 #12km
-p3_var_rate(x = c(0,0.5,0.75,1,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
+h2.12 <- p3_var_rate(x = c(0,0.5,0.75,1,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
   time_to_strat(adm_12km, destructive = FALSE) |>                     # transform into depth domain
-  hist(main = "Fossil abundance 12 km offshore",
-       sub = "Extinction during the Transgressive System Tract",
-       ylab = "Last occurrence",
-       xlab = "Stratigraphic height [m]",
-       font.axis = 1,
+  hist(font.axis = 1,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_12km), to = max_height(adm_12km), length.out = 100))
 time_to_strat(0.5,adm_12km)
 time_to_strat(0.75,adm_12km)
 time_to_strat(1,adm_12km)
+ext2.12 <- cut(h2.12$breaks, c(-Inf,10.34304,16.90142,Inf))
+plot(h2.12,main= "Last occurrence of taxa at 12 km",
+     sub = "Extinction during the Transgressive system tract",
+     ylab = "Last occurrence frequency",
+     xlab = "Stratigraphic height [m]",
+     col=c("white","red","white")[ext2.12])
+  abline(v=14.16978,col="black",lwd=2,lty='dashed')
 
 #15km
-p3_var_rate(x = c(0,0.5,0.75,1,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
+h2.15 <- p3_var_rate(x = c(0,0.5,0.75,1,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
   time_to_strat(adm_15km, destructive = FALSE) |>                     # transform into depth domain
-  hist(main = "Fossil abundance 15 km offshore",
-       sub = "Extinction during the Transgressive System Tract",
-       ylab = "Last occurrence",
-       xlab = "Stratigraphic height [m]",
-       font.axis = 1,
+  hist(font.axis = 1,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_15km), to = max_height(adm_15km), length.out = 100))
 time_to_strat(0.5,adm_15km,destructive=FALSE)
 time_to_strat(0.75,adm_15km,destructive=FALSE)
 time_to_strat(1,adm_15km,destructive=FALSE)
+ext2.15 <- cut(h2.15$breaks, c(-Inf,9.168291,18.54824,Inf))
+plot(h2.15,main= "Last occurrence of taxa at 15 km",
+     sub = "Extinction during the Transgressive system tract",
+     ylab = "Last occurrence frequency",
+     xlab = "Stratigraphic height [m]",
+     col=c("white","red","white")[ext2.15])
+  abline(v=14.28246,col="black",lwd=2,lty='dashed')
 
 ############### Scenario 3 Highstand System Tract
 ### time: 2.25 - 2.75 Myr     # Shifted: 1 - 1.5 Myr
 #4km
-p3_var_rate(x = c(0,1,1.25,1.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
+h3.4 <- p3_var_rate(x = c(0,1,1.25,1.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
   time_to_strat(adm_4km, destructive = FALSE) |>                     # transform into depth domain
-  hist(main = "Fossil abundance 4 km offshore",
-       sub = "Extinction during the Highstand System Tract",
-       ylab = "Last occurrence",
-       xlab = "Stratigraphic height [m]",
-       font.axis = 1,
+  hist(font.axis = 1,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_4km), to = max_height(adm_4km), length.out = 100))
 time_to_strat(1,adm_4km)
 time_to_strat(1.25,adm_4km)
 time_to_strat(1.5,adm_4km,destructive=FALSE)
+ext3.4 <- cut(h3.4$breaks, c(-Inf,69.7831,94.22824,Inf))
+plot(h3.4,main= "Last occurrence of taxa at 4 km",
+     sub = "Extinction during the Highstand system tract",
+     ylab = "Last occurrence frequency",
+     xlab = "Stratigraphic height [m]",
+     col=c("white","red","white")[ext3.4])
+  abline(v=86.14923,col="black",lwd=2,lty='dashed')
 
 #9km
-p3_var_rate(x = c(0,1,1.25,1.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
+h3.9 <- p3_var_rate(x = c(0,1,1.25,1.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
   time_to_strat(adm_9km, destructive = FALSE) |>                     # transform into depth domain
-  hist(main = "Fossil abundance 9 km offshore",
-       sub = "Extinction during the Highstand System Tract",
-       ylab = "Last occurrence",
-       xlab = "Stratigraphic height [m]",
-       font.axis = 1,
+  hist(font.axis = 1,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_9km), to = max_height(adm_9km), length.out = 100))
 time_to_strat(1,adm_9km,destructive=FALSE)
 time_to_strat(1.25,adm_9km,destructive=FALSE)
 time_to_strat(1.5,adm_9km,destructive=FALSE)
+ext3.9 <- cut(h3.9$breaks, c(-Inf,123.6621,150.853,Inf))
+plot(h3.9,main= "Last occurrence of taxa at 9 km",
+     sub = "Extinction during the Highstand system tract",
+     ylab = "Last occurrence frequency",
+     xlab = "Stratigraphic height [m]",
+     col=c("white","red","white")[ext3.9])
+abline(v=142.6458,col="black",lwd=2,lty='dashed')
 
 #12km
-p3_var_rate(x = c(0,1,1.25,1.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
+h3.12 <- p3_var_rate(x = c(0,1,1.25,1.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
   time_to_strat(adm_12km, destructive = FALSE) |>                     # transform into depth domain
-  hist(main = "Fossil abundance 12 km offshore",
-       sub = "Extinction during the Highstand System Tract",
-       ylab = "Last occurrence",
-       xlab = "Stratigraphic height [m]",
-       font.axis = 1,
+  hist(font.axis = 1,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_12km), to = max_height(adm_12km), length.out = 100))
 time_to_strat(1,adm_12km)
 time_to_strat(1.25,adm_12km)
 time_to_strat(1.5,adm_12km)
+ext3.12 <- cut(h3.12$breaks, c(-Inf,16.90142,25.97025,Inf))
+plot(h3.12,main= "Last occurrence of taxa at 12 km",
+     sub = "Extinction during the Highstand system tract",
+     ylab = "Last occurrence frequency",
+     xlab = "Stratigraphic height [m]",
+     col=c("white","red","white")[ext3.12])
+abline(v=20.85556,col="black",lwd=2,lty='dashed')
 
 #15km
-p3_var_rate(x = c(0,1,1.25,1.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
+h3.15 <- p3_var_rate(x = c(0,1,1.25,1.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
   time_to_strat(adm_15km, destructive = FALSE) |>                     # transform into depth domain
-  hist(main = "Fossil abundance 15 km offshore",
-       sub = "Extinction during the Highstand System Tract",
-       ylab = "Last occurrence",
-       xlab = "Stratigraphic height [m]",
-       font.axis = 1,
+  hist(font.axis = 1,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_15km), to = max_height(adm_15km), length.out = 100))
-time_to_strat(1,adm_15km)
+time_to_strat(1,adm_15km,destructive=FALSE)
 time_to_strat(1.25,adm_15km)
 time_to_strat(1.5,adm_15km,destructive=FALSE)
+ext3.15 <- cut(h3.15$breaks, c(-Inf,18.54824,24.37772,Inf))
+plot(h3.15,main= "Last occurrence of taxa at 15 km",
+     sub = "Extinction during the Highstand system tract",
+     ylab = "Last occurrence frequency",
+     xlab = "Stratigraphic height [m]",
+     col=c("white","red","white")[ext3.15])
+abline(v=19.69094,col="black",lwd=2,lty='dashed')
 
 ############### Scenario 4 Falling Stage System Tract
 ### time: 2.75 - 3.25 Myr       # Shifted: 1.5 - 2 Myr
 #4km
-p3_var_rate(x = c(0,1.5,1.75,2,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
+h4.4 <- p3_var_rate(x = c(0,1.5,1.75,2,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
   time_to_strat(adm_4km, destructive = FALSE) |>                     # transform into depth domain
-  hist(main = "Fossil abundance 4 km offshore",
-       sub = "Extinction during the Falling Stage System Tract",
-       ylab = "Last occurrence",
-       xlab = "Stratigraphic height [m]",
-       font.axis = 1,
+  hist(font.axis = 1,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_4km), to = max_height(adm_4km), length.out = 100))
 time_to_strat(1.5,adm_4km,destructive=FALSE)
 time_to_strat(1.75,adm_4km,destructive=FALSE)
-time_to_strat(2,adm_4km)
+time_to_strat(2,adm_4km,destructive=FALSE)
+ext4.4 <- cut(h4.4$breaks, c(-Inf,94.22824,100.0478,Inf))
+plot(h4.4,main= "Last occurrence of taxa at 4 km",
+     sub = "Extinction during the Falling Stage system tract",
+     ylab = "Last occurrence frequency",
+     xlab = "Stratigraphic height [m]",
+     col=c("white","red","white")[ext4.4])
+  abline(v=97.68081,col="black",lwd=2,lty='dashed')
 
 #9km
-p3_var_rate(x = c(0,1.5,1.75,2,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
+h4.9 <- p3_var_rate(x = c(0,1.5,1.75,2,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
   time_to_strat(adm_9km, destructive = FALSE) |>                     # transform into depth domain
-  hist(main = "Fossil abundance 9 km offshore",
-       sub = "Extinction during the Falling Stage System Tract",
-       ylab = "Last occurrence",
-       xlab = "Stratigraphic height [m]",
-       font.axis = 1,
+  hist(font.axis = 1,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_9km), to = max_height(adm_9km), length.out = 100))
-time_to_strat(1.5,adm_9km)
+time_to_strat(1.5,adm_9km,destructive=FALSE)
 time_to_strat(1.75,adm_9km,destructive=FALSE)
-time_to_strat(2,adm_9km,destructive=FALSE)
+time_to_strat(2,adm_9km)
+ext4.9 <- cut(h4.9$breaks, c(-Inf,150.853,156.665,Inf))
+plot(h4.9,main= "Last occurrence of taxa at 9 km",
+     sub = "Extinction during the Falling Stage system tract",
+     ylab = "Last occurrence frequency",
+     xlab = "Stratigraphic height [m]",
+     col=c("white","red","white")[ext4.9])
+  abline(v=154.2088,col="black",lwd=2,lty='dashed')
 
 #12km
-p3_var_rate(x = c(0,1.5,1.75,2,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
+h4.12 <- p3_var_rate(x = c(0,1.5,1.75,2,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
   time_to_strat(adm_12km, destructive = FALSE) |>                     # transform into depth domain
-  hist(main = "Fossil abundance 12 km offshore",
-       sub = "Extinction during the Falling Stage System Tract",
-       ylab = "Last occurrence",
-       xlab = "Stratigraphic height [m]",
-       font.axis = 1,
+  hist(font.axis = 1,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_12km), to = max_height(adm_12km), length.out = 100))
 time_to_strat(1.5,adm_12km,destructive=FALSE)
 time_to_strat(1.75,adm_12km)
 time_to_strat(2,adm_12km)
+ext4.12 <- cut(h4.12$breaks, c(-Inf,25.97025,94.43012,Inf))
+plot(h4.12,main= "Last occurrence of taxa at 12 km",
+     sub = "Extinction during the Falling Stage system tract",
+     ylab = "Last occurrence frequency",
+     xlab = "Stratigraphic height [m]",
+     col=c("white","red","white")[ext4.12])
+  abline(v=33.81947,col="black",lwd=2,lty='dashed')
 
 #15km
-p3_var_rate(x = c(0,1.5,1.75,2,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
+h4.15 <- p3_var_rate(x = c(0,1.5,1.75,2,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
   time_to_strat(adm_15km, destructive = FALSE) |>                     # transform into depth domain
-  hist(main = "Fossil abundance 15 km offshore",
-       sub = "Extinction during the Falling Stage System Tract",
-       ylab = "Last occurrence",
-       xlab = "Stratigraphic height [m]",
-       font.axis = 1,
+  hist(font.axis = 1,
        font.lab = 3,
        font.sub = 2,
        breaks = seq(from = min_height(adm_15km), to = max_height(adm_15km), length.out = 100))
 time_to_strat(1.5,adm_15km,destructive=FALSE)
 time_to_strat(1.75,adm_15km,destructive=FALSE)
 time_to_strat(2,adm_15km,destructive=FALSE)
+ext4.15 <- cut(h4.15$breaks, c(-Inf,24.37772,34.35685,Inf))
+plot(h4.15,main= "Last occurrence of taxa at 15 km",
+     sub = "Extinction during the Falling Stage system tract",
+     ylab = "Last occurrence frequency",
+     xlab = "Stratigraphic height [m]",
+     col=c("white","red","white")[ext4.15])
+  abline(v=29.49508,col="black",lwd=2,lty='dashed')
 
 #subset
 t = data_kitten$time..Myr.
