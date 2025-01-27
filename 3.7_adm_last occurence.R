@@ -63,41 +63,65 @@ seq(from = min_time(adm_4km), to = max_time(adm_4km), by = 0.01) |> # sample eve
        ylab = "Trait value",
        main = "Trait evolution 4 km from shore")
 
+#Changes of system tracts
+LST_to_TST = 0.5      # Lowstand system tract to Transgressive system tract
+TST_to_HST = 1        # Transgressive system tract to Highstand system tract
+HST_to_FSST = 1.5     # Highstand system tract to Falling Stage system tract
+
 ### Fossil abundance at adm_4km
 p3(rate = 500, from = min_time(adm_4km), to = max_time(adm_4km)) |>    # constant rate in time domain
   time_to_strat(adm_4km, destructive = FALSE) |>                       # transform into depth domain
-  hist(xlab = "Stratigraphic height [m]",                              # plot
-       main = "Last occurrence with constant extinction rate at 4 km",
+  hist(main = "Last occurrence at 4 km with constant extinction rate",
+       sub = "system tracts seperated by vertical lines",
        ylab = "Last occurrence",
+       xlab = "Stratigraphic height [m]",
        breaks = seq(from = min_height(adm_4km), to = max_height(adm_4km), length.out = 100),
        col="white")
+abline(v=(time_to_strat(LST_to_TST,adm_4km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
+abline(v=(time_to_strat(TST_to_HST,adm_4km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
+abline(v=(time_to_strat(HST_to_FSST,adm_4km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
+strat_to_time(7.5,adm_4km)
 
 ### Fossil abundance at adm_9km
 p3(rate = 500, from = min_time(adm_9km), to = max_time(adm_9km)) |>    # constant rate in time domain
   time_to_strat(adm_9km, destructive = FALSE) |>                       # transform into depth domain
-  hist(xlab = "Stratigraphic height [m]",                              # plot
-       main = "Last occurrence with constant extinction rate at 9 km",
+  hist(main = "Last occurrence at 9 km with constant extinction rate",
+       sub = "system tracts seperated by vertical lines",
        ylab = "Last occurrence",
+       xlab = "Stratigraphic height [m]",
        breaks = seq(from = min_height(adm_9km), to = max_height(adm_9km), length.out = 100),
        col="white")
+abline(v=(time_to_strat(LST_to_TST,adm_9km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
+abline(v=(time_to_strat(TST_to_HST,adm_9km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
+abline(v=(time_to_strat(HST_to_FSST,adm_9km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
 
 ### Fossil abundance at adm_12km
 p3(rate = 500, from = min_time(adm_12km), to = max_time(adm_12km)) |>  # constant rate in time domain
   time_to_strat(adm_12km, destructive = FALSE) |>                      # transform into depth domain
-  hist(xlab = "Stratigraphic height [m]",                              # plot
-       main = "Last occurrence with constant extinction rate at 12 km",
+  hist(main = "Last occurrence at 12 km with constant extinction rate ",
+       sub = "system tracts seperated by vertical lines",
        ylab = "Last occurrence",
+       xlab = "Stratigraphic height [m]",
        breaks = seq(from = min_height(adm_12km), to = max_height(adm_12km), length.out = 100),
        col="white")
+abline(v=(time_to_strat(LST_to_TST,adm_12km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
+abline(v=(time_to_strat(TST_to_HST,adm_12km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
+abline(v=(time_to_strat(HST_to_FSST,adm_12km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
+
 
 ### Fossil abundance at adm_15km
 p3(rate = 500, from = min_time(adm_15km), to = max_time(adm_15km)) |>  # constant rate in time domain
   time_to_strat(adm_15km, destructive = FALSE) |>                      # transform into depth domain
-  hist(xlab = "Stratigraphic height [m]",                              # plot
-       main = "Last occurrence with constant extinction rate at 15 km",
+  hist(main = "Last occurrence at 15 km with constant extinction rate",
+       sub = "system tracts seperated by vertical lines",
        ylab = "Last occurrence",
+       xlab = "Stratigraphic height [m]",
        breaks = seq(from = min_height(adm_15km), to = max_height(adm_15km), length.out = 100),
        col="white")
+abline(v=(time_to_strat(LST_to_TST,adm_15km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
+abline(v=(time_to_strat(TST_to_HST,adm_15km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
+abline(v=(time_to_strat(HST_to_FSST,adm_15km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
+
 
 ########## Eustatic Sea Level
 AMP1 = 15
@@ -107,10 +131,14 @@ PER2 = 0.2
 
 t = seq(1.25, 3.25, by=0.001)
 sl = (AMP1*sin(2*pi*t/PER1)) + (AMP2*sin(2*pi*t/PER2))
-plot(t,sl,type='l',
-     main="Eustatic Sea Level",
-     xlab="time",
-     ylab="meter")
+  plot(t,sl,type='l',
+  main="Eustatic Sea Level",
+  xlab="time",
+  ylab="meter")
+abline(v=1.75,col="black",lwd=2,lty='dashed')
+abline(v=2.25,col="black",lwd=2,lty='dashed')
+abline(v=2.75,col="black",lwd=2,lty='dashed')
+abline(v=(0.32+1.25),col="red",lwd=2,lty='dashed')
 
 ############### Scenario 1 Lowstand System Tract
 ### time: 1.25 - 1.75 Myr   #shifted: 0 - 0.5 Myr
@@ -124,7 +152,6 @@ h1.4 <- p3_var_rate(x = c(0,0,0.25,0.5,2), y = c(1,1,25,1,1), from = 0, to = 2, 
 time_to_strat(0,adm_4km)                                    # start of extinction in depth domain
 time_to_strat(0.25,adm_4km,destructive=FALSE)               # peak of extinction in depth domain
 time_to_strat(0.5,adm_4km,destructive=FALSE)                # end of extinction in depth domain
-time_to_strat(2,adm_4km,destructive=FALSE)
 ext1.4 <- cut(h1.4$breaks, c(-Inf,20.16365,Inf))            # separate extinction
 plot(h1.4,main = "Last occurrence of taxa at 4 km",          # histogram decoration
      sub = "Extinction during the Lowstand System Tract",
