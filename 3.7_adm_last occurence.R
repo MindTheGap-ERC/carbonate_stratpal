@@ -81,6 +81,11 @@ abline(v=(time_to_strat(LST_to_TST,adm_4km,destructive=FALSE)),col="red",lwd=2,l
 abline(v=(time_to_strat(TST_to_HST,adm_4km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
 abline(v=(time_to_strat(HST_to_FSST,adm_4km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
 strat_to_time(7.5,adm_4km)
+plot(adm_4km)
+title('4km adm')
+abline(v=(LST_to_TST),col="red",lwd=2,lty='dashed')
+abline(v=(TST_to_HST),col="red",lwd=2,lty='dashed')
+abline(v=(HST_to_FSST),col="red",lwd=2,lty='dashed')
 
 ### Fossil abundance at adm_9km
 p3(rate = 500, from = min_time(adm_9km), to = max_time(adm_9km)) |>    # constant rate in time domain
@@ -94,6 +99,13 @@ p3(rate = 500, from = min_time(adm_9km), to = max_time(adm_9km)) |>    # constan
 abline(v=(time_to_strat(LST_to_TST,adm_9km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
 abline(v=(time_to_strat(TST_to_HST,adm_9km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
 abline(v=(time_to_strat(HST_to_FSST,adm_9km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
+time_to_strat(0.25,adm_9km,destructive=FALSE)
+abline(v=(5.515),col="coral",lwd=3,lty='dashed')
+plot(adm_9km)
+title('9km adm')
+abline(v=(LST_to_TST),col="red",lwd=2,lty='dashed')
+abline(v=(TST_to_HST),col="red",lwd=2,lty='dashed')
+abline(v=(HST_to_FSST),col="red",lwd=2,lty='dashed')
 
 ### Fossil abundance at adm_12km
 p3(rate = 500, from = min_time(adm_12km), to = max_time(adm_12km)) |>  # constant rate in time domain
@@ -107,6 +119,11 @@ p3(rate = 500, from = min_time(adm_12km), to = max_time(adm_12km)) |>  # constan
 abline(v=(time_to_strat(LST_to_TST,adm_12km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
 abline(v=(time_to_strat(TST_to_HST,adm_12km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
 abline(v=(time_to_strat(HST_to_FSST,adm_12km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
+plot(adm_12km)
+title('12km adm')
+abline(v=(LST_to_TST),col="red",lwd=2,lty='dashed')
+abline(v=(TST_to_HST),col="red",lwd=2,lty='dashed')
+abline(v=(HST_to_FSST),col="red",lwd=2,lty='dashed')
 
 
 ### Fossil abundance at adm_15km
@@ -121,8 +138,11 @@ p3(rate = 500, from = min_time(adm_15km), to = max_time(adm_15km)) |>  # constan
 abline(v=(time_to_strat(LST_to_TST,adm_15km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
 abline(v=(time_to_strat(TST_to_HST,adm_15km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
 abline(v=(time_to_strat(HST_to_FSST,adm_15km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
-
-
+plot(adm_15km)
+title('15km adm')
+abline(v=(LST_to_TST),col="red",lwd=2,lty='dashed')
+abline(v=(TST_to_HST),col="red",lwd=2,lty='dashed')
+abline(v=(HST_to_FSST),col="red",lwd=2,lty='dashed')
 ########## Eustatic Sea Level
 AMP1 = 15
 PER1 = 2
@@ -135,9 +155,9 @@ sl = (AMP1*sin(2*pi*t/PER1)) + (AMP2*sin(2*pi*t/PER2))
   main="Eustatic Sea Level",
   xlab="time",
   ylab="meter")
-abline(v=1.75,col="black",lwd=2,lty='dashed')
-abline(v=2.25,col="black",lwd=2,lty='dashed')
-abline(v=2.75,col="black",lwd=2,lty='dashed')
+abline(v=1.75,col="cyan3",lwd=3,lty='dashed')
+abline(v=2.25,col="cyan3",lwd=3,lty='dashed')
+abline(v=2.75,col="cyan3",lwd=3,lty='dashed')
 abline(v=(0.32+1.25),col="red",lwd=2,lty='dashed')
 
 ############### Scenario 1 Lowstand System Tract
@@ -150,6 +170,8 @@ h1.4 <- p3_var_rate(x = c(0,0,0.25,0.5,2), y = c(1,1,25,1,1), from = 0, to = 2, 
        font.sub = 2,
        breaks = seq(from = min_height(adm_4km), to = max_height(adm_4km), length.out = 100))
 time_to_strat(0,adm_4km)                                    # start of extinction in depth domain
+time_to_strat(0.09,adm_4km,destructive=FALSE)               # beginning of hiatus
+time_to_strat(0.14,adm_4km,destructive=FALSE)               # end of hiatus
 time_to_strat(0.25,adm_4km,destructive=FALSE)               # peak of extinction in depth domain
 time_to_strat(0.5,adm_4km,destructive=FALSE)                # end of extinction in depth domain
 ext1.4 <- cut(h1.4$breaks, c(-Inf,20.16365,Inf))            # separate extinction
@@ -158,8 +180,18 @@ plot(h1.4,main = "Last occurrence of taxa at 4 km",          # histogram decorat
      ylab = "Last occurrence",
      xlab = "Stratigraphic height [m]",
      col=c("red","white")[ext1.4])                          # extinction is red, 
-  abline(v=6.228328,col="black",lwd=2,lty='dashed')      # line at peak of extinction                                                  # from peak-0.2Myr to peak+0.2Myr 
-plot(adm_4km)
+  abline(v=6.228328,col="green2",lwd=3,lty='dashed')         # line at peak of extinction
+  abline(v=(time_to_strat(LST_to_TST,adm_4km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(TST_to_HST,adm_4km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(HST_to_FSST,adm_4km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+time_to_strat(0.09,adm_4km,destructive=FALSE)               # beginning of hiatus
+time_to_strat(0.14,adm_4km,destructive=FALSE)               # end of hiatus
+abline(v=(0.1800508),col="indianred4",lwd=3,lty='dashed')   # first hiatus
+time_to_strat(0.23,adm_4km,destructive=FALSE)
+time_to_strat(0.3,adm_4km,destructive=FALSE)
+abline(v=(6.228325),col="indianred4",lwd=3,lty='dashed')   # second big hiatus
+time_to_strat(0.435,adm_4km,destructive=FALSE)
+abline(v=(18.47793),col="indianred4",lwd=3,lty='dashed')   # third big hiatus
 
 #9km
 h1.9 <- p3_var_rate(x = c(0,0,0.25,0.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |> 
@@ -177,8 +209,13 @@ plot(h1.9,main = "Last occurrence of taxa at 9 km",
      ylab = "Last occurrence",
      xlab = "Stratigraphic height [m]",
      col=c("red","white")[ext1.9])
-  abline(v=5.515268,col="black",lwd=2,lty='dashed')
-plot(adm_9km)
+  abline(v=5.515268,col="green2",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(LST_to_TST,adm_9km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(TST_to_HST,adm_9km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(HST_to_FSST,adm_9km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+time_to_strat(0.05,adm_9km,destructive=FALSE)
+abline(v=(0.9127554),col="indianred4",lwd=3,lty='dashed')   # biggest (first) hiatus
+
 
 #12km
 h1.12 <- p3_var_rate(x = c(0,0,0.25,0.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
@@ -196,8 +233,10 @@ plot(h1.12,main = "Last occurrence of taxa at 12 km",
      ylab = "Last occurrence",
      xlab = "Stratigraphic height [m]",
      col=c("red","white")[ext1.12])
-  abline(v=6.542699,col="black",lwd=2,lty='dashed')
-plot(adm_12km)
+  abline(v=6.542699,col="green2",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(LST_to_TST,adm_12km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(TST_to_HST,adm_12km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(HST_to_FSST,adm_12km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
 
 #15km
 h1.15 <- p3_var_rate(x = c(0,0,0.25,0.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |> 
@@ -215,8 +254,13 @@ plot(h1.15,main= "Last occurrence of taxa at 15 km",
      ylab = "Last occurrence frequency",
      xlab = "Stratigraphic height [m]",
      col=c("red","white")[ext1.15])
-  abline(v=6.837498,col="black",lwd=2,lty='dashed')
-plot(adm_15km)
+  abline(v=6.837498,col="green2",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(LST_to_TST,adm_15km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(TST_to_HST,adm_15km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(HST_to_FSST,adm_15km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+time_to_strat(0.29,adm_15km,destructive=FALSE)            # only big hiatus during LST at 15km
+abline(v=(7.028635),col="indianred4",lwd=3,lty='dashed')
+
 
 ############### Scenario 2 Transgressive System Tract
 ### time: 1.75 - 2.25 Myr   # Shifted: 0.5 - 1 Myr
@@ -236,7 +280,14 @@ plot(h2.4,main= "Last occurrence of taxa at 4 km",
      ylab = "Last occurrence frequency",
      xlab = "Stratigraphic height [m]",
      col=c("white","red","white")[ext2.4])
-  abline(v=45.33873,col="black",lwd=2,lty='dashed')
+  abline(v=45.33873,col="green2",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(LST_to_TST,adm_4km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(TST_to_HST,adm_4km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(HST_to_FSST,adm_4km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+time_to_strat(0.65,adm_4km,destructive=FALSE)             # condensation
+abline(v=(35.90529),col="indianred4",lwd=3,lty='dashed')
+time_to_strat(0.83,adm_4km,destructive=FALSE)             # medium sized hiatus
+abline(v=(55.00413),col="indianred4",lwd=3,lty='dashed')
 
 #9km
 h2.9 <- p3_var_rate(x = c(0,0.5,0.75,1,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
@@ -254,7 +305,18 @@ plot(h2.9,main= "Last occurrence of taxa at 9 km",
      ylab = "Last occurrence frequency",
      xlab = "Stratigraphic height [m]",
      col=c("white","red","white")[ext2.9])
-  abline(v=89.86919,col="black",lwd=2,lty='dashed')
+  abline(v=89.86919,col="green2",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(LST_to_TST,adm_9km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(TST_to_HST,adm_9km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(HST_to_FSST,adm_9km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+time_to_strat(0.52,adm_9km,destructive=FALSE)             # 1st hiatus
+abline(v=(61.24375),col="indianred4",lwd=2,lty='dashed')
+time_to_strat(0.56,adm_9km,destructive=FALSE)              # 2nd hiatus
+abline(v=(61.95722),col="indianred4",lwd=2,lty='dashed')
+time_to_strat(0.59,adm_9km,destructive=FALSE)              # 3rd hiatus
+abline(v=(66.92126),col="indianred4",lwd=2,lty='dashed')
+time_to_strat(0.76,adm_9km,destructive=FALSE)              # 4th (and longest) hiatus
+abline(v=(89.86919),col="indianred4",lwd=2,lty='dashed')
 
 #12km
 h2.12 <- p3_var_rate(x = c(0,0.5,0.75,1,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
@@ -272,7 +334,10 @@ plot(h2.12,main= "Last occurrence of taxa at 12 km",
      ylab = "Last occurrence frequency",
      xlab = "Stratigraphic height [m]",
      col=c("white","red","white")[ext2.12])
-  abline(v=14.16978,col="black",lwd=2,lty='dashed')
+  abline(v=14.16978,col="green2",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(LST_to_TST,adm_12km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(TST_to_HST,adm_12km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(HST_to_FSST,adm_12km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
 
 #15km
 h2.15 <- p3_var_rate(x = c(0,0.5,0.75,1,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
@@ -290,7 +355,10 @@ plot(h2.15,main= "Last occurrence of taxa at 15 km",
      ylab = "Last occurrence frequency",
      xlab = "Stratigraphic height [m]",
      col=c("white","red","white")[ext2.15])
-  abline(v=14.28246,col="black",lwd=2,lty='dashed')
+  abline(v=14.28246,col="green2",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(LST_to_TST,adm_15km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(TST_to_HST,adm_15km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(HST_to_FSST,adm_15km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
 
 ############### Scenario 3 Highstand System Tract
 ### time: 2.25 - 2.75 Myr     # Shifted: 1 - 1.5 Myr
@@ -310,7 +378,10 @@ plot(h3.4,main= "Last occurrence of taxa at 4 km",
      ylab = "Last occurrence frequency",
      xlab = "Stratigraphic height [m]",
      col=c("white","red","white")[ext3.4])
-  abline(v=86.14923,col="black",lwd=2,lty='dashed')
+  abline(v=86.14923,col="green2",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(LST_to_TST,adm_4km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(TST_to_HST,adm_4km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(HST_to_FSST,adm_4km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
 
 #9km
 h3.9 <- p3_var_rate(x = c(0,1,1.25,1.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
@@ -328,7 +399,10 @@ plot(h3.9,main= "Last occurrence of taxa at 9 km",
      ylab = "Last occurrence frequency",
      xlab = "Stratigraphic height [m]",
      col=c("white","red","white")[ext3.9])
-abline(v=142.6458,col="black",lwd=2,lty='dashed')
+abline(v=142.6458,col="green2",lwd=3,lty='dashed')
+abline(v=(time_to_strat(LST_to_TST,adm_9km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+abline(v=(time_to_strat(TST_to_HST,adm_9km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+abline(v=(time_to_strat(HST_to_FSST,adm_9km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
 
 #12km
 h3.12 <- p3_var_rate(x = c(0,1,1.25,1.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
@@ -346,7 +420,10 @@ plot(h3.12,main= "Last occurrence of taxa at 12 km",
      ylab = "Last occurrence frequency",
      xlab = "Stratigraphic height [m]",
      col=c("white","red","white")[ext3.12])
-abline(v=20.85556,col="black",lwd=2,lty='dashed')
+abline(v=20.85556,col="green2",lwd=3,lty='dashed')
+abline(v=(time_to_strat(LST_to_TST,adm_12km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+abline(v=(time_to_strat(TST_to_HST,adm_12km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+abline(v=(time_to_strat(HST_to_FSST,adm_12km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
 
 #15km
 h3.15 <- p3_var_rate(x = c(0,1,1.25,1.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
@@ -364,7 +441,10 @@ plot(h3.15,main= "Last occurrence of taxa at 15 km",
      ylab = "Last occurrence frequency",
      xlab = "Stratigraphic height [m]",
      col=c("white","red","white")[ext3.15])
-abline(v=19.69094,col="black",lwd=2,lty='dashed')
+abline(v=19.69094,col="green2",lwd=3,lty='dashed')
+abline(v=(time_to_strat(LST_to_TST,adm_15km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+abline(v=(time_to_strat(TST_to_HST,adm_15km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+abline(v=(time_to_strat(HST_to_FSST,adm_15km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
 
 ############### Scenario 4 Falling Stage System Tract
 ### time: 2.75 - 3.25 Myr       # Shifted: 1.5 - 2 Myr
@@ -384,7 +464,10 @@ plot(h4.4,main= "Last occurrence of taxa at 4 km",
      ylab = "Last occurrence frequency",
      xlab = "Stratigraphic height [m]",
      col=c("white","red","white")[ext4.4])
-  abline(v=97.68081,col="black",lwd=2,lty='dashed')
+  abline(v=97.68081,col="green2",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(LST_to_TST,adm_4km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(TST_to_HST,adm_4km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(HST_to_FSST,adm_4km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
 
 #9km
 h4.9 <- p3_var_rate(x = c(0,1.5,1.75,2,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
@@ -402,7 +485,10 @@ plot(h4.9,main= "Last occurrence of taxa at 9 km",
      ylab = "Last occurrence frequency",
      xlab = "Stratigraphic height [m]",
      col=c("white","red","white")[ext4.9])
-  abline(v=154.2088,col="black",lwd=2,lty='dashed')
+  abline(v=154.2088,col="green2",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(LST_to_TST,adm_9km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(TST_to_HST,adm_9km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(HST_to_FSST,adm_9km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
 
 #12km
 h4.12 <- p3_var_rate(x = c(0,1.5,1.75,2,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
@@ -420,7 +506,10 @@ plot(h4.12,main= "Last occurrence of taxa at 12 km",
      ylab = "Last occurrence frequency",
      xlab = "Stratigraphic height [m]",
      col=c("white","red","white")[ext4.12])
-  abline(v=33.81947,col="black",lwd=2,lty='dashed')
+  abline(v=33.81947,col="green2",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(LST_to_TST,adm_12km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(TST_to_HST,adm_12km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(HST_to_FSST,adm_12km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
 
 #15km
 h4.15 <- p3_var_rate(x = c(0,1.5,1.75,2,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>
@@ -438,20 +527,79 @@ plot(h4.15,main= "Last occurrence of taxa at 15 km",
      ylab = "Last occurrence frequency",
      xlab = "Stratigraphic height [m]",
      col=c("white","red","white")[ext4.15])
-  abline(v=29.49508,col="black",lwd=2,lty='dashed')
+  abline(v=29.49508,col="green2",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(LST_to_TST,adm_15km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(TST_to_HST,adm_15km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+  abline(v=(time_to_strat(HST_to_FSST,adm_15km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+######################################################################
+  
+tp = c(0,0.5,0.75,1,2)                            # points in time
+ext_rate = c(1,1,25,1,1)                          # rate of extinction
+plot(tp,ext_rate,type='l',lwd=3,                  # graph simply showing the extinction
+  main="extinction event",
+  xlab="time",
+  ylab="extinction rate")
 
-#subset
-t = data_kitten$time..Myr.
-h = data_kitten$adm30..m.
-t_mod = t[ t >= 1.25 & t <= 3.25]
-h_mod = h[ t >= 1.25 & t <= 3.25]
-t_mod_shifted = t_mod - min(t_mod)
-h_mod_shifted = h_mod - min(h_mod)
+plot(adm_4km)                                     # 4km plot of age depth model
+abline(v=(LST_to_TST),col="cyan4",lwd=2,lty="dashed")
+abline(v=(TST_to_HST),col="cyan4",lwd=2,lty="dashed")
+abline(v=(HST_to_FSST),col="cyan4",lwd=2,lty="dashed")
+title(main = "age depth model 4km",
+      xlab = "time [Myr]", ylab = "height [m]",
+      cex.main = 1.2)
+text(x=0.21, y=40, "Lowstand 
+     system tract",cex=0.8,col='darkblue',font=3)
+text(x=0.7, y=80, "Transgressive 
+     system tract",cex=0.8,col='darkblue',font=3)
+text(x=1.2, y=20, "Highstand
+     system tract",cex=0.8,col='darkblue',font=3)
+text(x=1.7, y=60, "Falling stage 
+     system tract",cex=0.8,col='darkblue',font=3)
 
+plot(adm_9km)                                     # 9km
+abline(v=(LST_to_TST),col="cyan4",lwd=2,lty="dashed")
+abline(v=(TST_to_HST),col="cyan4",lwd=2,lty="dashed")
+abline(v=(HST_to_FSST),col="cyan4",lwd=2,lty="dashed")
+title(main = "age depth model 9km",
+      xlab = "time [Myr]", ylab = "height [m]",
+      cex.main = 1.2)
+text(x=0.14, y=30, "Lowstand 
+     system tract",cex=0.8,col='darkblue',font=3)
+text(x=0.7, y=50, "Transgressive 
+     system tract",cex=0.8,col='darkblue',font=3)
+text(x=1.2, y=70, "Highstand
+     system tract",cex=0.8,col='darkblue',font=3)
+text(x=1.7, y=90, "Falling stage 
+     system tract",cex=0.8,col='darkblue',font=3)
 
+plot(adm_12km)                                     # 12km
+abline(v=(LST_to_TST),col="cyan4",lwd=2,lty="dashed")
+abline(v=(TST_to_HST),col="cyan4",lwd=2,lty="dashed")
+abline(v=(HST_to_FSST),col="cyan4",lwd=2,lty="dashed")
+title(main = "age depth model 12km",
+      xlab = "time [Myr]", ylab = "height [m]",
+      cex.main = 1.2)
+text(x=0.21, y=40, "Lowstand 
+     system tract",cex=0.8,col='darkblue',font=3)
+text(x=0.7, y=50, "Transgressive 
+     system tract",cex=0.8,col='darkblue',font=3)
+text(x=1.2, y=60, "Highstand
+     system tract",cex=0.8,col='darkblue',font=3)
+text(x=1.7, y=70, "Falling stage 
+     system tract",cex=0.8,col='darkblue',font=3)
 
-
-adm_1km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm2..m.)
-plot(adm_1km); text(2,190,"age depth model at 1km")
-
-strat_to_time(25,adm_12km)
+plot(adm_15km)                                     # 15km
+abline(v=(LST_to_TST),col="cyan4",lwd=2,lty="dashed")
+abline(v=(TST_to_HST),col="cyan4",lwd=2,lty="dashed")
+abline(v=(HST_to_FSST),col="cyan4",lwd=2,lty="dashed")
+title(main = "age depth model 15km",
+      xlab = "time [Myr]", ylab = "height [m]",
+      cex.main = 1.2)
+text(x=0.2, y=15, "Lowstand 
+     system tract",cex=0.8,col='darkblue',font=3)
+text(x=0.72, y=5, "Transgressive 
+     system tract",cex=0.8,col='darkblue',font=3)
+text(x=1.2, y=10, "Highstand
+     system tract",cex=0.8,col='darkblue',font=3)
+text(x=1.7, y=15, "Falling stage 
+     system tract",cex=0.8,col='darkblue',font=3)
