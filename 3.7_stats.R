@@ -84,7 +84,7 @@ plot(w_hiat_no_4km,
      xlab = "LST,TST,HST,FSST",
      ylab = "number of hiatus",
      pch = c(16))
-
+get_completeness(adm_4km)
 get_hiat_no(adm_LST_4km)
 get_hiat_no(adm_TST_4km)
 get_hiat_no(adm_HST_4km)
@@ -325,4 +325,15 @@ plot(w_height,
      pch = c(16))    
 #plot(get_height(adm_15km))
 
+#Total thickness per adm ######################################
+w_thickness <- c()
+for(thickness in adm){
+  v_thickness <- get_total_thickness(thickness)
+  w_thickness <- c(w_thickness,v_thickness)
+}
+plot(w_thickness,
+     main = "total thickness",
+     xlab = "adm km",
+     ylab = "meter",
+     pch = c(16))   
 
