@@ -10,8 +10,8 @@ library(StratPal)
 t = data_kitten$time..Myr.
 t_mod = t[ t >= 1.25 & t <= 3.25]                          # Subset data
 t_mod_shifted = t_mod - min(t_mod)
-###         ###  4 km
-h4 = data_kitten$adm8..m.                                  # 4km
+###         ###  4 km     adm
+h4 = data_kitten$adm8..m.                                  # 4km adm
 h4_mod = h4[ t >= 1.25 & t <= 3.25]
 h4_mod_shifted = h4_mod - min(h4_mod)
 
@@ -19,30 +19,81 @@ adm4_mod = tp_to_adm(t = t_mod, h4_mod)                    # adm modified to sho
 adm_4km = tp_to_adm(t = t_mod_shifted, h4_mod_shifted)     # adm modified & shifted
 plot(adm4_mod)
 plot(adm_4km)
-###         ###  9 km
-h9 = data_kitten$adm18..m.                                  # 9km
+title('4km adm')
+abline(v=(LST_to_TST),col="red",lwd=2,lty='dashed')
+abline(v=(TST_to_HST),col="red",lwd=2,lty='dashed')
+abline(v=(HST_to_FSST),col="red",lwd=2,lty='dashed')
+###         ###  9 km       adm
+h9 = data_kitten$adm18..m.                                  # 9km adm
 h9_mod = h9[ t >= 1.25 & t <= 3.25]
 h9_mod_shifted = h9_mod - min(h9_mod)
 
 adm9_mod = tp_to_adm(t = t_mod, h9_mod)                    # adm modified to show 1.25-3.25 Myr
 adm_9km = tp_to_adm(t = t_mod_shifted, h9_mod_shifted)     # adm modified & shifted
 plot(adm_9km)
-###         ###  12 km
-h12 = data_kitten$adm24..m.                                # 12km
+title('9km adm')
+abline(v=(LST_to_TST),col="red",lwd=2,lty='dashed')
+abline(v=(TST_to_HST),col="red",lwd=2,lty='dashed')
+abline(v=(HST_to_FSST),col="red",lwd=2,lty='dashed')
+###test 10km adm
+h10 = data_kitten$adm20..m.                                # 10km adm
+h10_mod = h10[ t >= 1.25 & t <= 3.25]
+h10_mod_shifted = h10_mod - min(h10_mod)
+adm10_mod = tp_to_adm(t = t_mod, h10_mod)                  
+adm_10km = tp_to_adm(t = t_mod_shifted, h10_mod_shifted)   
+plot(adm_10km)
+title('10km adm')
+abline(v=(LST_to_TST),col="red",lwd=2,lty='dashed')
+abline(v=(TST_to_HST),col="red",lwd=2,lty='dashed')
+abline(v=(HST_to_FSST),col="red",lwd=2,lty='dashed')
+###test 11km adm
+h11 = data_kitten$adm22..m.                                # 11km adm
+h11_mod = h11[ t >= 1.25 & t <= 3.25]
+h11_mod_shifted = h11_mod - min(h11_mod)
+adm11_mod = tp_to_adm(t = t_mod, h11_mod)                  
+adm_11km = tp_to_adm(t = t_mod_shifted, h11_mod_shifted)   
+plot(adm_11km)
+title('11km adm')
+abline(v=(LST_to_TST),col="red",lwd=2,lty='dashed')
+abline(v=(TST_to_HST),col="red",lwd=2,lty='dashed')
+abline(v=(HST_to_FSST),col="red",lwd=2,lty='dashed')
+###         ###  12 km    adm
+h12 = data_kitten$adm24..m.                                # 12km adm
 h12_mod = h12[ t >= 1.25 & t <= 3.25]
 h12_mod_shifted = h12_mod - min(h12_mod)
 
 adm12_mod = tp_to_adm(t = t_mod, h12_mod)                  # adm modified to show 1.25-3.25 Myr
 adm_12km = tp_to_adm(t = t_mod_shifted, h12_mod_shifted)   # adm modified & shifted
 plot(adm_12km)
-###         ###  15 km
-h15 = data_kitten$adm30..m.                                # 15km
+title('12km adm')
+abline(v=(LST_to_TST),col="red",lwd=2,lty='dashed')
+abline(v=(TST_to_HST),col="red",lwd=2,lty='dashed')
+abline(v=(HST_to_FSST),col="red",lwd=2,lty='dashed')
+###         ### 13 km     adm
+h13 = data_kitten$adm26..m.                                # 13km adm
+h13_mod = h13[ t >= 1.25 & t <= 3.25]
+h13_mod_shifted = h13_mod - min(h13_mod)
+
+adm13_mod = tp_to_adm(t = t_mod, h13_mod)                  # adm modified to show 1.25-3.25 Myr
+adm_13km = tp_to_adm(t = t_mod_shifted, h13_mod_shifted)   # adm modified & shifted
+plot(adm_13km)
+title('13km adm')
+abline(v=(LST_to_TST),col="red",lwd=2,lty='dashed')
+abline(v=(TST_to_HST),col="red",lwd=2,lty='dashed')
+abline(v=(HST_to_FSST),col="red",lwd=2,lty='dashed')
+###         ###  15 km    adm
+h15 = data_kitten$adm30..m.                                # 15km adm
 h15_mod = h15[ t >= 1.25 & t <= 3.25]
 h15_mod_shifted = h15_mod - min(h15_mod)
 
 adm15_mod = tp_to_adm(t = t_mod, h15_mod)                  # adm modified to show 1.25-3.25 Myr
 adm_15km = tp_to_adm(t = t_mod_shifted, h15_mod_shifted)   # adm modified & shifted
-plot(adm_15km)
+plot(adm_15km,lwd_destr = 0)
+title('15km adm')
+abline(v=(LST_to_TST),col="red",lwd=2,lty='dashed')
+abline(v=(TST_to_HST),col="red",lwd=2,lty='dashed')
+abline(v=(HST_to_FSST),col="red",lwd=2,lty='dashed')
+
 ### example of previous adm code:
 ## adm_6km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm12..m.)
 
@@ -81,11 +132,6 @@ abline(v=(time_to_strat(LST_to_TST,adm_4km,destructive=FALSE)),col="red",lwd=2,l
 abline(v=(time_to_strat(TST_to_HST,adm_4km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
 abline(v=(time_to_strat(HST_to_FSST,adm_4km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
 strat_to_time(7.5,adm_4km)
-plot(adm_4km)
-title('4km adm')
-abline(v=(LST_to_TST),col="red",lwd=2,lty='dashed')
-abline(v=(TST_to_HST),col="red",lwd=2,lty='dashed')
-abline(v=(HST_to_FSST),col="red",lwd=2,lty='dashed')
 
 ### Fossil abundance at adm_9km
 p3(rate = 500, from = min_time(adm_9km), to = max_time(adm_9km)) |>    # constant rate in time domain
@@ -101,11 +147,6 @@ abline(v=(time_to_strat(TST_to_HST,adm_9km,destructive=FALSE)),col="red",lwd=2,l
 abline(v=(time_to_strat(HST_to_FSST,adm_9km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
 time_to_strat(0.25,adm_9km,destructive=FALSE)
 abline(v=(5.515),col="coral",lwd=3,lty='dashed')
-plot(adm_9km)
-title('9km adm')
-abline(v=(LST_to_TST),col="red",lwd=2,lty='dashed')
-abline(v=(TST_to_HST),col="red",lwd=2,lty='dashed')
-abline(v=(HST_to_FSST),col="red",lwd=2,lty='dashed')
 
 ### Fossil abundance at adm_12km
 p3(rate = 500, from = min_time(adm_12km), to = max_time(adm_12km)) |>  # constant rate in time domain
@@ -119,12 +160,6 @@ p3(rate = 500, from = min_time(adm_12km), to = max_time(adm_12km)) |>  # constan
 abline(v=(time_to_strat(LST_to_TST,adm_12km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
 abline(v=(time_to_strat(TST_to_HST,adm_12km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
 abline(v=(time_to_strat(HST_to_FSST,adm_12km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
-plot(adm_12km)
-title('12km adm')
-abline(v=(LST_to_TST),col="red",lwd=2,lty='dashed')
-abline(v=(TST_to_HST),col="red",lwd=2,lty='dashed')
-abline(v=(HST_to_FSST),col="red",lwd=2,lty='dashed')
-
 
 ### Fossil abundance at adm_15km
 p3(rate = 500, from = min_time(adm_15km), to = max_time(adm_15km)) |>  # constant rate in time domain
@@ -138,11 +173,7 @@ p3(rate = 500, from = min_time(adm_15km), to = max_time(adm_15km)) |>  # constan
 abline(v=(time_to_strat(LST_to_TST,adm_15km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
 abline(v=(time_to_strat(TST_to_HST,adm_15km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
 abline(v=(time_to_strat(HST_to_FSST,adm_15km,destructive=FALSE)),col="red",lwd=2,lty='dashed')
-plot(adm_15km)
-title('15km adm')
-abline(v=(LST_to_TST),col="red",lwd=2,lty='dashed')
-abline(v=(TST_to_HST),col="red",lwd=2,lty='dashed')
-abline(v=(HST_to_FSST),col="red",lwd=2,lty='dashed')
+
 ########## Eustatic Sea Level
 AMP1 = 15
 PER1 = 2
@@ -603,3 +634,4 @@ text(x=1.2, y=10, "Highstand
      system tract",cex=0.8,col='darkblue',font=3)
 text(x=1.7, y=15, "Falling stage 
      system tract",cex=0.8,col='darkblue',font=3)
+
