@@ -7,7 +7,6 @@ library(admtools)
 library(StratPal)
 
 #ADM's: 500m:500m:15km
-# Computer name "3.6"
 adm_1km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm2..m.)
 adm_2km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm4..m.)
 adm_3km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm6..m.)
