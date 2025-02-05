@@ -32,7 +32,7 @@ adm_20km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm40..m.)
 adm <- list(adm_1km,adm_2km,adm_3km,adm_4km,adm_5km,adm_6km,adm_7km,adm_8km,
             adm_9km,adm_10km,adm_11km,adm_12km,adm_13km,adm_14km,adm_15km,
             adm_16km,adm_17km,adm_18km,adm_19km,adm_20km)
-
+df<-adm
 t = data_kitten$time..Myr.
 ######################################### 4km         system tract isolated
 LST = t[ t >= 1.25 & t <= 1.75]                          #LST
