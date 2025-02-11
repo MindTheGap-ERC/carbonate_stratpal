@@ -25,17 +25,16 @@ Base R (version >= 4.0) and the RStudio IDE.
 ## Repository structure  
 
 * _code_ : folder with R code
-  * _make_table_and_plots.R_ : script to generate table 1 and figures
-  * _make_maps.R_ : script to generate the maps
-  * _download_data.R_ : script to download data from Zenodo
-* _data_ : folder for raw data. Initially empty, will be filled with downloaded data after the script in `code/download_data.R` is run.
-* _figs_ : folder for figures. Initially empty
+  * _make_figures.R_ : script to generate all figures
+  * _package_installation.R_ : script to install the used packages and download data
+  * _stats_on_data.R_ : script to calculate statistics and additional figures
+* _data_ : folder with raw data from CarboKitten.
+* _figs_ : folder for all used figures figures. 
 * _renv_ : folder used by the `renv` package
-* _.gitignore_ : untracked files
-* _.Rprofile_ : session info
-* _messinian_db.Rproj_ : RProject file
-* _README_ : README file
-* _renv.lock_ : lock file for `renv` package
+* _.gitignore_ : untracked files.
+* _LICENSE_ : licence of research.
+* _README_ : README file.
+
 
 ## References
 
