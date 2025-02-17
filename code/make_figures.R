@@ -1,4 +1,4 @@
-data_kitten = read.csv("C:/Users/sidne/OneDrive/Documenten/AA Utrecht/Guided research/Git repositories/Stratigraphic Paleobiology for Phenotypic Evolution/CarboKitten.jl/data/output/alcap-example3_adm.csv")
+data_kitten = read.csv("C:/Users/sidne/OneDrive/Documenten/AA Utrecht/Guided research/Git repositories/Stratigraphic Paleobiology for Phenotypic Evolution/CarboKitten.jl/data/output/alcap-example5_adm.csv")
 #grid: 20km x 50km
 #time: 4 Myr
 #Sea level from Holland & Patzkowsky 2015
@@ -10,6 +10,10 @@ library(StratPal)
 t = data_kitten$time..Myr.
 t_mod = t[ t >= 1.25 & t <= 3.25]                          # Subset data
 t_mod_shifted = t_mod - min(t_mod)
+#Changes of system tracts
+LST_to_TST = 0.5      # Lowstand system tract to Transgressive system tract
+TST_to_HST = 1        # Transgressive system tract to Highstand system tract
+HST_to_FSST = 1.5     # Highstand system tract to Falling Stage system tract
 ###         ###  4 km     adm
 h4 = data_kitten$adm8..m.                                  # 4km adm
 h4_mod = h4[ t >= 1.25 & t <= 3.25]
@@ -86,7 +90,6 @@ h12_mod_shifted = h12_mod - min(h12_mod)
 adm12_mod = tp_to_adm(t = t_mod, h12_mod)                  # adm modified to show 1.25-3.25 Myr
 adm_12km = tp_to_adm(t = t_mod_shifted, h12_mod_shifted)   # adm modified & shifted
 plot(adm_12km)
-title('12km adm')
 abline(v=(LST_to_TST),col="cyan4",lwd=3,lty='dashed')
 abline(v=(TST_to_HST),col="cyan4",lwd=3,lty='dashed')
 abline(v=(HST_to_FSST),col="cyan4",lwd=3,lty='dashed')
@@ -101,6 +104,12 @@ text(x=1.2, y=60, "Highstand
      system tract",cex=0.8,col='darkblue',font=3)
 text(x=1.7, y=70, "Falling stage 
      system tract",cex=0.8,col='darkblue',font=3)
+
+time_to_strat(0.5,adm_9km,destructive=FALSE)
+time_to_strat(1,adm_9km,destructive=FALSE)
+time_to_strat(1.5,adm_9km,destructive=FALSE)
+time_to_strat(2,adm_4km,destructive=FALSE)
+
 ###         ### 13 km     adm
 h13 = data_kitten$adm26..m.                                # 13km adm
 h13_mod = h13[ t >= 1.25 & t <= 3.25]
@@ -156,11 +165,6 @@ seq(from = min_time(adm_4km), to = max_time(adm_4km), by = 0.01) |> # sample eve
        xlab = paste0("Stratigraphic height [", get_L_unit(adm_4km), "]"),
        ylab = "Trait value",
        main = "Trait evolution 4 km from shore")
-
-#Changes of system tracts
-LST_to_TST = 0.5      # Lowstand system tract to Transgressive system tract
-TST_to_HST = 1        # Transgressive system tract to Highstand system tract
-HST_to_FSST = 1.5     # Highstand system tract to Falling Stage system tract
 
 ### Fossil abundance at adm_4km
 p3(rate = 500, from = min_time(adm_4km), to = max_time(adm_4km)) |>    # constant rate in time domain
@@ -698,7 +702,7 @@ text(x=14, y=55, "TST",cex=0.9,col='darkblue',font=3)
 text(x=21.5, y=55, "HST",cex=0.9,col='darkblue',font=3)
 text(x=30, y=55, "FSST",cex=0.9,col='darkblue',font=3)
 ######################################################################
-  
+# Shape of extinction event
 tp = c(0,0.5,0.75,1,2)                            # points in time
 ext_rate = c(1,1,25,1,1)                          # rate of extinction
 plot(tp,ext_rate,type='l',lwd=3,                  # graph simply showing the extinction
@@ -706,4 +710,5 @@ plot(tp,ext_rate,type='l',lwd=3,                  # graph simply showing the ext
   xlab="time [Myr]",
   ylab="extinction rate [species/m]")
 
+########## Water depth
 
