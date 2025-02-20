@@ -30,7 +30,6 @@ Base R (version >= 4.0) and the RStudio IDE.
   * _stats_on_data.R_ : script to calculate statistics and additional figures
 * _data_ : folder with raw data from CarboKitten.
 * _figs_ : folder for all used figures figures. 
-* _renv_ : folder used by the `renv` package
 * _.gitignore_ : untracked files.
 * _LICENSE_ : licence of research.
 * _README_ : README file.
