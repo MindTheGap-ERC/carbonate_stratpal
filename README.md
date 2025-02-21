@@ -1,4 +1,7 @@
 # lineage_ecol
+
+The supplementary material for "title of research". All code is included to produce this research's figures, plots and statistics. Not all produced figures are presented in the final paper. Additional figures are included in this repository.
+
 ## Authors
 
 __Sidney Bickerton__  (maintainer, contributor)  
