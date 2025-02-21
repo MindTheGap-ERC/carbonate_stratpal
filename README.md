@@ -21,6 +21,7 @@ Base R (version >= 4.0) and the RStudio IDE.
 
 ## Reproduction
 
+To reproduce the data, first use run.jl in julia. Then run package_installation.R in Rstudio to install admtools and StratPal which makes you able to simulate age depth models and the phenotypic evolution behind them. Then run make_figures which uses the raw data from CarboKitten to produce all the figures used in this research. 
 
 ## Repository structure  
 
@@ -28,6 +29,8 @@ Base R (version >= 4.0) and the RStudio IDE.
   * _make_figures.R_ : script to generate all figures
   * _package_installation.R_ : script to install the used packages and download data
   * _stats_on_data.R_ : script to calculate statistics and additional figures
+  * _run.jl_ : creates the raw data in a .csv file for the carbonate platform using CarboKitten
+  * _plot.jl_ : creates a plot of the carbonate platform using CarboKitten
 * _data_ : folder with raw data from CarboKitten.
 * _figs_ : folder for all used figures figures. 
 * _.gitignore_ : untracked files.
