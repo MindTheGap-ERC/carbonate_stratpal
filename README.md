@@ -49,7 +49,10 @@ This repository uses data from
 It uses sea level data from 
 * Holland, S. M., & Patzkowsky, M. E. (2015). The stratigraphy of mass extinction. Palaeontology, 58(5), 903-924.
 
+## Copyright
 
-## Funding
+Copyright 2024-2025 The Netherlands eScience Center and Utrecht University
 
-This work was supported by Utrecht University.
+## Funding information
+
+Funded by the European Union (ERC, MindTheGap, StG project no 101041077). Views and opinions expressed are however those of the author(s) only and do not necessarily reflect those of the European Union or the European Research Council. Neither the European Union nor the granting authority can be held responsible for them.
