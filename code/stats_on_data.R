@@ -1,7 +1,5 @@
-data_kitten = read.csv("C:/Users/sidne/OneDrive/Documenten/AA Utrecht/Guided research/Git repositories/Stratigraphic Paleobiology for Phenotypic Evolution/CarboKitten.jl/data/output/alcap-example2_adm.csv")
-#grid: 20km x 50km
-#time: 4 Myr
-#Sea level from Holland & Patzkowsky 2015
+data_kitten = read.csv("C:/Users/sidne/OneDrive/Documenten/AA Utrecht/Guided research/Git repositories/Stratigraphic Paleobiology for Phenotypic Evolution/lineage_ecol/data/alcap-example7_adm.csv")
+water_depth = read.csv("C:/Users/sidne/OneDrive/Documenten/AA Utrecht/Guided research/Git repositories/Stratigraphic Paleobiology for Phenotypic Evolution/lineage_ecol/data/alcap-example7_wd.csv")
 
 library(admtools)
 library(StratPal)
@@ -275,6 +273,12 @@ plot(w_completeness,
      ylab = "percentage",
      pch = c(16))
 
+#completeness average basin
+(get_completeness(adm_15km)+get_completeness(adm_16km)+get_completeness(adm_17km)+get_completeness(adm_18km)+get_completeness(adm_19km)+get_completeness(adm_20km))/6
+#completeness average before slope
+(get_completeness(adm_1km)+get_completeness(adm_2km)+get_completeness(adm_3km)+get_completeness(adm_4km)+get_completeness(adm_5km)+get_completeness(adm_6km)+get_completeness(adm_7km)+
+  get_completeness(adm_8km)+get_completeness(adm_9km)+get_completeness(adm_10km)+get_completeness(adm_11km))/11
+
 #Number of gaps per adm ##############################
 w_hiat_no <- c()
 for(hiat_no in adm){
@@ -286,6 +290,11 @@ plot(w_hiat_no,
      xlab = "km",
      ylab = "number of gaps",
      pch = c(16))
+#hiat_no average basin
+(get_hiat_no(adm_15km)+get_hiat_no(adm_16km)+get_hiat_no(adm_17km)+get_hiat_no(adm_18km)+get_hiat_no(adm_19km)+get_hiat_no(adm_20km))/6
+#hiat_no average before slope
+(get_hiat_no(adm_1km)+get_hiat_no(adm_2km)+get_hiat_no(adm_3km)+get_hiat_no(adm_4km)+get_hiat_no(adm_5km)+get_hiat_no(adm_6km)+get_hiat_no(adm_7km)+
+  get_hiat_no(adm_8km)+get_hiat_no(adm_9km)+get_hiat_no(adm_10km)+get_hiat_no(adm_11km))/11
 
 #Average duration of hiatus per adm ##################
 w_hiat_dur <- c()
@@ -298,6 +307,11 @@ plot(w_hiat_dur,
      xlab = "km",
      ylab = "Myr",
      pch = c(16))
+#hiat_duration average basin
+(mean(get_hiat_duration(adm_15km))+mean(get_hiat_duration(adm_16km))+mean(get_hiat_duration(adm_17km))+mean(get_hiat_duration(adm_18km))+mean(get_hiat_duration(adm_19km))+mean(get_hiat_duration(adm_20km)))/6
+#hiat_duration average before slope
+(mean(get_hiat_duration(adm_1km))+mean(get_hiat_duration(adm_2km))+mean(get_hiat_duration(adm_3km))+mean(get_hiat_duration(adm_4km))+mean(get_hiat_duration(adm_5km))+mean(get_hiat_duration(adm_6km))+mean(get_hiat_duration(adm_7km))+
+  mean(get_hiat_duration(adm_8km))+mean(get_hiat_duration(adm_9km))+mean(get_hiat_duration(adm_10km))+mean(get_hiat_duration(adm_11km)))/11
 
 #Total hiatus duration per adm #######################
 w_hiat_sum <- c()
