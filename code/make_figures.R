@@ -226,7 +226,6 @@ w15_mod = w15[ t >= 1.25 & t <= 3.25]                         # modify and shift
 w15_mod_shifted = w15_mod - min(w15_mod)
 wd15_mod = tp_to_adm(t = t_mod, w15_mod)                    
 wd_15km = tp_to_adm(t = t_mod_shifted, w15_mod_shifted)     
-par(new=TRUE)
 plot(wd_15km)                                                 # plot
 title(main="water depth at 15 km",
       ylab="[m]",
@@ -255,10 +254,10 @@ qplot(ext0.4, geom="histogram",binwidth=1) + coord_flip() + geom_vline(
     xintercept=time_to_strat(TST_to_HST,adm_4km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
       xintercept=time_to_strat(HST_to_FSST,adm_4km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) +
   labs(title = "4 km with constant extinction rate (sc.1)",x = "stratigraphic height [m]",y = "Last occurrence") +
-  geom_text(aes(x=10,y=110,label="LST"),color="deepskyblue3",size=6) + 
-  geom_text(aes(x=50,y=110,label="TST"),color="deepskyblue3",size=6) +
-  geom_text(aes(x=85,y=110,label="HST"),color="deepskyblue3",size=6) +
-  geom_text(aes(x=100,y=110,label="FSST"),color="deepskyblue3",size=6)
+  geom_text(aes(x=10,y=110,label="LST"),color="deepskyblue3",size=4) + 
+  geom_text(aes(x=50,y=110,label="TST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=85,y=110,label="HST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=102,y=110,label="FSST"),color="deepskyblue3",size=4)
 
 
 ### 9km        constant extinction rate
@@ -281,10 +280,10 @@ qplot(ext0.9, geom="histogram",binwidth=1) + coord_flip() + geom_vline(
     xintercept=time_to_strat(TST_to_HST,adm_9km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
       xintercept=time_to_strat(HST_to_FSST,adm_9km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) +
   labs(title = "9 km with constant extinction rate (sc.1)",x = "stratigraphic height [m]",y = "Last occurrence") +
-  geom_text(aes(x=0,y=100,label="LST"),color="deepskyblue3",size=6) + 
-  geom_text(aes(x=70,y=100,label="TST"),color="deepskyblue3",size=6) +
-  geom_text(aes(x=140,y=100,label="HST"),color="deepskyblue3",size=6) +
-  geom_text(aes(x=160,y=100,label="FSST"),color="deepskyblue3",size=6)
+  geom_text(aes(x=0,y=100,label="LST"),color="deepskyblue3",size=4) + 
+  geom_text(aes(x=70,y=100,label="TST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=140,y=100,label="HST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=160,y=100,label="FSST"),color="deepskyblue3",size=4)
 
 ### 11km      constant extinction rate
 ext0.11 <- p3(rate = 500, from = min_time(adm_11km), to = max_time(adm_11km)) |>  # constant rate in time domain
@@ -313,20 +312,20 @@ qplot(ext0.11, geom="histogram",binwidth=1) + coord_flip() + geom_vline(
 
 ### 12km     constant extinction rate
 p3(rate = 500, from = min_time(adm_12km), to = max_time(adm_12km)) |>  # constant rate in time domain
-  time_to_strat(adm_12km, destructive = FALSE) |>                      # transform into depth domain
-  hist(main = "Last occurrence at 12 km with constant extinction rate ",
-       ylab = "Last occurrence per meter",
-       xlab = "Stratigraphic height [m]",
-       breaks = seq(from = min_height(adm_12km), to = max_height(adm_12km), length.out = 100),
-       col="white")
-abline(v=(time_to_strat(LST_to_TST,adm_12km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
-abline(v=(time_to_strat(TST_to_HST,adm_12km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
-abline(v=(time_to_strat(HST_to_FSST,adm_12km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
-text(x=5, y=30, "LST",cex=0.9,col='darkblue',font=3)
-text(x=15, y=30, "TST",cex=0.9,col='darkblue',font=3)
-text(x=24, y=30, "HST",cex=0.9,col='darkblue',font=3)
-text(x=32, y=30, "FSST",cex=0.9,col='darkblue',font=3)
-(time_to_strat(HST_to_FSST,adm_12km,destructive=FALSE))
+  time_to_strat(adm_12km, destructive = FALSE)                         # transform into depth domain
+  #hist(main = "Last occurrence at 12 km with constant extinction rate ",
+  #    ylab = "Last occurrence per meter",
+  #    xlab = "Stratigraphic height [m]",
+  #    breaks = seq(from = min_height(adm_12km), to = max_height(adm_12km), length.out = 100),
+  #    col="white")
+#abline(v=(time_to_strat(LST_to_TST,adm_12km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+#abline(v=(time_to_strat(TST_to_HST,adm_12km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+#abline(v=(time_to_strat(HST_to_FSST,adm_12km,destructive=FALSE)),col="cyan4",lwd=3,lty='dashed')
+#text(x=5, y=30, "LST",cex=0.9,col='darkblue',font=3)
+#text(x=15, y=30, "TST",cex=0.9,col='darkblue',font=3)
+#text(x=24, y=30, "HST",cex=0.9,col='darkblue',font=3)
+#text(x=32, y=30, "FSST",cex=0.9,col='darkblue',font=3)
+#(time_to_strat(HST_to_FSST,adm_12km,destructive=FALSE))
 
 ### 15km      constant extinction rate
 ext0.15 <- p3(rate = 500, from = min_time(adm_15km), to = max_time(adm_15km)) |>  # constant rate in time domain
