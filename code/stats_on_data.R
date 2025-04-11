@@ -31,7 +31,7 @@ adm <- list(adm_1km,adm_2km,adm_3km,adm_4km,adm_5km,adm_6km,adm_7km,adm_8km,
             adm_16km,adm_17km,adm_18km,adm_19km,adm_20km)
 df<-adm
 t = data_kitten$time..Myr.
-######################################### 4km         system tract isolated
+######################################### 4km         systems tract isolated
 LST = t[ t >= 1.25 & t <= 1.75]                          #LST
 LST_shifted = LST - min(LST)
 
@@ -110,8 +110,6 @@ h9_TST_shifted = h9_TST - min(h9_LST)
 adm_TST_9km = tp_to_adm(t = TST_shifted, h9_TST_shifted)
 plot(adm_TST_9km)
 title('9km TST adm')  
-abline(v=(0.75),col="coral",lwd=2,lty='dashed')
-abline(v=(0.76),col="coral",lwd=2,lty='dashed')
 
 h9_HST = h9[ t >= 2.25 & t <= 2.75]                       #HST 9km
 h9_HST_shifted = h9_HST - min(h9_LST)
@@ -147,58 +145,58 @@ sum(get_hiat_duration(adm_TST_9km))
 sum(get_hiat_duration(adm_HST_9km))
 sum(get_hiat_duration(adm_FSST_9km))
 
-###################################12km      system tracts isolated 
-h12 = data_kitten$adm24..m.
+###################################11km      system tracts isolated 
+h11 = data_kitten$adm22..m.
 
-h12_LST = h12[ t >= 1.25 & t <= 1.75]                       #LST 12km
-h12_LST_shifted = h12_LST - min(h12_LST)
-adm_LST_12km = tp_to_adm(t = LST_shifted, h12_LST_shifted)
-plot(adm_LST_12km)
-title('12km LST adm')
+h11_LST = h11[ t >= 1.25 & t <= 1.75]                       #LST 11km
+h11_LST_shifted = h11_LST - min(h11_LST)
+adm_LST_11km = tp_to_adm(t = LST_shifted, h11_LST_shifted)
+plot(adm_LST_11km)
+title('11km LST adm')
 
-h12_TST = h12[ t >= 1.75 & t <= 2.25]                       #TST 12km
-h12_TST_shifted = h12_TST - min(h12_LST)
-adm_TST_12km = tp_to_adm(t = TST_shifted, h12_TST_shifted)
-plot(adm_TST_12km)
-title('12km TST adm')
+h11_TST = h11[ t >= 1.75 & t <= 2.25]                       #TST 11km
+h11_TST_shifted = h11_TST - min(h11_LST)
+adm_TST_11km = tp_to_adm(t = TST_shifted, h11_TST_shifted)
+plot(adm_TST_11km)
+title('11km TST adm')
 
-h12_HST = h12[ t >= 2.25 & t <= 2.75]                       #HST 12km
-h12_HST_shifted = h12_HST - min(h12_LST)
-adm_HST_12km = tp_to_adm(t = HST_shifted, h12_HST_shifted)
-plot(adm_HST_12km)
-title('12km HST adm')
+h11_HST = h11[ t >= 2.25 & t <= 2.75]                       #HST 11km
+h11_HST_shifted = h11_HST - min(h11_LST)
+adm_HST_11km = tp_to_adm(t = HST_shifted, h11_HST_shifted)
+plot(adm_HST_11km)
+title('11km HST adm')
 
-h12_FSST = h12[ t >= 2.75 & t <= 3.25]                      #FSST 12km
-h12_FSST_shifted = h12_FSST - min(h12_LST)
-adm_FSST_12km = tp_to_adm(t = FSST_shifted, h12_FSST_shifted)
-plot(adm_FSST_12km)
-title('12km FSST adm')
+h11_FSST = h11[ t >= 2.75 & t <= 3.25]                      #FSST 11km
+h11_FSST_shifted = h11_FSST - min(h11_LST)
+adm_FSST_11km = tp_to_adm(t = FSST_shifted, h11_FSST_shifted)
+plot(adm_FSST_11km)
+title('11km FSST adm')
 
-adm_st_12km <- list(adm_LST_12km,adm_TST_12km,adm_HST_12km,adm_FSST_12km)
+adm_st_11km <- list(adm_LST_11km,adm_TST_11km,adm_HST_11km,adm_FSST_11km)
 
-w_hiat_no_12km <- c()                          # Number of gaps per System Track at 12km.
-for(hiat_no_12km in adm_st_12km){
-  v_hiat_no_12km <- get_hiat_no(hiat_no_12km)
-  w_hiat_no_12km <- c(w_hiat_no_12km,v_hiat_no_12km)
+w_hiat_no_11km <- c()                          # Number of gaps per System Track at 11km.
+for(hiat_no_11km in adm_st_11km){
+  v_hiat_no_11km <- get_hiat_no(hiat_no_11km)
+  w_hiat_no_11km <- c(w_hiat_no_12km,v_hiat_no_11km)
 }
-plot(w_hiat_no_12km,
-     main = "number of hiatus per system tract in 12km adm",
+plot(w_hiat_no_11km,
+     main = "number of hiatus per system tract in 11km adm",
      xlab = "LST,TST,HST,FSST",
      ylab = "number of hiatus",
      pch = c(16))
 
-get_completeness(adm_LST_12km)
-get_completeness(adm_TST_12km)
-get_completeness(adm_HST_12km)
-get_completeness(adm_FSST_12km)
-sum(get_hiat_duration(adm_LST_12km))
-sum(get_hiat_duration(adm_TST_12km))
-sum(get_hiat_duration(adm_HST_12km))
-sum(get_hiat_duration(adm_FSST_12km))
-get_hiat_no(adm_LST_12km)
-get_hiat_no(adm_TST_12km)
-get_hiat_no(adm_HST_12km)
-get_hiat_no(adm_FSST_12km)
+get_completeness(adm_LST_11km)
+get_completeness(adm_TST_11km)
+get_completeness(adm_HST_11km)
+get_completeness(adm_FSST_11km)
+sum(get_hiat_duration(adm_LST_11km))
+sum(get_hiat_duration(adm_TST_11km))
+sum(get_hiat_duration(adm_HST_11km))
+sum(get_hiat_duration(adm_FSST_11km))
+get_hiat_no(adm_LST_11km)
+get_hiat_no(adm_TST_11km)
+get_hiat_no(adm_HST_11km)
+get_hiat_no(adm_FSST_11km)
 
 ###################################15km      system tracts isolated 
 h15 = data_kitten$adm30..m.
@@ -273,11 +271,13 @@ plot(w_completeness,
      ylab = "percentage",
      pch = c(16))
 
-#completeness average basin
-(get_completeness(adm_15km)+get_completeness(adm_16km)+get_completeness(adm_17km)+get_completeness(adm_18km)+get_completeness(adm_19km)+get_completeness(adm_20km))/6
-#completeness average before slope
-(get_completeness(adm_1km)+get_completeness(adm_2km)+get_completeness(adm_3km)+get_completeness(adm_4km)+get_completeness(adm_5km)+get_completeness(adm_6km)+get_completeness(adm_7km)+
-  get_completeness(adm_8km)+get_completeness(adm_9km)+get_completeness(adm_10km)+get_completeness(adm_11km))/11
+#completeness average _ interior
+(get_completeness(adm_1km)+get_completeness(adm_2km)+get_completeness(adm_3km)+get_completeness(adm_4km)+get_completeness(adm_5km))/5
+#completeness average _ all states
+(get_completeness(adm_7km)+get_completeness(adm_8km)+get_completeness(adm_9km)+get_completeness(adm_10km)+get_completeness(adm_11km))/5
+#completeness average _ basin
+(get_completeness(adm_13km)+get_completeness(adm_14km)+get_completeness(adm_15km)+get_completeness(adm_16km)+get_completeness(adm_17km)+get_completeness(adm_18km)+get_completeness(adm_19km)+get_completeness(adm_20km))/8
+
 
 #Number of gaps per adm ##############################
 w_hiat_no <- c()
@@ -290,11 +290,12 @@ plot(w_hiat_no,
      xlab = "km",
      ylab = "number of gaps",
      pch = c(16))
-#hiat_no average basin
-(get_hiat_no(adm_15km)+get_hiat_no(adm_16km)+get_hiat_no(adm_17km)+get_hiat_no(adm_18km)+get_hiat_no(adm_19km)+get_hiat_no(adm_20km))/6
-#hiat_no average before slope
-(get_hiat_no(adm_1km)+get_hiat_no(adm_2km)+get_hiat_no(adm_3km)+get_hiat_no(adm_4km)+get_hiat_no(adm_5km)+get_hiat_no(adm_6km)+get_hiat_no(adm_7km)+
-  get_hiat_no(adm_8km)+get_hiat_no(adm_9km)+get_hiat_no(adm_10km)+get_hiat_no(adm_11km))/11
+#hiat_no average _ platform interior
+(get_hiat_no(adm_1km)+get_hiat_no(adm_2km)+get_hiat_no(adm_3km)+get_hiat_no(adm_4km)+get_hiat_no(adm_5km))/5
+#hiat_no average _ all states of platform
+(get_hiat_no(adm_7km)+get_hiat_no(adm_8km)+get_hiat_no(adm_9km)+get_hiat_no(adm_10km)+get_hiat_no(adm_11km))/5
+#hiat_no average _ basin
+(get_hiat_no(adm_13km)+get_hiat_no(adm_14km)+get_hiat_no(adm_15km)+get_hiat_no(adm_16km)+get_hiat_no(adm_17km)+get_hiat_no(adm_18km)+get_hiat_no(adm_19km)+get_hiat_no(adm_20km))/8
 
 #Average duration of hiatus per adm ##################
 w_hiat_dur <- c()
@@ -307,11 +308,12 @@ plot(w_hiat_dur,
      xlab = "km",
      ylab = "Myr",
      pch = c(16))
+#hiat_duration average _ platform interior
+(mean(get_hiat_duration(adm_1km))+mean(get_hiat_duration(adm_2km))+mean(get_hiat_duration(adm_3km))+mean(get_hiat_duration(adm_4km))+mean(get_hiat_duration(adm_5km)))/5
+#hiat_duration average _ all stages of platform
+(mean(get_hiat_duration(adm_6km))+mean(get_hiat_duration(adm_7km))+mean(get_hiat_duration(adm_8km))+mean(get_hiat_duration(adm_9km))+mean(get_hiat_duration(adm_10km))+mean(get_hiat_duration(adm_11km)))/5
 #hiat_duration average basin
-(mean(get_hiat_duration(adm_15km))+mean(get_hiat_duration(adm_16km))+mean(get_hiat_duration(adm_17km))+mean(get_hiat_duration(adm_18km))+mean(get_hiat_duration(adm_19km))+mean(get_hiat_duration(adm_20km)))/6
-#hiat_duration average before slope
-(mean(get_hiat_duration(adm_1km))+mean(get_hiat_duration(adm_2km))+mean(get_hiat_duration(adm_3km))+mean(get_hiat_duration(adm_4km))+mean(get_hiat_duration(adm_5km))+mean(get_hiat_duration(adm_6km))+mean(get_hiat_duration(adm_7km))+
-  mean(get_hiat_duration(adm_8km))+mean(get_hiat_duration(adm_9km))+mean(get_hiat_duration(adm_10km))+mean(get_hiat_duration(adm_11km)))/11
+(mean(get_hiat_duration(adm_13km))+mean(get_hiat_duration(adm_14km))+mean(get_hiat_duration(adm_15km))+mean(get_hiat_duration(adm_16km))+mean(get_hiat_duration(adm_17km))+mean(get_hiat_duration(adm_18km))+mean(get_hiat_duration(adm_19km))+mean(get_hiat_duration(adm_20km)))/8
 
 #Total hiatus duration per adm #######################
 w_hiat_sum <- c()
@@ -336,7 +338,6 @@ plot(w_height,
      xlab = "?",
      ylab = "meter",
      pch = c(16))    
-#plot(get_height(adm_15km))
 
 #Total thickness per adm ######################################
 w_thickness <- c()
