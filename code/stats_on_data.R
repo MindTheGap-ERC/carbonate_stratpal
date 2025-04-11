@@ -1,5 +1,5 @@
-data_kitten = read.csv("C:/Users/sidne/OneDrive/Documenten/AA Utrecht/Guided research/Git repositories/Stratigraphic Paleobiology for Phenotypic Evolution/lineage_ecol/data/alcap-example7_adm.csv")
-water_depth = read.csv("C:/Users/sidne/OneDrive/Documenten/AA Utrecht/Guided research/Git repositories/Stratigraphic Paleobiology for Phenotypic Evolution/lineage_ecol/data/alcap-example7_wd.csv")
+data_kitten = read.csv("data/alcap-example7_adm.csv")
+water_depth = read.csv("data/alcap-example7_wd.csv")
 
 library(admtools)
 library(StratPal)
