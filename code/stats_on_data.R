@@ -3,6 +3,7 @@ water_depth = read.csv("data/alcap-example7_wd.csv")
 
 library(admtools)
 library(StratPal)
+#test
 
 #ADM's: 500m:500m:15km
 adm_1km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm2..m.)
