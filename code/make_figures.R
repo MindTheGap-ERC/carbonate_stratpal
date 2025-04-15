@@ -8,6 +8,7 @@ water_depth = read.csv("data/alcap-example7_wd.csv")
 library(admtools)
 library(StratPal)
 library(ggplot2)
+library(dplyr)
 
 #Changes of system tracts
 LST_to_TST = 0.5      # Lowstand system tract to Transgressive system tract
@@ -41,99 +42,154 @@ t_mod = t[t >= 1.25 & t <= 3.25]                           # Subset data
 t_mod_shifted = t_mod - min(t_mod)
 
 ###  4 km     adm
-h4 = data_kitten$adm8..m.                           
+h4 = data_kitten$adm8..m.      
+plot(h4,type='l')                                           # entire runtime (4 Myr)
 h4_mod = h4[t >= 1.25 & t <= 3.25]                          # modify to show 1.25-3.25 Myr
 h4_mod_shifted = h4_mod - min(h4_mod)                       # shift to 0-2 Myr
 adm4_mod = tp_to_adm(t = t_mod, h4_mod)                    
 adm_4km = tp_to_adm(t = t_mod_shifted, h4_mod_shifted)     
-plot(h4,type='l')
-plot(adm_4km,lwd_acc = 2,lwd_destr = 0)                     # plot                               
-abline(v=(LST_to_TST),col="cyan4",lwd=3,lty="dashed")
-abline(v=(TST_to_HST),col="cyan4",lwd=3,lty="dashed")
-abline(v=(HST_to_FSST),col="cyan4",lwd=3,lty="dashed")
+plot(adm_4km,lwd_acc = 2,lwd_destr = 0)                     # plot 1.25 - 3.25 Myr                              
 title(main = "age depth model 4km",
       xlab = "time [Myr]", ylab = "height [m]",
       cex.main = 1.2)
-text(x=0.21, y=40, "LST",cex=0.8,col='darkblue',font=3)
+abline(v=(LST_to_TST),col="cyan4",lwd=3,lty="dashed")
+abline(v=(TST_to_HST),col="cyan4",lwd=3,lty="dashed")
+abline(v=(HST_to_FSST),col="cyan4",lwd=3,lty="dashed")
+text(x=0.21, y=80, "LST",cex=0.8,col='darkblue',font=3)
 text(x=0.75, y=80, "TST",cex=0.8,col='darkblue',font=3)
 text(x=1.25, y=20, "HST",cex=0.8,col='darkblue',font=3)
-text(x=1.8, y=60, "FSST",cex=0.8,col='darkblue',font=3)
+text(x=1.8, y=20, "FSST",cex=0.8,col='darkblue',font=3)
 
-w4 = water_depth$wd8..m.                                   # 4km water depth (wd)        
-w4_mod = w4[t >= 1.25 & t <= 3.25]                         # modify and shift
+str(adm_4km)
+
+adm_4km_h <- adm_4km$h        # Extract height from adm_4km
+adm_4km_t <- adm_4km$t        # and time
+
+df_adm_4km <- data.frame(T_Myr = adm_4km_t,H_4km = adm_4km_h)   # Create a data frame
+
+df_adm_4km <- df_adm_4km %>%                 # Calculate height difference between data points and assign line thickness
+  mutate(diff_H_4km = c(NA, diff(H_4km)),
+    line_width = ifelse(diff_H_4km == 0, 0.1, 2))
+
+df_segments <- df_adm_4km %>%                # Prepare data for plotting with geom_segment
+  mutate(                                    # Each row represents a segment from point i to i+1
+    T_Myr_next = lead(T_Myr),
+    H_4km_next = lead(H_4km)
+  ) %>% filter(!is.na(T_Myr_next))           # Remove the last row (no next point)
+
+# Line plot
+ggplot(df_segments) + geom_segment(aes(x=T_Myr, y=H_4km, xend=T_Myr_next,
+    yend=H_4km_next, size=line_width)) + 
+  scale_size_identity() + theme_minimal() + 
+  labs(x="Time [Myr]", y="Stratigraphic heigh [m]", 
+       title="Age Depth Model at 4 km") + 
+  geom_vline(xintercept=LST_to_TST,color="cyan4", linetype="dashed",size=1) + 
+  geom_vline(xintercept=TST_to_HST,color="cyan4", linetype="dashed",size=1) + 
+  geom_vline(xintercept=HST_to_FSST,color="cyan4",linetype="dashed",size=1) +
+  geom_text(aes(x=0.25,y=80,label="LST"),color="darkblue",size=4) + 
+  geom_text(aes(x=0.75,y=80,label="TST"),color="darkblue",size=4) +
+  geom_text(aes(x=1.25,y=20,label="HST"),color="darkblue",size=4) +
+  geom_text(aes(x=1.75,y=20,label="FSST"),color="darkblue",size=4)
+
+w4 = water_depth$wd8..m.                                    # Water Depth (wd) at 4 km
+plot(w4,type='l',main="complete wd 4km",                    # Entire runtime (4 Myr)
+     xlab="time [Myr]",ylab="[m]")
+w4_mod = w4[t >= 1.25 & t <= 3.25]                          # modify and shift
 w4_mod_shifted = w4_mod - min(w4_mod)
 wd4_mod = tp_to_adm(t = t_mod, w4_mod)                    
-wd_4km = tp_to_adm(t = t_mod_shifted, w4_mod_shifted)       
-plot(wd_4km)                                               # plot 2 Myr
+wd_4km = tp_to_adm(t = t_mod_shifted, w4_mod_shifted) 
+plot(wd_4km)                                                # 1.25 - 3.25 Myr
 title(main="water depth at 4km",
       ylab="[m]",
       xlab="time [Myr]")
-plot(w4,type='l',main="complete wd 4km",                   # 4 Myr
-     xlab="time [Myr]",ylab="[m]")
 
 ###  6 km       adm
 h6 = data_kitten$adm12..m. 
-plot(h6,type='l')
-###  7 km       adm
-h7 = data_kitten$adm14..m. 
-plot(h7,type='l')
+plot(h6,type='l')                                           # Entire runtime (4 Myr)
+###  7 km       adm                                       
+h7 = data_kitten$adm14..m.                                 
+plot(h7,type='l')                                           # Entire runtime (4 Myr)
 ###  8 km       adm
 h8 = data_kitten$adm16..m.
-plot(h8,type='l')
+plot(h8,type='l')                                           # Entire runtime (4 Myr)
 
 ###  9 km       adm
-h9 = data_kitten$adm18..m.                                 
+h9 = data_kitten$adm18..m.    
+plot(h9,type='l')                                           # Entire runtime (4 Myr)
 h9_mod = h9[ t >= 1.25 & t <= 3.25]                         # modify to show 1.25-3.25 Myr
 h9_mod_shifted = h9_mod - min(h9_mod)                       # shift to 0-2 Myr
 adm9_mod = tp_to_adm(t = t_mod, h9_mod)                     
 adm_9km = tp_to_adm(t = t_mod_shifted, h9_mod_shifted)      
-plot(h9,type='l')
-plot(adm_9km,lwd_acc = 2,lwd_destr = 0)                     # plot
-abline(v=(LST_to_TST),col="cyan4",lwd=3,lty="dashed")
-abline(v=(TST_to_HST),col="cyan4",lwd=3,lty="dashed")
-abline(v=(HST_to_FSST),col="cyan4",lwd=3,lty="dashed")
+plot(adm_9km,lwd_acc = 2,lwd_destr = 0)                     # plot 1.25 - 3.25 Myr
 title(main = "age depth model 9km",
       xlab = "time [Myr]", ylab = "height [m]",
       cex.main = 1.2)
+abline(v=(LST_to_TST),col="cyan4",lwd=3,lty="dashed")
+abline(v=(TST_to_HST),col="cyan4",lwd=3,lty="dashed")
+abline(v=(HST_to_FSST),col="cyan4",lwd=3,lty="dashed")
 text(x=0.22, y=50, "LST",cex=0.8,col='darkblue',font=3)
 text(x=0.78, y=50, "TST",cex=0.8,col='darkblue',font=3)
 text(x=1.28, y=50, "HST",cex=0.8,col='darkblue',font=3)
 text(x=1.8, y=50, "FSST",cex=0.8,col='darkblue',font=3)
 
-w9 = water_depth$wd18..m.                                   # 9km water depth (wd)                                
+adm_9km_h <- adm_9km$h        # Extract height from adm_9km
+adm_9km_t <- adm_9km$t        # and time
+
+df_adm_9km <- data.frame(T_Myr = adm_9km_t,H_9km = adm_9km_h)   # Create a data frame
+
+df_adm_9km <- df_adm_9km %>%                 # Calculate height difference between data points and assign line thickness
+  mutate(diff_H_9km = c(NA, diff(H_9km)),
+         line_width = ifelse(diff_H_9km == 0, 0.1, 2))
+
+df_segments <- df_adm_9km %>%                # Prepare data for plotting with geom_segment
+  mutate(                                    # Each row represents a segment from point i to i+1
+    T_Myr_next = lead(T_Myr),
+    H_9km_next = lead(H_9km)
+  ) %>% filter(!is.na(T_Myr_next))           # Remove the last row (no next point)
+
+# Line plot
+ggplot(df_segments) + geom_segment(aes(x=T_Myr, y=H_9km, xend=T_Myr_next,
+                                       yend=H_9km_next, size=line_width)) + 
+  scale_size_identity() + theme_minimal() + 
+  labs(x="Time [Myr]", y="Stratigraphic heigh [m]", 
+       title="Age Depth Model at 9 km") + 
+  geom_vline(xintercept=LST_to_TST,color="cyan4", linetype="dashed",size=1) + 
+  geom_vline(xintercept=TST_to_HST,color="cyan4", linetype="dashed",size=1) + 
+  geom_vline(xintercept=HST_to_FSST,color="cyan4",linetype="dashed",size=1) +
+  geom_text(aes(x=0.25,y=80,label="LST"),color="darkblue",size=4) + 
+  geom_text(aes(x=0.75,y=80,label="TST"),color="darkblue",size=4) +
+  geom_text(aes(x=1.25,y=20,label="HST"),color="darkblue",size=4) +
+  geom_text(aes(x=1.75,y=20,label="FSST"),color="darkblue",size=4)
+
+w9 = water_depth$wd18..m.                                   # Water depth (wd) at 9 km
+plot(w9,type='l',main="complete wd 9km",                    # Entire runtime (4 Myr)
+     xlab="time [Myr]",ylab="[m]")
 w9_mod = w9[ t >= 1.25 & t <= 3.25]                         # modify and shift
 w9_mod_shifted = w9_mod - min(w9_mod)
 wd9_mod = tp_to_adm(t = t_mod, w9_mod)                    
 wd_9km = tp_to_adm(t = t_mod_shifted, w9_mod_shifted)
-plot(wd_9km)                                                # plot
+plot(wd_9km)                                                # Plot 1.25 - 3.25 Myr
 title(main="water depth at 9km",
       ylab="[m]",
       xlab="time [Myr]")
 
-plot(w9,type='l',main="complete wd 9km",                    # plot 4 Myr runtime
-     xlab="time [Myr]",ylab="[m]")
-
-
 ### 10km adm
-h10 = data_kitten$adm20..m.                                 # 10km adm to compare to 12km
+h10 = data_kitten$adm20..m.                           
+plot(h10,type='l')                                          # Entire runtime (4 Myr)
 h10_mod = h10[ t >= 1.25 & t <= 3.25]
 h10_mod_shifted = h10_mod - min(h10_mod)
 adm10_mod = tp_to_adm(t = t_mod, h10_mod)                  
 adm_10km = tp_to_adm(t = t_mod_shifted, h10_mod_shifted)   
-plot(h10,type='l')
-plot(adm_10km,lwd_acc = 2,lwd_destr = 0)
-title('10km adm')
-abline(v=(LST_to_TST),col="cyan4",lwd=3,lty='dashed')
-abline(v=(TST_to_HST),col="cyan4",lwd=3,lty='dashed')
-abline(v=(HST_to_FSST),col="cyan4",lwd=3,lty='dashed')
+plot(adm_10km,lwd_acc = 2,lwd_destr = 0)                    # 1.25 - 3.25 Myr
 
 ### 11km adm
-h11 = data_kitten$adm22..m.                                 # 11km adm to compare to 12km
-h11_mod = h11[ t >= 1.25 & t <= 3.25]
-h11_mod_shifted = h11_mod - min(h11_mod)
+h11 = data_kitten$adm22..m.      
+plot(h11,type='l')                                          # Entire runtime (4 Myr)
+h11_mod = h11[ t >= 1.25 & t <= 3.25]                       # Modify to show 1.25-3.25 Myr
+h11_mod_shifted = h11_mod - min(h11_mod)                    # Shift to 0-2 Myr
 adm11_mod = tp_to_adm(t = t_mod, h11_mod)                  
 adm_11km = tp_to_adm(t = t_mod_shifted, h11_mod_shifted)
-plot(adm_11km,lwd_acc = 2,lwd_destr = 0)
+plot(adm_11km,lwd_acc = 2,lwd_destr = 0)                    # Plot 1.25 - 3.25
 title('11km adm')
 abline(v=(LST_to_TST),col="cyan4",lwd=3,lty='dashed')
 abline(v=(TST_to_HST),col="cyan4",lwd=3,lty='dashed')
@@ -143,26 +199,55 @@ text(x=0.78, y=80, "TST",cex=0.8,col='darkblue',font=3)
 text(x=1.28, y=80, "HST",cex=0.8,col='darkblue',font=3)
 text(x=1.9, y=80, "FSST",cex=0.8,col='darkblue',font=3)
 
-w11 = water_depth$wd22..m.                                  # 11km water depth (wd)                                
-w11_mod = w11[ t >= 1.25 & t <= 3.25]                       # modify and shift
+adm_11km_h <- adm_11km$h        # Extract height from adm_11km
+adm_11km_t <- adm_11km$t        # and time
+
+df_adm_11km <- data.frame(T_Myr = adm_11km_t,H_11km = adm_11km_h)   # Create a data frame
+
+df_adm_11km <- df_adm_11km %>%                 # Calculate height difference between data points and assign line thickness
+  mutate(diff_H_11km = c(NA, diff(H_11km)),
+         line_width = ifelse(diff_H_11km == 0, 0.1, 2))
+
+df_segments <- df_adm_11km %>%                # Prepare data for plotting with geom_segment
+  mutate(                                    # Each row represents a segment from point i to i+1
+    T_Myr_next = lead(T_Myr),
+    H_11km_next = lead(H_11km)
+  ) %>% filter(!is.na(T_Myr_next))           # Remove the last row (no next point)
+
+# Line plot
+ggplot(df_segments) + geom_segment(aes(x=T_Myr, y=H_11km, xend=T_Myr_next,
+                                       yend=H_11km_next, size=line_width)) + 
+  scale_size_identity() + theme_minimal() + 
+  labs(x="Time [Myr]", y="Stratigraphic heigh [m]", 
+       title="Age Depth Model at 11 km") + 
+  geom_vline(xintercept=LST_to_TST,color="cyan4", linetype="dashed",size=1) + 
+  geom_vline(xintercept=TST_to_HST,color="cyan4", linetype="dashed",size=1) + 
+  geom_vline(xintercept=HST_to_FSST,color="cyan4",linetype="dashed",size=1) +
+  geom_text(aes(x=0.25,y=100,label="LST"),color="darkblue",size=4) + 
+  geom_text(aes(x=0.75,y=100,label="TST"),color="darkblue",size=4) +
+  geom_text(aes(x=1.25,y=100,label="HST"),color="darkblue",size=4) +
+  geom_text(aes(x=1.95,y=100,label="FSST"),color="darkblue",size=4)
+
+w11 = water_depth$wd22..m.                                  # Water depth (wd) at 11 km                                
+plot(w11,type='l',main="complete wd 11km",                  # Entire runtime (4 Myr)
+     xlab="time [Myr]",ylab="[m]")
+w11_mod = w11[ t >= 1.25 & t <= 3.25]                       # Modify and shift
 w11_mod_shifted = w11_mod - min(w11_mod)
 wd11_mod = tp_to_adm(t = t_mod, w11_mod)                    
 wd_11km = tp_to_adm(t = t_mod_shifted, w11_mod_shifted)     
-plot(wd_11km)                                               # plot 2 Myr
+plot(wd_11km)                                               # plot 1.25-3.25 Myr
 title(main="water depth at 11km",
       ylab="[m]",
       xlab="time [Myr]")
-plot(w11,type='l',main="complete wd 11km",                  # plot 4 Myr runtime
-     xlab="time [Myr]",ylab="[m]")
 
 ###  12 km    adm
-h12 = data_kitten$adm24..m.                                
-h12_mod = h12[ t >= 1.25 & t <= 3.25]                       # modify to show 1.25-3.25 Myr
-h12_mod_shifted = h12_mod - min(h12_mod)                    # shift to 0-2 Myr
+h12 = data_kitten$adm24..m. 
+plot(h12,type='l')                                          # Entire runtime (4 Myr)
+h12_mod = h12[ t >= 1.25 & t <= 3.25]                       # Modify to show 1.25-3.25 Myr
+h12_mod_shifted = h12_mod - min(h12_mod)                    # Sift to 0-2 Myr
 adm12_mod = tp_to_adm(t = t_mod, h12_mod)           
 adm_12km = tp_to_adm(t = t_mod_shifted, h12_mod_shifted) 
-
-plot(adm_12km,lwd_acc = 2,lwd_destr = 0)                    # plot
+plot(adm_12km,lwd_acc = 2,lwd_destr = 0)                    # 1.25 - 3.25 Myr
 abline(v=(LST_to_TST),col="cyan4",lwd=3,lty='dashed')
 abline(v=(TST_to_HST),col="cyan4",lwd=3,lty='dashed')
 abline(v=(HST_to_FSST),col="cyan4",lwd=3,lty='dashed')
@@ -178,38 +263,14 @@ text(x=1.2, y=60, "Highstand
 text(x=1.7, y=70, "Falling stage 
      system tract",cex=0.6,col='darkblue',font=3)
 
-w12 = water_depth$wd24..m.                                  # 12km water depth (wd)                                
-w12_mod = w12[ t >= 1.25 & t <= 3.25]                       # modify and shift
-w12_mod_shifted = w12_mod - min(w12_mod)
-wd12_mod = tp_to_adm(t = t_mod, w12_mod)                    
-wd_12km = tp_to_adm(t = t_mod_shifted, w12_mod_shifted)     
-plot(wd_12km)                                               # plot
-title(main="water depth at 12km",
-      ylab="[m]",
-      xlab="time [Myr]")
-plot(w12,type='l',main="complete wd 12km",                  # plot 4 Myr runtime
-     xlab="time [Myr]",ylab="[m]")
-
-### 13 km adm
-h13 = data_kitten$adm26..m.                                 # 13 km adm to compare to 12km                           
-h13_mod = h13[ t >= 1.25 & t <= 3.25]
-h13_mod_shifted = h13_mod - min(h13_mod)
-adm13_mod = tp_to_adm(t = t_mod, h13_mod)                   
-adm_13km = tp_to_adm(t = t_mod_shifted, h13_mod_shifted)    
-plot(adm_13km,lwd_acc = 2,lwd_destr = 0)                                              
-title('13km adm')
-abline(v=(LST_to_TST),col="cyan4",lwd=3,lty='dashed')
-abline(v=(TST_to_HST),col="cyan4",lwd=3,lty='dashed')
-abline(v=(HST_to_FSST),col="cyan4",lwd=3,lty='dashed')
-
 ### 15 km    adm
-h15 = data_kitten$adm30..m.                                 # 15km adm
-h15_mod = h15[ t >= 1.25 & t <= 3.25]                       # modified to show 1.25-3.25 Myr
-h15_mod_shifted = h15_mod - min(h15_mod)                    # shift to 0-2 Myr
+h15 = data_kitten$adm30..m.   
+plot(h15,type='l')                                          # Entire runtime (4 Myr)
+h15_mod = h15[ t >= 1.25 & t <= 3.25]                       # Modify to show 1.25-3.25 Myr
+h15_mod_shifted = h15_mod - min(h15_mod)                    # Shift to 0-2 Myr
 adm15_mod = tp_to_adm(t = t_mod, h15_mod)                  
 adm_15km = tp_to_adm(t = t_mod_shifted, h15_mod_shifted)   
-
-plot(adm_15km,lwd_acc = 2,lwd_destr = 0)                    # plot
+plot(adm_15km,lwd_acc = 2,lwd_destr = 0)                    # 1.25 - 3.25 Myr
 abline(v=(LST_to_TST),col="cyan4",lwd=3,lty='dashed')
 abline(v=(TST_to_HST),col="cyan4",lwd=3,lty='dashed')
 abline(v=(HST_to_FSST),col="cyan4",lwd=3,lty='dashed')
@@ -221,17 +282,47 @@ text(x=0.75, y=20, "TST",cex=0.8,col='darkblue',font=3)
 text(x=1.25, y=10, "HST",cex=0.8,col='darkblue',font=3)
 text(x=1.75, y=10, "FSST",cex=0.8,col='darkblue',font=3)
 
-w15 = water_depth$wd30..m.                                    # 15km water depth (wd)                               
-w15_mod = w15[ t >= 1.25 & t <= 3.25]                         # modify and shift
+adm_15km_h <- adm_15km$h        # Extract height from adm_15km
+adm_15km_t <- adm_15km$t        # and time
+
+df_adm_15km <- data.frame(T_Myr = adm_15km_t,H_15km = adm_15km_h)   # Create a data frame
+
+df_adm_15km <- df_adm_15km %>%                 # Calculate height difference between data points and assign line thickness
+  mutate(diff_H_15km = c(NA, diff(H_15km)),
+         line_width = ifelse(diff_H_15km == 0, 0.1, 2))
+
+df_segments <- df_adm_15km %>%                # Prepare data for plotting with geom_segment
+  mutate(                                     # Each row represents a segment from point i to i+1
+    T_Myr_next = lead(T_Myr),
+    H_15km_next = lead(H_15km)
+  ) %>% filter(!is.na(T_Myr_next))            # Remove the last row (no next point)
+
+# Line plot
+ggplot(df_segments) + geom_segment(aes(x=T_Myr, y=H_15km, xend=T_Myr_next,
+                                       yend=H_15km_next, size=line_width)) + 
+  scale_size_identity() + theme_minimal() + 
+  labs(x="Time [Myr]", y="Stratigraphic heigh [m]", 
+       title="Age Depth Model at 15 km") + 
+  geom_vline(xintercept=LST_to_TST,color="cyan4", linetype="dashed",size=1) + 
+  geom_vline(xintercept=TST_to_HST,color="cyan4", linetype="dashed",size=1) + 
+  geom_vline(xintercept=HST_to_FSST,color="cyan4",linetype="dashed",size=1) +
+  geom_text(aes(x=0.25,y=40,label="LST"),color="darkblue",size=4) + 
+  geom_text(aes(x=0.75,y=40,label="TST"),color="darkblue",size=4) +
+  geom_text(aes(x=1.25,y=40,label="HST"),color="darkblue",size=4) +
+  geom_text(aes(x=1.95,y=40,label="FSST"),color="darkblue",size=4)
+
+w15 = water_depth$wd30..m.                                    # Water depth (wd) at 15 km                               
+plot(w15,type='l',main="complete wd 15km",                    # Entire runtime (4 Myr)
+     xlab="time [Myr]")
+w15_mod = w15[ t >= 1.25 & t <= 3.25]                         # Modify and shift
 w15_mod_shifted = w15_mod - min(w15_mod)
 wd15_mod = tp_to_adm(t = t_mod, w15_mod)                    
 wd_15km = tp_to_adm(t = t_mod_shifted, w15_mod_shifted)     
-plot(wd_15km)                                                 # plot
+plot(wd_15km)                                                 # Plot 1.25 - 3.25
 title(main="water depth at 15 km",
       ylab="[m]",
       xlab="time [Myr]")
-plot(w15,type='l',main="complete wd 15km",
-     xlab="time [Myr]")
+
 
 ###############################################################################
 ### 4km       constant extinction rate
@@ -254,10 +345,11 @@ qplot(ext0.4, geom="histogram",binwidth=1) + coord_flip() + geom_vline(
     xintercept=time_to_strat(TST_to_HST,adm_4km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
       xintercept=time_to_strat(HST_to_FSST,adm_4km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) +
   labs(title = "4 km with constant extinction rate (sc.1)",x = "stratigraphic height [m]",y = "Last occurrence") +
-  geom_text(aes(x=10,y=110,label="LST"),color="deepskyblue3",size=4) + 
-  geom_text(aes(x=50,y=110,label="TST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=85,y=110,label="HST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=102,y=110,label="FSST"),color="deepskyblue3",size=4)
+  geom_text(aes(x=10,y=110,label="LST"),color="deepskyblue4",size=4) + 
+  geom_text(aes(x=50,y=110,label="TST"),color="deepskyblue4",size=4) +
+  geom_text(aes(x=85,y=110,label="HST"),color="deepskyblue4",size=4) +
+  geom_text(aes(x=102,y=110,label="FSST"),color="deepskyblue4",size=4) + 
+  theme_minimal()
 
 
 ### 9km        constant extinction rate
@@ -280,10 +372,11 @@ qplot(ext0.9, geom="histogram",binwidth=1) + coord_flip() + geom_vline(
     xintercept=time_to_strat(TST_to_HST,adm_9km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
       xintercept=time_to_strat(HST_to_FSST,adm_9km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) +
   labs(title = "9 km with constant extinction rate (sc.1)",x = "stratigraphic height [m]",y = "Last occurrence") +
-  geom_text(aes(x=0,y=100,label="LST"),color="deepskyblue3",size=4) + 
-  geom_text(aes(x=70,y=100,label="TST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=140,y=100,label="HST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=160,y=100,label="FSST"),color="deepskyblue3",size=4)
+  geom_text(aes(x=0,y=100,label="LST"),color="deepskyblue4",size=4) + 
+  geom_text(aes(x=70,y=100,label="TST"),color="deepskyblue4",size=4) +
+  geom_text(aes(x=140,y=100,label="HST"),color="deepskyblue4",size=4) +
+  geom_text(aes(x=160,y=100,label="FSST"),color="deepskyblue4",size=4) + 
+  theme_minimal()
 
 ### 11km      constant extinction rate
 ext0.11 <- p3(rate = 500, from = min_time(adm_11km), to = max_time(adm_11km)) |>  # constant rate in time domain
