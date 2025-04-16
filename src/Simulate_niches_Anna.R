@@ -28,9 +28,11 @@ niche_widths <- min_width + (optima / max(optima)) * (max_width - min_width)
 #niche_widths <- min_width + log1p(optima) / log1p(max(optima)) * (max_width - min_width)
 
 # Create response matrix
-niche_matrix <- matrix(0, nrow = n_niches, ncol = length(depth_range))
+niches <- list()
 for (i in 1:n_niches) {
-  niche_matrix[i, ] <- exp(-((depth_range - optima[i])^2) / (2 * niche_widths[i]^2))
+  niches[[i]] <- StratPal::snd_niche(opt = optima[i],
+                                     tol = niche_widths[i],
+                                     cutoff_val = 0)
 }
 
 # Plot to see how optima cluster near shallow depths
