@@ -132,6 +132,11 @@ text(x=0.78, y=50, "TST",cex=0.8,col='darkblue',font=3)
 text(x=1.28, y=50, "HST",cex=0.8,col='darkblue',font=3)
 text(x=1.8, y=50, "FSST",cex=0.8,col='darkblue',font=3)
 
+time_to_strat(0.5,adm_9km)
+time_to_strat(1,adm_9km,destructive=FALSE)
+time_to_strat(1.5,adm_15km,destructive=FALSE)
+(time_to_strat(2,adm_11km,destructive=FALSE))-(time_to_strat(1.5,adm_11km,destructive=FALSE))
+
 adm_9km_h <- adm_9km$h        # Extract height from adm_9km
 adm_9km_t <- adm_9km$t        # and time
 
