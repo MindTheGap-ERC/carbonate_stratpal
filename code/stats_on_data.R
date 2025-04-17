@@ -123,6 +123,12 @@ adm_FSST_9km = tp_to_adm(t = FSST_shifted, h9_FSST_shifted)
 plot(adm_FSST_9km)
 title('9km FSST adm')
 
+slope9km = t[t >= 0.55 & t <= 0.66]                      #isolate position of slope
+slope9km_shifted = slope9km - 1.25
+h9_slope = h9[t >= 1.8 & t <= 1.91]
+adm_slope_9km = tp_to_adm(t = slope9km, h9_slope)
+plot(adm_slope_9km)
+
 adm_st_9km <- list(adm_LST_9km,adm_TST_9km,adm_HST_9km,adm_FSST_9km)
 
 w_hiat_no_9km <- c()                          # Number of gaps per System Track at 9km.
@@ -140,6 +146,7 @@ get_completeness(adm_LST_9km)
 get_completeness(adm_TST_9km)
 get_completeness(adm_HST_9km)
 get_completeness(adm_FSST_9km)
+get_completeness(adm_slope_9km)
 sum(get_hiat_duration(adm_LST_9km))
 sum(get_hiat_duration(adm_TST_9km))
 sum(get_hiat_duration(adm_HST_9km))
@@ -172,12 +179,10 @@ adm_FSST_11km = tp_to_adm(t = FSST_shifted, h11_FSST_shifted)
 plot(adm_FSST_11km)
 title('11km FSST adm')
 
-#FSST = t[ t >= 2.75 & t <= 3.25]                          #FSST
-#FSST_shifted = FSST - min(LST)
-slope = t[t >= 1.69 & t <= 1.78]
-#slope_shifted = slope - min(slope)
+slope11km = t[t >= 1.69 & t <= 1.78]                            #isolate position of slope
+slope11km_shifted = slope11km - 1.25
 h11_slope = h11[t >= 2.94 & t <= 3.03]
-adm_slope_11km = tp_to_adm(t = slope, h11_slope)
+adm_slope_11km = tp_to_adm(t = slope11km, h11_slope)
 plot(adm_slope_11km)
 
 adm_st_11km <- list(adm_LST_11km,adm_TST_11km,adm_HST_11km,adm_FSST_11km)
@@ -197,6 +202,7 @@ get_completeness(adm_LST_11km)
 get_completeness(adm_TST_11km)
 get_completeness(adm_HST_11km)
 get_completeness(adm_FSST_11km)
+get_completeness(adm_slope_11km)
 sum(get_hiat_duration(adm_LST_11km))
 sum(get_hiat_duration(adm_TST_11km))
 sum(get_hiat_duration(adm_HST_11km))
