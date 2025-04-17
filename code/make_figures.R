@@ -132,10 +132,16 @@ text(x=0.78, y=50, "TST",cex=0.8,col='darkblue',font=3)
 text(x=1.28, y=50, "HST",cex=0.8,col='darkblue',font=3)
 text(x=1.8, y=50, "FSST",cex=0.8,col='darkblue',font=3)
 
-time_to_strat(0.5,adm_9km)
+abline(v=0.54)              #possible start of slope
+time_to_strat(0.54,adm_9km) #elevation at the time
+abline(v=0.66)              #possible end
+time_to_strat(0.66,adm_9km,destructive=FALSE)
+85.94142-17.9545  # = 67.98692
+
 time_to_strat(1,adm_9km,destructive=FALSE)
 time_to_strat(1.5,adm_15km,destructive=FALSE)
 (time_to_strat(2,adm_11km,destructive=FALSE))-(time_to_strat(1.5,adm_11km,destructive=FALSE))
+time_to_strat(0.5,adm_15km,destructive=FALSE)
 
 adm_9km_h <- adm_9km$h        # Extract height from adm_9km
 adm_9km_t <- adm_9km$t        # and time
@@ -195,7 +201,9 @@ h11_mod_shifted = h11_mod - min(h11_mod)                    # Shift to 0-2 Myr
 adm11_mod = tp_to_adm(t = t_mod, h11_mod)                  
 adm_11km = tp_to_adm(t = t_mod_shifted, h11_mod_shifted)
 plot(adm_11km,lwd_acc = 2,lwd_destr = 0)                    # Plot 1.25 - 3.25
-title('11km adm')
+title(main = "age depth model 11km",
+      xlab = "time [Myr]", ylab = "height [m]",
+      cex.main = 1.2)
 abline(v=(LST_to_TST),col="cyan4",lwd=3,lty='dashed')
 abline(v=(TST_to_HST),col="cyan4",lwd=3,lty='dashed')
 abline(v=(HST_to_FSST),col="cyan4",lwd=3,lty='dashed')
@@ -203,6 +211,12 @@ text(x=0.22, y=80, "LST",cex=0.8,col='darkblue',font=3)
 text(x=0.78, y=80, "TST",cex=0.8,col='darkblue',font=3)
 text(x=1.28, y=80, "HST",cex=0.8,col='darkblue',font=3)
 text(x=1.9, y=80, "FSST",cex=0.8,col='darkblue',font=3)
+
+abline(v=1.69)
+time_to_strat(1.69,adm_11km,destructive=FALSE)
+abline(v=1.78)
+time_to_strat(1.78,adm_11km,destructive=FALSE)
+157.4889-47.12057     # = 110.3683
 
 adm_11km_h <- adm_11km$h        # Extract height from adm_11km
 adm_11km_t <- adm_11km$t        # and time
