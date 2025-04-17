@@ -167,10 +167,18 @@ plot(adm_HST_11km)
 title('11km HST adm')
 
 h11_FSST = h11[ t >= 2.75 & t <= 3.25]                      #FSST 11km
-h11_FSST_shifted = h11_FSST - min(h11_LST)
+h11_FSST_shifted = h11_FSST - min(h11_FSST)
 adm_FSST_11km = tp_to_adm(t = FSST_shifted, h11_FSST_shifted)
 plot(adm_FSST_11km)
 title('11km FSST adm')
+
+#FSST = t[ t >= 2.75 & t <= 3.25]                          #FSST
+#FSST_shifted = FSST - min(LST)
+slope = t[t >= 1.69 & t <= 1.78]
+#slope_shifted = slope - min(slope)
+h11_slope = h11[t >= 2.94 & t <= 3.03]
+adm_slope_11km = tp_to_adm(t = slope, h11_slope)
+plot(adm_slope_11km)
 
 adm_st_11km <- list(adm_LST_11km,adm_TST_11km,adm_HST_11km,adm_FSST_11km)
 
