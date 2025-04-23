@@ -183,14 +183,14 @@ slope11km = t[t >= 1.69 & t <= 1.78]                            #isolate positio
 slope11km_shifted = slope11km - 1.25
 h11_slope = h11[t >= 2.94 & t <= 3.03]
 adm_slope_11km = tp_to_adm(t = slope11km, h11_slope)
-plot(adm_slope_11km)
+plot(adm_slope_11km)                                            #plot just the slope
 
 adm_st_11km <- list(adm_LST_11km,adm_TST_11km,adm_HST_11km,adm_FSST_11km)
 
 w_hiat_no_11km <- c()                          # Number of gaps per System Track at 11km.
 for(hiat_no_11km in adm_st_11km){
   v_hiat_no_11km <- get_hiat_no(hiat_no_11km)
-  w_hiat_no_11km <- c(w_hiat_no_12km,v_hiat_no_11km)
+  w_hiat_no_11km <- c(w_hiat_no_11km,v_hiat_no_11km)
 }
 plot(w_hiat_no_11km,
      main = "number of hiatus per system tract in 11km adm",
