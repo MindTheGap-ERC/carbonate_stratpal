@@ -14,6 +14,9 @@ email: n.h.hohmann [at] uu.nl
 Web page: [www.uu.nl/staff/NHohmann](https://www.uu.nl/staff/NHHohmann)  
 ORCID: [0000-0003-1559-1838](https://orcid.org/0000-0003-1559-1838)
 
+## Purpose
+The purpose of this research is to employ forward modelling to predict the location of stratigraphically created last occurrence clusters and distinguish them from clusters created by increased extinction rate on a carbonate platform. This research also aims to determine differences in patterns of last occurrence clusters in carbonate platforms with patterns found in siliciclastic platforms.    
+
 ## License
 
 
