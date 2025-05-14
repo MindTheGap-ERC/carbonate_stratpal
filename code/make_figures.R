@@ -113,6 +113,7 @@ ggplot(df_segments) + geom_segment(aes(x=T_Myr, y=H_4km, xend=T_Myr_next,
   geom_text(aes(x=1.25,y=20,label="HST"),color="darkblue",size=4) +
   geom_text(aes(x=1.75,y=20,label="FSST"),color="darkblue",size=4)
 
+#####################################
 w4 = water_depth$wd8..m.                                    # Water Depth (wd) at 4 km
 plot(w4,type='l',main="complete wd 4km",                    # Entire runtime (4 Myr)
      xlab="time [Myr]",ylab="[m]")
@@ -124,6 +125,7 @@ plot(wd_4km)                                                # 1.25 - 3.25 Myr
 title(main="water depth at 4km",
       ylab="[m]",
       xlab="time [Myr]")
+#######################################
 
 ###  6 km       adm
 h6 = data_kitten$adm12..m. 
@@ -185,11 +187,9 @@ text(x=0.78, y=50, "TST",cex=0.8,col='darkblue',font=3)
 text(x=1.28, y=50, "HST",cex=0.8,col='darkblue',font=3)
 text(x=1.8, y=50, "FSST",cex=0.8,col='darkblue',font=3)
 
-abline(v=0.54)              #possible start of slope
-time_to_strat(0.54,adm_9km) #elevation at the time
-abline(v=0.66)              #possible end
-time_to_strat(0.66,adm_9km,destructive=FALSE)
-85.94142-17.9545  # = 67.98692
+abline(v=0.52)              # start of slope
+abline(v=0.66)              # end
+time_to_strat(0.66,adm_9km,destructive=FALSE)-time_to_strat(0.52,adm_9km) # change to depth domain to get slope elevation
 
 adm_9km_h <- adm_9km$h        # Extract height from adm_9km
 adm_9km_t <- adm_9km$t        # and time
@@ -219,7 +219,7 @@ ggplot(df_segments) + geom_segment(aes(x=T_Myr, y=H_9km, xend=T_Myr_next,
   geom_text(aes(x=0.75,y=80,label="TST"),color="darkblue",size=4) +
   geom_text(aes(x=1.25,y=20,label="HST"),color="darkblue",size=4) +
   geom_text(aes(x=1.75,y=20,label="FSST"),color="darkblue",size=4)
-
+######################################
 w9 = water_depth$wd18..m.                                   # Water depth (wd) at 9 km
 plot(w9,type='l',main="complete wd 9km",                    # Entire runtime (4 Myr)
      xlab="time [Myr]",ylab="[m]")
@@ -231,7 +231,7 @@ plot(wd_9km)                                                # Plot 1.25 - 3.25 M
 title(main="water depth at 9km",
       ylab="[m]",
       xlab="time [Myr]")
-
+##########################################
 ### 10km adm
 h10 = data_kitten$adm20..m.                           
 plot(h10,type='l')                                          # Entire runtime (4 Myr)
@@ -248,8 +248,8 @@ abline(v=(TST_to_HST),col="cyan4",lwd=3,lty='dashed')
 abline(v=(HST_to_FSST),col="cyan4",lwd=3,lty='dashed')
 text(x=0.22, y=80, "LST",cex=0.8,col='darkblue',font=3)
 text(x=0.78, y=80, "TST",cex=0.8,col='darkblue',font=3)
-text(x=1.28, y=80, "HST",cex=0.8,col='darkblue',font=3)
-text(x=1.7, y=90, "FSST",cex=0.8,col='darkblue',font=3)
+text(x=1.29, y=80, "HST",cex=0.8,col='darkblue',font=3)
+text(x=1.8, y=80, "FSST",cex=0.8,col='darkblue',font=3)
 
 ### 11km adm
 h11 = data_kitten$adm22..m.      
@@ -270,11 +270,9 @@ text(x=0.78, y=80, "TST",cex=0.8,col='darkblue',font=3)
 text(x=1.28, y=80, "HST",cex=0.8,col='darkblue',font=3)
 text(x=1.9, y=80, "FSST",cex=0.8,col='darkblue',font=3)
 
-abline(v=1.69)
-time_to_strat(1.69,adm_11km,destructive=FALSE)
-abline(v=1.78)
-time_to_strat(1.78,adm_11km,destructive=FALSE)
-157.4889-47.12057     # = 110.3683
+abline(v=1.67)            # start of the slope
+abline(v=1.78)            # end of the slope
+time_to_strat(1.78,adm_11km,destructive=FALSE)-time_to_strat(1.67,adm_11km,destructive=FALSE) # change to depth domain to get slope elevation
 
 adm_11km_h <- adm_11km$h        # Extract height from adm_11km
 adm_11km_t <- adm_11km$t        # and time
@@ -305,6 +303,7 @@ ggplot(df_segments) + geom_segment(aes(x=T_Myr, y=H_11km, xend=T_Myr_next,
   geom_text(aes(x=1.25,y=100,label="HST"),color="darkblue",size=4) +
   geom_text(aes(x=1.95,y=100,label="FSST"),color="darkblue",size=4)
 
+##################################
 w11 = water_depth$wd22..m.                                  # Water depth (wd) at 11 km                                
 plot(w11,type='l',main="complete wd 11km",                  # Entire runtime (4 Myr)
      xlab="time [Myr]",ylab="[m]")
@@ -316,7 +315,7 @@ plot(wd_11km)                                               # plot 1.25-3.25 Myr
 title(main="water depth at 11km",
       ylab="[m]",
       xlab="time [Myr]")
-
+#####################################
 ###  12 km    adm
 h12 = data_kitten$adm24..m. 
 plot(h12,type='l')                                          # Entire runtime (4 Myr)
@@ -387,7 +386,7 @@ ggplot(df_segments) + geom_segment(aes(x=T_Myr, y=H_15km, xend=T_Myr_next,
   geom_text(aes(x=0.75,y=40,label="TST"),color="darkblue",size=4) +
   geom_text(aes(x=1.25,y=40,label="HST"),color="darkblue",size=4) +
   geom_text(aes(x=1.95,y=40,label="FSST"),color="darkblue",size=4)
-
+###################################
 w15 = water_depth$wd30..m.                                    # Water depth (wd) at 15 km                               
 plot(w15,type='l',main="complete wd 15km",                    # Entire runtime (4 Myr)
      xlab="time [Myr]")
@@ -594,10 +593,10 @@ ggplot(df_ext1.11,aes(x=value)) +                                         # plot
         xintercept=time_to_strat(HST_to_FSST,adm_11km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) + geom_vline(
           xintercept=LST_peak_ext_11km,color="red2",linetype="dashed",size=1) +
   labs(title = "LST extinction scenario at 11 km",x = "stratigraphic height [m]",y = "Last occurrences") +
-  geom_text(aes(x=4,y=110,label="LST"),color="deepskyblue3",size=4) + 
-  geom_text(aes(x=13,y=110,label="TST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=22,y=110,label="HST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=110,y=110,label="FSST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=4,y=130,label="LST"),color="deepskyblue3",size=4) + 
+  geom_text(aes(x=13,y=130,label="TST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=22,y=130,label="HST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=110,y=130,label="FSST"),color="deepskyblue3",size=4) +
   theme_minimal()
 
 #15km LST
@@ -680,12 +679,12 @@ df_ext2.11 <- data.frame(value = ext2.11)                                 # crea
 
 ggplot(df_ext2.11,aes(x=value)) +                                        # plot histogram
   geom_histogram(aes(fill = value >= LST_height_11km & value <= TST_height_11km),binwidth=1.5,color="black") + 
-  scale_fill_manual(values=c("TRUE"="yellow", "FALSE"="white"), guide="none") + 
+  scale_fill_manual(values=c("TRUE"="red", "FALSE"="white"), guide="none") + 
   coord_flip() + geom_vline(
     xintercept=time_to_strat(LST_to_TST,adm_11km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
       xintercept=time_to_strat(TST_to_HST,adm_11km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
         xintercept=time_to_strat(HST_to_FSST,adm_11km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) + geom_vline(
-          xintercept=TST_peak_ext_11km,color="red2",linetype="dashed",size=1) +
+          xintercept=TST_peak_ext_11km,color="yellow",linetype="dashed",size=1) +
   labs(title = "TST extinction scenario at 11 km",x = "stratigraphic height [m]",y = "Last occurrences") +
   geom_text(aes(x=3,y=132,label="LST"),color="deepskyblue3",size=4) + 
   geom_text(aes(x=15,y=132,label="TST"),color="deepskyblue3",size=4) +
