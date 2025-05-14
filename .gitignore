@@ -10,5 +10,5 @@
 
 # don't save data files
 
-*.csv
+
 *.h5

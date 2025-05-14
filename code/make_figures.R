@@ -1,5 +1,5 @@
-data_kitten = read.csv("data/alcap-example8_adm.csv")
-water_depth = read.csv("data/alcap-example_wd.csv")
+data_kitten = read.csv("data/run_10/alcap-example_adm_10.csv")
+
 
 #grid: 20km x 50km
 #time: 4 Myr
