@@ -35,16 +35,60 @@ for (i in 1:n_niches) {
                                      cutoff_val = 0)
 }
 
-#unlist 
-numeric_vector <- as.numeric(unlist(niches))
+niche_val = list(niches)
+for (i in 1:100) {
+  niche = niches[[i]]
+  niche_val[[i]]=niche(depth_range)
+} 
+
+niche_mat <- do.call(cbind, niche_val) #converting to matrix (used AI for this line)
 
 #plot niches from list
-plot(x, numeric_vector(x),
-     type = "l",
-     lwd = 2,
-     xlab = "Water depth [m]",
-     ylab = "Niche optima",
-     main = "Niche optima across different depths")
+#used AI to find out how to plot 
+matplot(depth_range, niche_mat, type = "l",
+        lty = 1, col = rgb(0,0,1,0.2),
+        xlab = "Water depth [m]",
+        ylab = "Niche value",
+        main = "Niche optima across different depths")
+
+#(using AI) plotting them as depth ranges to show more clearly the range and abundance differences across the depths
+#note: the ranges continue after 80 for the highest numbered niches, because their optima fall close to or around 80, which means although it does not show they still have the broadest suitable depth range 
+threshold <- 0.005  # Set your threshold; chose 0.005 since that means there is only a 0.5% likelihood of finding the organism at that depth
+
+n_niches <- length(niches)
+min_depths <- numeric(n_niches)
+max_depths <- numeric(n_niches)
+
+for (i in 1:n_niches) {
+  values <- niches[[i]](depth_range)
+  # Use a threshold to define "present" (e.g., >0 or >0.01)
+  present <- which(values > threshold)
+  if (length(present) > 0) {
+    min_depths[i] <- depth_range[min(present)]
+    max_depths[i] <- depth_range[max(present)]
+  } else {
+    min_depths[i] <- NA
+    max_depths[i] <- NA
+  }
+}
+
+plot(NA, xlim = c(0, 80), ylim = c(1, n_niches),
+     xlab = "Water depth [m]", ylab = "Niche",
+     main = "Depth range of each niche", yaxt = "n")
+axis(2, at = 1:n_niches, labels = 1:n_niches, las = 2, cex.axis = 0.5)
+
+for (i in 1:n_niches) {
+  if (!is.na(min_depths[i]) && !is.na(max_depths[i])) {
+    segments(min_depths[i], i, max_depths[i], i, lwd = 2, col = "blue")
+  }
+}
+
+#plot(x, numeric_vector(x),
+#     type = "l",
+#     lwd = 2,
+#     xlab = "Water depth [m]",
+#     ylab = "Niche optima",
+#     main = "Niche optima across different depths")
 
 # Plot to see how optima cluster near shallow depths
 #matplot(depth_range, t(niche_matrix[seq(1, 80, by = 8), ]), type = "l",
