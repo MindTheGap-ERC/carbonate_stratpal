@@ -31,38 +31,33 @@ adm <- list(adm_1km,adm_2km,adm_3km,adm_4km,adm_5km,adm_6km,adm_7km,adm_8km,
 df<-adm
 t = data_kitten$time..Myr.
 ######################################### 4km         systems tract isolated
-LST = t[ t >= 1.25 & t <= 1.75]                          #LST
-LST_shifted = LST - min(LST)
-
-h4 = data_kitten$adm8..m.                            
-h4_LST = h4[ t >= 1.25 & t <= 1.75]
+h4 = data_kitten$adm8..m. 
+plot(h4,type='l')  
+h4_mod = h4[t >= 1.25 & t <= 3.25]                          # modify to show 1.25-3.25 Myr
+h4_mod_shifted = h4_mod - min(h4_mod)                       # shift to 0-2 Myr
+adm4_mod = tp_to_adm(t = t_mod, h4_mod)                    
+adm_4km = tp_to_adm(t = t_mod_shifted, h4_mod_shifted)
+plot(adm_4km,lwd_acc = 2,lwd_destr = 0)
+                                       
+h4_LST = h4[ t >= 1.25 & t <= 1.75]                       # LST 4 km
 h4_LST_shifted = h4_LST - min(h4_LST)
 adm_LST_4km = tp_to_adm(t = LST_shifted, h4_LST_shifted)
 plot(adm_LST_4km)
 title('4km LST adm')
 
-TST = t[ t >= 1.75 & t <= 2.25]                          #TST
-TST_shifted = TST - min(LST)
-
-h4_TST = h4[ t >= 1.75 & t <= 2.25]
+h4_TST = h4[ t >= 1.75 & t <= 2.25]                       # TST 4 km
 h4_TST_shifted = h4_TST - min(h4_LST)
 adm_TST_4km = tp_to_adm(t = TST_shifted, h4_TST_shifted)
 plot(adm_TST_4km)
 title('4km TST adm')
 
-HST = t[ t >= 2.25 & t <= 2.75]                          #HST
-HST_shifted = HST - min(LST)
-
-h4_HST = h4[ t >= 2.25 & t <= 2.75]
+h4_HST = h4[ t >= 2.25 & t <= 2.75]                       # HST 4 km
 h4_HST_shifted = h4_HST - min(h4_LST)
 adm_HST_4km = tp_to_adm(t = HST_shifted, h4_HST_shifted)
 plot(adm_HST_4km)
 title('4km HST adm')
 
-FSST = t[ t >= 2.75 & t <= 3.25]                          #FSST
-FSST_shifted = FSST - min(LST)
-
-h4_FSST = h4[ t >= 2.75 & t <= 3.25]
+h4_FSST = h4[ t >= 2.75 & t <= 3.25]                      # FSST 4 km
 h4_FSST_shifted = h4_FSST - min(h4_LST)
 adm_FSST_4km = tp_to_adm(t = FSST_shifted, h4_FSST_shifted)
 plot(adm_FSST_4km)
@@ -94,7 +89,7 @@ tot_hiat_dur_HST_4km <- sum(get_hiat_duration(adm_TST_4km))
 tot_hiat_dur_TST_4km <- sum(get_hiat_duration(adm_HST_4km))
 tot_hiat_dur_FSST_4km <- sum(get_hiat_duration(adm_FSST_4km))
 
-###################################9km      system tracts isolated 
+###################################9km      system tracts & sed environments isolated 
 h9 = data_kitten$adm18..m.                                  # Entire runtime (9 Myr)
 plot(h9,type='l')  
 h9_mod = h9[t >= 1.25 & t <= 3.25]                          # modify to show 1.25-3.25 Myr
@@ -109,13 +104,15 @@ slope_dur_9km = 0.66-0.52                                                 # dura
 interior_dur_9km = 2-0.66                                                 # duration of platform interior
 basin_height_9km = get_height(adm_9km,0.52)                               # height of the basin at 9 km
 slope_height_9km = get_height(adm_9km,0.66)-basin_height_9km              # height of the slope at 9 km
-interior_height_9km = get_height(adm_9km,1.98,destructive = FALSE)-get_height(adm_9km,0.66)
+max_height_9km = max(get_height(adm_9km,destructive=FALSE))               # maximum height at 9 km
+interior_height_9km = max_height_9km-get_height(adm_9km,0.66)             # height of platform interior
 
 h9_LST = h9[ t >= 1.25 & t <= 1.75]                       #LST 9km
 h9_LST_shifted = h9_LST - min(h9_LST)
 adm_LST_9km = tp_to_adm(t = LST_shifted, h9_LST_shifted)
 plot(adm_LST_9km)
 title('9km LST adm')
+LST_height_9km = get_height(adm_9km,0.5,destructive=FALSE)
 
 h9_TST = h9[ t >= 1.75 & t <= 2.25]                       #TST 9km
 h9_TST_shifted = h9_TST - min(h9_LST)
@@ -135,11 +132,9 @@ adm_FSST_9km = tp_to_adm(t = FSST_shifted, h9_FSST_shifted)
 plot(adm_FSST_9km)
 title('9km FSST adm')
 
-
-
 adm_st_9km <- list(adm_LST_9km,adm_TST_9km,adm_HST_9km,adm_FSST_9km)
 
-w_hiat_no_9km <- c()                          # Number of gaps per System Track at 9km.
+w_hiat_no_9km <- c()                          # Number of hiatuses per System Track at 9km.
 for(hiat_no_9km in adm_st_9km){
   v_hiat_no_9km <- get_hiat_no(hiat_no_9km)
   w_hiat_no_9km <- c(w_hiat_no_9km,v_hiat_no_9km)
@@ -149,7 +144,7 @@ plot(w_hiat_no_9km,
      xlab = "LST,TST,HST,FSST",
      ylab = "number of hiatus",
      pch = c(16))
-
+# stats per systems tract
 get_completeness(adm_LST_9km)
 get_completeness(adm_TST_9km)
 get_completeness(adm_HST_9km)
@@ -160,14 +155,31 @@ sum(get_hiat_duration(adm_TST_9km))
 sum(get_hiat_duration(adm_HST_9km))
 sum(get_hiat_duration(adm_FSST_9km))
 
-###################################11km      system tracts isolated 
-h11 = data_kitten$adm22..m.
+###################################11km      system tracts & sed environments isolated 
+h11 = data_kitten$adm22..m.                                  # Entire runtime (11 Myr)
+plot(h11, type = 'l')  
+h11_mod = h11[t >= 1.25 & t <= 3.25]                          # modify to show 1.25–3.25 Myr
+h11_mod_shifted = h11_mod - min(h11_mod)                     # shift to 0–2 Myr
+adm11_mod = tp_to_adm(t = t_mod, h11_mod)                    
+adm_11km = tp_to_adm(t = t_mod_shifted, h11_mod_shifted)     
+plot(adm_11km, lwd_acc = 2, lwd_destr = 0)
+  
+basin_boundary_11km = abline(v=(1.6))                                     # end of basin
+slope_boundary_11km = abline(v=(1.78))                                    # end of slope
+slope_dur_11km = 1.78-1.6                                                 # duration of slope          
+interior_dur_11km = 2-1.78                                                # duration of platform interior
+basin_height_11km = get_height(adm_11km,1.6)                              # height of the basin
+slope_height_11km = get_height(adm_11km,1.78)-basin_height_11km           # height of the slope
+
+max_height_11km = max(get_height(adm_11km,destructive=FALSE))             # maximum height at 11 km
+interior_height_11km = max_height_11km-get_height(adm_11km,1.78)          # height of platform interior
 
 h11_LST = h11[ t >= 1.25 & t <= 1.75]                       #LST 11km
 h11_LST_shifted = h11_LST - min(h11_LST)
 adm_LST_11km = tp_to_adm(t = LST_shifted, h11_LST_shifted)
 plot(adm_LST_11km)
 title('11km LST adm')
+LST_height_11km = get_height(adm_11km,0.5,destructive=FALSE)
 
 h11_TST = h11[ t >= 1.75 & t <= 2.25]                       #TST 11km
 h11_TST_shifted = h11_TST - min(h11_LST)
@@ -187,15 +199,7 @@ adm_FSST_11km = tp_to_adm(t = FSST_shifted, h11_FSST_shifted)
 plot(adm_FSST_11km)
 title('11km FSST adm')
 
-slope11km = t[t >= 1.69 & t <= 1.78]                            #isolate position of slope
-slope11km_shifted = slope11km - 1.25
-h11_slope = h11[t >= 2.94 & t <= 3.03]
-adm_slope_11km = tp_to_adm(t = slope11km, h11_slope)
-plot(adm_slope_11km)                                            #plot just the slope
-
-adm_st_11km <- list(adm_LST_11km,adm_TST_11km,adm_HST_11km,adm_FSST_11km)
-
-w_hiat_no_11km <- c()                          # Number of gaps per System Track at 11km.
+w_hiat_no_11km <- c()                          # Number of hiatuses per Systems Track at 11km.
 for(hiat_no_11km in adm_st_11km){
   v_hiat_no_11km <- get_hiat_no(hiat_no_11km)
   w_hiat_no_11km <- c(w_hiat_no_11km,v_hiat_no_11km)
@@ -221,13 +225,23 @@ get_hiat_no(adm_HST_11km)
 get_hiat_no(adm_FSST_11km)
 
 ###################################15km      system tracts isolated 
-h15 = data_kitten$adm30..m.
+###  15 km       adm                                       
+h15 = data_kitten$adm30..m.                                   # Entire runtime (15 Myr)
+plot(h15, type = 'l')  
+h15_mod = h15[t >= 1.25 & t <= 3.25]                          # modify to show 1.25–3.25 Myr
+h15_mod_shifted = h15_mod - min(h15_mod)                      # shift to 0–2 Myr
+adm15_mod = tp_to_adm(t = t_mod, h15_mod)                    
+adm_15km = tp_to_adm(t = t_mod_shifted, h15_mod_shifted)     
+plot(adm_15km, lwd_acc = 2, lwd_destr = 0)
+
+max_height_15km = max(get_height(adm_15km,destructive=FALSE))   # maximum height at 15 km
 
 h15_LST = h15[ t >= 1.25 & t <= 1.75]                       #LST 15km
 h15_LST_shifted = h15_LST - min(h15_LST)
 adm_LST_15km = tp_to_adm(t = LST_shifted, h15_LST_shifted)
 plot(adm_LST_15km);
 title('15km LST adm')
+LST_height_15km = get_height(adm_15km,0.5,destructive=FALSE)
 
 h15_TST = h15[ t >= 1.75 & t <= 2.25]                       #TST 15km
 h15_TST_shifted = h15_TST - min(h15_LST)
@@ -406,7 +420,6 @@ h15_mod_shifted = h15_mod - min(h15_mod)                     # shift to 0–2 My
 adm15_mod = tp_to_adm(t = t_mod, h15_mod)                    
 adm_15km = tp_to_adm(t = t_mod_shifted, h15_mod_shifted)     
 plot(adm_15km, lwd_acc = 2, lwd_destr = 0)
-
 
 ###  16 km       adm 
 h16 = data_kitten$adm32..m.                                  # Entire runtime (16 Myr)
