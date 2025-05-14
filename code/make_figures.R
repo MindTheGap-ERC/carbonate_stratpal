@@ -1,6 +1,6 @@
-data_kitten = read.csv("data/run_10/alcap-example_adm_10.csv")
-
-
+data_kitten = read.csv("data/alcap-example_adm_10.csv")
+file.exists("data/alcap-example_adm_10.csv"
+            
 #grid: 20km x 50km
 #time: 4 Myr
 #Sea level from Holland & Patzkowsky 2015
