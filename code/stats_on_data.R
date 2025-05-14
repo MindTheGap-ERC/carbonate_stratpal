@@ -95,14 +95,27 @@ tot_hiat_dur_TST_4km <- sum(get_hiat_duration(adm_HST_4km))
 tot_hiat_dur_FSST_4km <- sum(get_hiat_duration(adm_FSST_4km))
 
 ###################################9km      system tracts isolated 
-h9 = data_kitten$adm18..m.
+h9 = data_kitten$adm18..m.                                  # Entire runtime (9 Myr)
+plot(h9,type='l')  
+h9_mod = h9[t >= 1.25 & t <= 3.25]                          # modify to show 1.25-3.25 Myr
+h9_mod_shifted = h9_mod - min(h9_mod)                       # shift to 0-2 Myr
+adm9_mod = tp_to_adm(t = t_mod, h9_mod)                    
+adm_9km = tp_to_adm(t = t_mod_shifted, h9_mod_shifted)     
+plot(adm_9km,lwd_acc = 2,lwd_destr = 0)
+  
+basin_boundary_9km = abline(v=(0.52))                                     # end of basin
+slope_boundary_9km = abline(v=(0.66))                                     # end of slope
+slope_dur_9km = 0.66-0.52                                                 # duration of slope          
+interior_dur_9km = 2-0.66                                                 # duration of platform interior
+basin_height_9km = get_height(adm_9km,0.52)                               # height of the basin at 9 km
+slope_height_9km = get_height(adm_9km,0.66)-basin_height_9km              # height of the slope at 9 km
+interior_height_9km = get_height(adm_9km,1.98,destructive = FALSE)-get_height(adm_9km,0.66)
 
 h9_LST = h9[ t >= 1.25 & t <= 1.75]                       #LST 9km
 h9_LST_shifted = h9_LST - min(h9_LST)
 adm_LST_9km = tp_to_adm(t = LST_shifted, h9_LST_shifted)
 plot(adm_LST_9km)
 title('9km LST adm')
-abline(v=(0.25),col="coral",lwd=3,lty='dashed')
 
 h9_TST = h9[ t >= 1.75 & t <= 2.25]                       #TST 9km
 h9_TST_shifted = h9_TST - min(h9_LST)
@@ -122,11 +135,7 @@ adm_FSST_9km = tp_to_adm(t = FSST_shifted, h9_FSST_shifted)
 plot(adm_FSST_9km)
 title('9km FSST adm')
 
-slope9km = t[t >= 0.55 & t <= 0.66]                      #isolate position of slope
-slope9km_shifted = slope9km - 1.25
-h9_slope = h9[t >= 1.8 & t <= 1.91]
-adm_slope_9km = tp_to_adm(t = slope9km, h9_slope)
-plot(adm_slope_9km)
+
 
 adm_st_9km <- list(adm_LST_9km,adm_TST_9km,adm_HST_9km,adm_FSST_9km)
 

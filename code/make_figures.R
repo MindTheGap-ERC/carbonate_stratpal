@@ -406,6 +406,7 @@ adm18_mod = tp_to_adm(t = t_mod, h18_mod)
 adm_18km = tp_to_adm(t = t_mod_shifted, h18_mod_shifted)     
 plot(adm_18km,lwd_acc = 2,lwd_destr = 0)  
 
+par(mfrow = c(1, 1))
 ###############################################################################
 ### 4 km       constant extinction rate
 ext0.4 <- p3(rate = 500, from = min_time(adm_4km), to = max_time(adm_4km)) |>   # constant rate in time domain
