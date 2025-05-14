@@ -63,7 +63,7 @@ adm_18km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm36..m.)
 adm_19km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm38..m.)
 adm_20km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm40..m.)
 
-
+par(mfrow = c(2, 2))
 ###  4 km     adm
 h4 = data_kitten$adm8..m.      
 plot(h4,type='l')                                           # entire runtime (4 Myr)
@@ -137,13 +137,6 @@ plot(adm_5km,lwd_acc = 2,lwd_destr = 0)                     # plot 1.25 - 3.25 M
 title(main = "A. ADM 4 km",
       xlab = "time [Myr]", ylab = "height [m]",
       cex.main = 1.2)
-###  6 km       adm
-h6 = data_kitten$adm12..m. 
-plot(h6,type='l')                                           # Entire runtime (6 Myr)
-###  7 km       adm                                       
-h7 = data_kitten$adm14..m.                                 
-plot(h7,type='l')                                           # Entire runtime (7 Myr)
-
 
 ###  8 km       adm
 h8 = data_kitten$adm16..m.

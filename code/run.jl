@@ -1,7 +1,3 @@
-# ~/~ begin <<docs/src/model-alcap.md#examples/model/alcap/run.jl>>[init]
-#| requires: src/Models/ALCAP.jl
-#| creates: data/output/lineage-example.h5
-
 module Script
 
 using Unitful
@@ -10,7 +6,6 @@ using CarboKitten.Export: data_export, CSV
 
 const PATH = "data"
 
-# ~/~ begin <<docs/src/model-alcap.md#alcap-example-input>>[init]
 const TAG = "lineage-example"
 
 const FACIES = [

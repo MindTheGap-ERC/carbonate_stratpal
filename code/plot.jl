@@ -1,7 +1,6 @@
-# ~/~ begin <<docs/src/model-alcap.md#examples/model/alcap/plot.jl>>[init]
 #| creates: docs/src/_fig/alcaps-alternative.png
-#| requires: data/output/alcap-example.h5
-#| collect: figures
+#| requires: data/output/lineage-example.h5
+
 import Pkg
 Pkg.add("GLMakie")
 
