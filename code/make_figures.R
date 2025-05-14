@@ -1,6 +1,4 @@
-data_kitten = read.csv("data/alcap-example_adm_10.csv")
-
-file.exists("data/alcap-example_adm_10.csv")
+data_kitten = read.csv("alcap-example_adm_12.csv")
             
 #grid: 20km x 50km
 #time: 4 Myr
