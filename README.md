@@ -54,7 +54,9 @@ To reproduce the data, first use `code/run.jl` in Julia. Then run `code/package_
 This repository uses data from
 * the [`CarboKitten.jl`](https://mindthegap-erc.github.io/CarboKitten.jl/) webpage
 
-It uses sea level data from 
+Carbonate production data is taken from
+* Burgess, P. M. (2013). CarboCAT: A cellular automata model of heterogeneous carbonate strata. Computers & geosciences, 53, 129-140.
+Eustatic sea level data it taken from 
 * Holland, S. M., & Patzkowsky, M. E. (2015). The stratigraphy of mass extinction. Palaeontology, 58(5), 903-924.
 
 ## Funding information
