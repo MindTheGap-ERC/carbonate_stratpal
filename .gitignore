@@ -3,4 +3,12 @@
 .RData
 .Ruserdata
 
+# don't save figures
 *.jpeg
+*.png
+*.pdf
+
+# don't save data files
+
+*.csv
+*.h5
