@@ -80,8 +80,8 @@ abline(v=(TST_to_HST),col="cyan4",lwd=3,lty="dashed")
 abline(v=(HST_to_FSST),col="cyan4",lwd=3,lty="dashed")
 text(x=0.21, y=80, "LST",cex=0.8,col='darkblue',font=3)
 text(x=0.75, y=80, "TST",cex=0.8,col='darkblue',font=3)
-text(x=1.25, y=20, "HST",cex=0.8,col='darkblue',font=3)
-text(x=1.8, y=20, "FSST",cex=0.8,col='darkblue',font=3)
+text(x=1.25, y=40, "HST",cex=0.8,col='darkblue',font=3)
+text(x=1.8, y=40, "FSST",cex=0.8,col='darkblue',font=3)
 
 str(adm_4km)
 adm_4km_h <- adm_4km$h        # Extract height from adm_4km
@@ -398,7 +398,24 @@ plot(wd_15km)                                                 # Plot 1.25 - 3.25
 title(main="water depth at 15 km",
       ylab="[m]",
       xlab="time [Myr]")
+######################################
+###  16 km     adm
+h16 = data_kitten$adm32..m.      
+plot(h16,type='l')                                           # entire runtime (4 Myr)
+h16_mod = h16[t >= 1.25 & t <= 3.25]                          # modify to show 1.25-3.25 Myr
+h16_mod_shifted = h16_mod - min(h16_mod)                       # shift to 0-2 Myr
+adm16_mod = tp_to_adm(t = t_mod, h16_mod)                    
+adm_16km = tp_to_adm(t = t_mod_shifted, h16_mod_shifted)     
+plot(adm_16km,lwd_acc = 2,lwd_destr = 0)  
 
+###  18 km     adm
+h18 = data_kitten$adm36..m.      
+plot(h18,type='l')                                           # entire runtime (4 Myr)
+h18_mod = h18[t >= 1.25 & t <= 3.25]                          # modify to show 1.25-3.25 Myr
+h18_mod_shifted = h18_mod - min(h18_mod)                       # shift to 0-2 Myr
+adm18_mod = tp_to_adm(t = t_mod, h18_mod)                    
+adm_18km = tp_to_adm(t = t_mod_shifted, h18_mod_shifted)     
+plot(adm_18km,lwd_acc = 2,lwd_destr = 0)  
 
 ###############################################################################
 ### 4 km       constant extinction rate
