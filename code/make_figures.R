@@ -401,7 +401,7 @@ title(main="water depth at 15 km",
 
 
 ###############################################################################
-### 4km       constant extinction rate
+### 4 km       constant extinction rate
 ext0.4 <- p3(rate = 500, from = min_time(adm_4km), to = max_time(adm_4km)) |>   # constant rate in time domain
   time_to_strat(adm_4km, destructive = FALSE)                                   # transform into depth domain
 
@@ -409,7 +409,7 @@ qplot(ext0.4, geom="histogram",binwidth=1) + coord_flip() + geom_vline(         
   xintercept=time_to_strat(LST_to_TST,adm_4km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
     xintercept=time_to_strat(TST_to_HST,adm_4km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
       xintercept=time_to_strat(HST_to_FSST,adm_4km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) +
-  labs(title = "4 km with constant extinction rate",x = "stratigraphic height [m]",y = "Last occurrences") +
+  labs(title = "4 km with constant extinction rate",x = "stratigraphic height [m]",y = "Last occurrences per m") +
   geom_text(aes(x=10,y=100,label="LST"),color="deepskyblue3",size=4) + 
   geom_text(aes(x=50,y=100,label="TST"),color="deepskyblue3",size=4) +
   geom_text(aes(x=85,y=100,label="HST"),color="deepskyblue3",size=4) +
@@ -431,7 +431,7 @@ qplot(ext0.8, geom="histogram",binwidth=1) + coord_flip() + geom_vline(         
   geom_text(aes(x=160,y=80,label="FSST"),color="deepskyblue3",size=4) + 
   theme_minimal()
 
-### 9km        constant extinction rate
+### 9 km        constant extinction rate
 ext0.9 <- p3(rate = 500, from = min_time(adm_9km), to = max_time(adm_9km)) |>   # constant rate in time domain
   time_to_strat(adm_9km, destructive = FALSE)                                   # transform into depth domain
 
@@ -439,11 +439,11 @@ qplot(ext0.9, geom="histogram",binwidth=1) + coord_flip() + geom_vline(         
   xintercept=time_to_strat(LST_to_TST,adm_9km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
     xintercept=time_to_strat(TST_to_HST,adm_9km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
       xintercept=time_to_strat(HST_to_FSST,adm_9km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) +
-  labs(title = "9 km with constant extinction rate",x = "stratigraphic height [m]",y = "Last occurrences") +
-  geom_text(aes(x=0,y=90,label="LST"),color="deepskyblue3",size=4) + 
-  geom_text(aes(x=70,y=90,label="TST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=140,y=90,label="HST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=160,y=90,label="FSST"),color="deepskyblue3",size=4) + 
+  labs(title = "9 km with constant extinction rate",x = "stratigraphic height [m]",y = "Last occurrences per m") +
+  geom_text(aes(x=0,y=100,label="LST"),color="deepskyblue3",size=4) + 
+  geom_text(aes(x=70,y=100,label="TST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=140,y=100,label="HST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=160,y=100,label="FSST"),color="deepskyblue3",size=4) + 
   theme_minimal()
 
 ### 10km      constant extinction rate
@@ -461,7 +461,7 @@ qplot(ext0.10, geom="histogram",binwidth=1) + coord_flip() + geom_vline(        
   geom_text(aes(x=100,y=50,label="FSST"),color="deepskyblue3",size=4) + 
   theme_minimal()
 
-### 11km      constant extinction rate
+### 11 km      constant extinction rate
 ext0.11 <- p3(rate = 500, from = min_time(adm_11km), to = max_time(adm_11km)) |>  # constant rate in time domain
   time_to_strat(adm_11km, destructive = FALSE)                                    # transform into depth domain
 
@@ -469,11 +469,11 @@ qplot(ext0.11, geom="histogram",binwidth=1) + coord_flip() + geom_vline(        
   xintercept=time_to_strat(LST_to_TST,adm_11km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
     xintercept=time_to_strat(TST_to_HST,adm_11km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
       xintercept=time_to_strat(HST_to_FSST,adm_11km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) +
-  labs(title = "11 km with constant extinction rate",x = "stratigraphic height [m]",y = "Last occurrences") +
-  geom_text(aes(x=0,y=60,label="LST"),color="deepskyblue3",size=4) + 
-  geom_text(aes(x=13,y=60,label="TST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=23,y=60,label="HST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=100,y=60,label="FSST"),color="deepskyblue3",size=4) + 
+  labs(title = "11 km with constant extinction rate",x = "stratigraphic height [m]",y = "Last occurrences per m") +
+  geom_text(aes(x=0,y=52,label="LST"),color="deepskyblue3",size=4) + 
+  geom_text(aes(x=13,y=52,label="TST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=22,y=52,label="HST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=100,y=52,label="FSST"),color="deepskyblue3",size=4) + 
   theme_minimal()
 
 ### 12km     constant extinction rate
@@ -492,7 +492,7 @@ p3(rate = 500, from = min_time(adm_12km), to = max_time(adm_12km)) |>  # constan
 #text(x=24, y=30, "HST",cex=0.9,col='darkblue',font=3)
 #text(x=32, y=30, "FSST",cex=0.9,col='darkblue',font=3)
 
-### 15km      constant extinction rate
+### 15 km      constant extinction rate
 ext0.15 <- p3(rate = 500, from = min_time(adm_15km), to = max_time(adm_15km)) |>  # constant rate in time domain
   time_to_strat(adm_15km, destructive = FALSE)                       # transform into depth domain
 
@@ -500,9 +500,9 @@ qplot(ext0.15, geom="histogram",binwidth=1) + coord_flip() + geom_vline(        
   xintercept=time_to_strat(LST_to_TST,adm_15km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
     xintercept=time_to_strat(TST_to_HST,adm_15km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
       xintercept=time_to_strat(HST_to_FSST,adm_15km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) +
-  labs(title = "15 km with constant extinction rate",x = "stratigraphic height [m]",y = "Last occurrences") +
+  labs(title = "15 km with constant extinction rate",x = "stratigraphic height [m]",y = "Last occurrences per m") +
   geom_text(aes(x=4,y=70,label="LST"),color="deepskyblue3",size=4) + 
-  geom_text(aes(x=13,y=70,label="TST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=14,y=70,label="TST"),color="deepskyblue3",size=4) +
   geom_text(aes(x=21,y=70,label="HST"),color="deepskyblue3",size=4) +
   geom_text(aes(x=32,y=70,label="FSST"),color="deepskyblue3",size=4) +
   theme_minimal()
@@ -529,7 +529,7 @@ lines(tp,constantrate,col="black",type='l',lwd=3)
 legend(0.2,28,legend=c("LST scen.","TST scen.","HST scen.","FSST scen."),col=c("gold1","gold3","gold4","orange4"),lty=c(1,1,1,1),lwd=3,cex=.85,ncol=4)
 
 ### Lowstand Systems Tract extincion - time: 1.25-1.75 Myr (shifted to 0-0.5 Myr)
-#4km LST
+#4 km LST
 ext1.4 <- p3_var_rate(x = c(0,0,0.25,0.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>     # determine position and rate of extinction
   time_to_strat(adm_4km, destructive = FALSE)                           # transform into depth domain
 
@@ -545,15 +545,14 @@ ggplot(df_ext1.4,aes(x=value)) +                                        # plot h
     xintercept=time_to_strat(TST_to_HST,adm_4km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
       xintercept=time_to_strat(HST_to_FSST,adm_4km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) + geom_vline(
         xintercept=LST_peak_ext_4km,color="red2",linetype="dashed",size=1) +
-  labs(title = "LST extinction scenario at 4 km",x = "stratigraphic height [m]",y = "Last occurrences") +
-  geom_text(aes(x=10,y=160,label="LST"),color="deepskyblue3",size=4) + 
-  geom_text(aes(x=40,y=160,label="TST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=80,y=160,label="HST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=100,y=160,label="FSST"),color="deepskyblue3",size=4) +
+  labs(title = "LST extinction scenario at 4 km",x = "stratigraphic height [m]",y = "Last occurrences per m") +
+  geom_text(aes(x=12,y=145,label="LST"),color="deepskyblue3",size=4) + 
+  geom_text(aes(x=40,y=145,label="TST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=80,y=145,label="HST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=100,y=145,label="FSST"),color="deepskyblue3",size=4) +
   theme_minimal()
 
-
-#9km LST
+#9 km LST
 ext1.9 <- p3_var_rate(x = c(0,0,0.25,0.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>   # determine position and rate of extinction
   time_to_strat(adm_9km, destructive = FALSE)                           # transform into depth domain
 
@@ -569,11 +568,11 @@ ggplot(df_ext1.9,aes(x=value)) +                                        # plot h
       xintercept=time_to_strat(TST_to_HST,adm_9km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
         xintercept=time_to_strat(HST_to_FSST,adm_9km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) + geom_vline(
           xintercept=LST_peak_ext_9km,color="red2",linetype="dashed",size=1) +
-  labs(title = "LST extinction scenario at 9 km",x = "stratigraphic height [m]",y = "Last occurrences") +
-  geom_text(aes(x=10,y=110,label="LST"),color="deepskyblue3",size=4) + 
-  geom_text(aes(x=75,y=110,label="TST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=140,y=110,label="HST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=155,y=110,label="FSST"),color="deepskyblue3",size=4) +
+  labs(title = "LST extinction scenario at 9 km",x = "stratigraphic height [m]",y = "Last occurrences per m") +
+  geom_text(aes(x=9.7,y=120,label="LST"),color="deepskyblue3",size=4) + 
+  geom_text(aes(x=75,y=120,label="TST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=140,y=120,label="HST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=155,y=120,label="FSST"),color="deepskyblue3",size=4) +
   theme_minimal()
 
 #11km LST
@@ -592,7 +591,7 @@ ggplot(df_ext1.11,aes(x=value)) +                                         # plot
       xintercept=time_to_strat(TST_to_HST,adm_11km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
         xintercept=time_to_strat(HST_to_FSST,adm_11km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) + geom_vline(
           xintercept=LST_peak_ext_11km,color="red2",linetype="dashed",size=1) +
-  labs(title = "LST extinction scenario at 11 km",x = "stratigraphic height [m]",y = "Last occurrences") +
+  labs(title = "LST extinction scenario at 11 km",x = "stratigraphic height [m]",y = "Last occurrences per m") +
   geom_text(aes(x=4,y=130,label="LST"),color="deepskyblue3",size=4) + 
   geom_text(aes(x=13,y=130,label="TST"),color="deepskyblue3",size=4) +
   geom_text(aes(x=22,y=130,label="HST"),color="deepskyblue3",size=4) +
@@ -615,7 +614,7 @@ ggplot(df_ext1.15,aes(x=value)) +                                         # plot
       xintercept=time_to_strat(TST_to_HST,adm_15km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
         xintercept=time_to_strat(HST_to_FSST,adm_15km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) + geom_vline(
           xintercept=LST_peak_ext_15km,color="red2",linetype="dashed",size=1) +
-  labs(title = "LST extinction scenario at 15 km",x = "stratigraphic height [m]",y = "Last occurrences") +
+  labs(title = "LST extinction scenario at 15 km",x = "stratigraphic height [m]",y = "Last occurrences per m") +
   geom_text(aes(x=2.8,y=150,label="LST"),color="deepskyblue3",size=4) + 
   geom_text(aes(x=13,y=150,label="TST"),color="deepskyblue3",size=4) +
   geom_text(aes(x=21,y=150,label="HST"),color="deepskyblue3",size=4) +
@@ -639,11 +638,11 @@ ggplot(df_ext2.4,aes(x=value)) +                                        # plot h
       xintercept=time_to_strat(TST_to_HST,adm_4km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
         xintercept=time_to_strat(HST_to_FSST,adm_4km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) + geom_vline(
           xintercept=TST_peak_ext_4km,color="red2",linetype="dashed",size=1) +
-  labs(title = "TST extinction scenario at 4 km",x = "stratigraphic height [m]",y = "Last occurrences") +
-  geom_text(aes(x=7,y=40,label="LST"),color="deepskyblue3",size=4) + 
-  geom_text(aes(x=50,y=40,label="TST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=85,y=40,label="HST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=100,y=40,label="FSST"),color="deepskyblue3",size=4) +
+  labs(title = "TST extinction scenario at 4 km",x = "stratigraphic height [m]",y = "Last occurrences per m") +
+  geom_text(aes(x=7,y=50,label="LST"),color="deepskyblue3",size=4) + 
+  geom_text(aes(x=50,y=50,label="TST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=85,y=50,label="HST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=100,y=50,label="FSST"),color="deepskyblue3",size=4) +
   theme_minimal()
 
 #9km TST
@@ -662,11 +661,11 @@ ggplot(df_ext2.9,aes(x=value)) +                                        # plot h
       xintercept=time_to_strat(TST_to_HST,adm_9km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
         xintercept=time_to_strat(HST_to_FSST,adm_9km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) + geom_vline(
           xintercept=TST_peak_ext_9km,color="red2",linetype="dashed",size=1) +
-  labs(title = "TST extinction scenario at 9 km",x = "stratigraphic height [m]",y = "Last occurrences") +
-  geom_text(aes(x=6,y=40,label="LST"),color="deepskyblue3",size=4) + 
-  geom_text(aes(x=65,y=40,label="TST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=140,y=40,label="HST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=155,y=40,label="FSST"),color="deepskyblue3",size=4) +
+  labs(title = "TST extinction scenario at 9 km",x = "stratigraphic height [m]",y = "Last occurrences per m") +
+  geom_text(aes(x=6,y=50,label="LST"),color="deepskyblue3",size=4) + 
+  geom_text(aes(x=65,y=50,label="TST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=140,y=50,label="HST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=155,y=50,label="FSST"),color="deepskyblue3",size=4) +
   theme_minimal()
 
 #11km TST
@@ -679,17 +678,17 @@ df_ext2.11 <- data.frame(value = ext2.11)                                 # crea
 
 ggplot(df_ext2.11,aes(x=value)) +                                        # plot histogram
   geom_histogram(aes(fill = value >= LST_height_11km & value <= TST_height_11km),binwidth=1.5,color="black") + 
-  scale_fill_manual(values=c("TRUE"="red", "FALSE"="white"), guide="none") + 
+  scale_fill_manual(values=c("TRUE"="yellow", "FALSE"="white"), guide="none") + 
   coord_flip() + geom_vline(
     xintercept=time_to_strat(LST_to_TST,adm_11km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
       xintercept=time_to_strat(TST_to_HST,adm_11km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
         xintercept=time_to_strat(HST_to_FSST,adm_11km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) + geom_vline(
-          xintercept=TST_peak_ext_11km,color="yellow",linetype="dashed",size=1) +
-  labs(title = "TST extinction scenario at 11 km",x = "stratigraphic height [m]",y = "Last occurrences") +
-  geom_text(aes(x=3,y=132,label="LST"),color="deepskyblue3",size=4) + 
-  geom_text(aes(x=15,y=132,label="TST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=23,y=132,label="HST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=100,y=132,label="FSST"),color="deepskyblue3",size=4) +
+          xintercept=TST_peak_ext_11km,color="red2",linetype="dashed",size=1) +
+  labs(title = "TST extinction scenario at 11 km",x = "stratigraphic height [m]",y = "Last occurrences per m") +
+  geom_text(aes(x=3,y=138,label="LST"),color="deepskyblue3",size=4) + 
+  geom_text(aes(x=13,y=138,label="TST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=22,y=138,label="HST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=100,y=138,label="FSST"),color="deepskyblue3",size=4) +
   theme_minimal()
 
 #15km TST
@@ -708,11 +707,11 @@ ggplot(df_ext2.15,aes(x=value)) +                                        # plot 
       xintercept=time_to_strat(TST_to_HST,adm_15km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
         xintercept=time_to_strat(HST_to_FSST,adm_15km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) + geom_vline(
           xintercept=TST_peak_ext_15km,color="red2",linetype="dashed",size=1) +
-  labs(title = "TST extinction scenario at 15 km",x = "stratigraphic height [m]",y = "Last occurrences") +
-  geom_text(aes(x=5,y=150,label="LST"),color="deepskyblue3",size=4) + 
-  geom_text(aes(x=15,y=150,label="TST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=21,y=150,label="HST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=30,y=150,label="FSST"),color="deepskyblue3",size=4) +
+  labs(title = "TST extinction scenario at 15 km",x = "stratigraphic height [m]",y = "Last occurrences per m") +
+  geom_text(aes(x=5,y=190,label="LST"),color="deepskyblue3",size=4) + 
+  geom_text(aes(x=14,y=190,label="TST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=21,y=190,label="HST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=30,y=190,label="FSST"),color="deepskyblue3",size=4) +
   theme_minimal()
 
 #### Highstand System Tract extinction - time: 2.25-2.75 Myr (shifted to 1-1.5 Myr)
@@ -732,7 +731,7 @@ ggplot(df_ext3.4,aes(x=value)) +                                          # plot
       xintercept=time_to_strat(TST_to_HST,adm_4km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
         xintercept=time_to_strat(HST_to_FSST,adm_4km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) + geom_vline(
           xintercept=HST_peak_ext_4km,color="red2",linetype="dashed",size=1) +
-  labs(title = "HST extinction scenario at 4 km",x = "stratigraphic height [m]",y = "Last occurrences") +
+  labs(title = "HST extinction scenario at 4 km",x = "stratigraphic height [m]",y = "Last occurrences per m") +
   geom_text(aes(x=7,y=150,label="LST"),color="deepskyblue3",size=4) + 
   geom_text(aes(x=50,y=150,label="TST"),color="deepskyblue3",size=4) +
   geom_text(aes(x=80,y=150,label="HST"),color="deepskyblue3",size=4) +
@@ -755,7 +754,7 @@ ggplot(df_ext3.9,aes(x=value)) +                                          # plot
       xintercept=time_to_strat(TST_to_HST,adm_9km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
         xintercept=time_to_strat(HST_to_FSST,adm_9km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) + geom_vline(
           xintercept=HST_peak_ext_9km,color="red2",linetype="dashed",size=1) +
-  labs(title = "HST extinction scenario at 9 km",x = "stratigraphic height [m]",y = "Last occurrences") +
+  labs(title = "HST extinction scenario at 9 km",x = "stratigraphic height [m]",y = "Last occurrences per m") +
   geom_text(aes(x=6,y=150,label="LST"),color="deepskyblue3",size=4) + 
   geom_text(aes(x=75,y=150,label="TST"),color="deepskyblue3",size=4) +
   geom_text(aes(x=137,y=150,label="HST"),color="deepskyblue3",size=4) +
@@ -778,11 +777,11 @@ ggplot(df_ext3.11,aes(x=value)) +                                          # plo
       xintercept=time_to_strat(TST_to_HST,adm_11km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
         xintercept=time_to_strat(HST_to_FSST,adm_11km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) + geom_vline(
           xintercept=HST_peak_ext_11km,color="red2",linetype="dashed",size=1) +
-  labs(title = "HST extinction scenario at 11 km",x = "stratigraphic height [m]",y = "Last occurrences") +
-  geom_text(aes(x=4,y=110,label="LST"),color="deepskyblue3",size=4) + 
-  geom_text(aes(x=13,y=110,label="TST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=22,y=110,label="HST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=100,y=110,label="FSST"),color="deepskyblue3",size=4) +
+  labs(title = "HST extinction scenario at 11 km",x = "stratigraphic height [m]",y = "Last occurrences per m") +
+  geom_text(aes(x=4,y=130,label="LST"),color="deepskyblue3",size=4) + 
+  geom_text(aes(x=13,y=130,label="TST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=22,y=130,label="HST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=100,y=130,label="FSST"),color="deepskyblue3",size=4) +
   theme_minimal()
 
 #15km HST
@@ -801,11 +800,11 @@ ggplot(df_ext3.15,aes(x=value)) +                                         # plot
       xintercept=time_to_strat(TST_to_HST,adm_15km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
         xintercept=time_to_strat(HST_to_FSST,adm_15km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) + geom_vline(
           xintercept=HST_peak_ext_15km,color="red2",linetype="dashed",size=1) +
-  labs(title = "HST extinction scenario at 15 km",x = "stratigraphic height [m]",y = "Last occurrences") +
-  geom_text(aes(x=4,y=150,label="LST"),color="deepskyblue3",size=4) + 
-  geom_text(aes(x=13,y=150,label="TST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=23.5,y=150,label="HST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=30,y=150,label="FSST"),color="deepskyblue3",size=4) +
+  labs(title = "HST extinction scenario at 15 km",x = "stratigraphic height [m]",y = "Last occurrences per m") +
+  geom_text(aes(x=4,y=120,label="LST"),color="deepskyblue3",size=4) + 
+  geom_text(aes(x=13,y=120,label="TST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=22,y=120,label="HST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=30,y=120,label="FSST"),color="deepskyblue3",size=4) +
   theme_minimal()
 
 ### Falling Stage System Tract extinction - time: 2.75-3.25 Myr (shifted to 1.5-2 Myr)
@@ -825,14 +824,15 @@ ggplot(df_ext4.4,aes(x=value)) +                                        # plot h
       xintercept=time_to_strat(TST_to_HST,adm_4km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
         xintercept=time_to_strat(HST_to_FSST,adm_4km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) + geom_vline(
           xintercept=FSST_peak_ext_4km,color="red2",linetype="dashed",size=1) +
-  labs(title = "FSST extinction scenario at 4 km",x = "stratigraphic height [m]",y = "Last occurrences") +
-  geom_text(aes(x=7,y=225,label="LST"),color="deepskyblue3",size=4) + 
-  geom_text(aes(x=50,y=225,label="TST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=83,y=225,label="HST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=105,y=225,label="FSST"),color="deepskyblue3",size=4) +
+  labs(title = "FSST extinction scenario at 4 km",x = "stratigraphic height [m]",y = "Last occurrences per m") +
+  geom_text(aes(x=7,y=330,label="LST"),color="deepskyblue3",size=4) + 
+  geom_text(aes(x=50,y=330,label="TST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=83,y=330,label="HST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=105,y=330,label="FSST"),color="deepskyblue3",size=4) +
   theme_minimal()
 time_to_strat(2,adm_4km,destructive=FALSE)-time_to_strat(HST_to_FSST,adm_4km,destructive=FALSE)
 time_to_strat(2,adm_15km,destructive=FALSE)-time_to_strat(HST_to_FSST,adm_15km,destructive=FALSE)
+time_to_strat(1.98,adm_4km,destructive=FALSE)
 
 #9km FSST
 ext4.9 <- p3_var_rate(x = c(0,1.5,1.75,2,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>   # determine position and rate of extinction
@@ -850,11 +850,11 @@ ggplot(df_ext4.9,aes(x=value)) +                                        # plot h
       xintercept=time_to_strat(TST_to_HST,adm_9km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
         xintercept=time_to_strat(HST_to_FSST,adm_9km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) + geom_vline(
           xintercept=FSST_peak_ext_9km,color="red2",linetype="dashed",size=1) +
-  labs(title = "FSST extinction scenario at 9 km",x = "stratigraphic height [m]",y = "Last occurrences") +
-  geom_text(aes(x=5,y=225,label="LST"),color="deepskyblue3",size=4) + 
-  geom_text(aes(x=75,y=225,label="TST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=140,y=225,label="HST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=158,y=225,label="FSST"),color="deepskyblue3",size=4) +
+  labs(title = "FSST extinction scenario at 9 km",x = "stratigraphic height [m]",y = "Last occurrences per m") +
+  geom_text(aes(x=5,y=220,label="LST"),color="deepskyblue3",size=4) + 
+  geom_text(aes(x=75,y=220,label="TST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=140,y=220,label="HST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=158,y=220,label="FSST"),color="deepskyblue3",size=4) +
   theme_minimal()
 
 #11km FSST
@@ -873,11 +873,11 @@ ggplot(df_ext4.11,aes(x=value)) +                                         # plot
       xintercept=time_to_strat(TST_to_HST,adm_11km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
         xintercept=time_to_strat(HST_to_FSST,adm_11km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) + geom_vline(
           xintercept=FSST_peak_ext_11km,color="red2",linetype="dashed",size=1) +
-  labs(title = "FSST extinction scenario at 11 km",x = "stratigraphic height [m]",y = "Last occurrences") +
-  geom_text(aes(x=5,y=70,label="LST"),color="deepskyblue3",size=4) + 
-  geom_text(aes(x=13,y=70,label="TST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=22,y=70,label="HST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=90,y=70,label="FSST"),color="deepskyblue3",size=4) +
+  labs(title = "FSST extinction scenario at 11 km",x = "stratigraphic height [m]",y = "Last occurrences per m") +
+  geom_text(aes(x=5,y=78,label="LST"),color="deepskyblue3",size=4) + 
+  geom_text(aes(x=13,y=78,label="TST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=22,y=78,label="HST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=90,y=78,label="FSST"),color="deepskyblue3",size=4) +
   theme_minimal()
 
 #15km FSST
@@ -896,11 +896,11 @@ ggplot(df_ext4.15,aes(x=value)) +                                         # plot
       xintercept=time_to_strat(TST_to_HST,adm_15km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
         xintercept=time_to_strat(HST_to_FSST,adm_15km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) + geom_vline(
           xintercept=FSST_peak_ext_15km,color="red2",linetype="dashed",size=1) +
-  labs(title = "FSST extinction scenario at 15 km",x = "stratigraphic height [m]",y = "Last occurrences") +
-  geom_text(aes(x=4,y=120,label="LST"),color="deepskyblue3",size=4) + 
-  geom_text(aes(x=13,y=120,label="TST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=22,y=120,label="HST"),color="deepskyblue3",size=4) +
-  geom_text(aes(x=28,y=120,label="FSST"),color="deepskyblue3",size=4) +
+  labs(title = "FSST extinction scenario at 15 km",x = "stratigraphic height [m]",y = "Last occurrences per m") +
+  geom_text(aes(x=4,y=150,label="LST"),color="deepskyblue3",size=4) + 
+  geom_text(aes(x=13,y=150,label="TST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=22,y=150,label="HST"),color="deepskyblue3",size=4) +
+  geom_text(aes(x=28,y=150,label="FSST"),color="deepskyblue3",size=4) +
   theme_minimal()
 ######################################################################
 
