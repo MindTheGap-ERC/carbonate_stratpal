@@ -8,5 +8,5 @@ Pkg.add("GLMakie")
 using GLMakie
 using CarboKitten.Visualization
 
-save("figs/lineage_ecology.png", summary_plot("data/alcap-example.h5"))
+save("figs/lineage_ecology.png", summary_plot("data/lineage-example.h5"))
 # ~/~ end
