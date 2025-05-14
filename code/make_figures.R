@@ -126,28 +126,24 @@ title(main="water depth at 4km",
       ylab="[m]",
       xlab="time [Myr]")
 #######################################
-
-###  6 km       adm
-h6 = data_kitten$adm12..m. 
-plot(h6,type='l')                                           # Entire runtime (4 Myr)
-###  7 km       adm                                       
-h7 = data_kitten$adm14..m.                                 
-plot(h7,type='l')                                           # Entire runtime (4 Myr)
-h7_mod = h7[ t >= 1.25 & t <= 3.25]                         # modify to show 1.25-3.25 Myr
-h7_mod_shifted = h7_mod - min(h7_mod)                       # shift to 0-2 Myr
-adm7_mod = tp_to_adm(t = t_mod, h7_mod)                     
-adm_7km = tp_to_adm(t = t_mod_shifted, h7_mod_shifted)      
-plot(adm_7km,lwd_acc = 2,lwd_destr = 0)                     # plot 1.25 - 3.25 Myr
-title(main = "B. ADM 7 km",
+###  5 km       adm
+h5 = data_kitten$adm10..m. 
+plot(h5,type='l')  
+h5_mod = h5[t >= 1.25 & t <= 3.25]                          # modify to show 1.25-3.25 Myr
+h5_mod_shifted = h5_mod - min(h5_mod)                       # shift to 0-2 Myr
+adm5_mod = tp_to_adm(t = t_mod, h5_mod)                    
+adm_5km = tp_to_adm(t = t_mod_shifted, h5_mod_shifted)     
+plot(adm_5km,lwd_acc = 2,lwd_destr = 0)                     # plot 1.25 - 3.25 Myr                              
+title(main = "A. ADM 4 km",
       xlab = "time [Myr]", ylab = "height [m]",
       cex.main = 1.2)
-abline(v=(LST_to_TST),col="cyan4",lwd=3,lty="dashed")
-abline(v=(TST_to_HST),col="cyan4",lwd=3,lty="dashed")
-abline(v=(HST_to_FSST),col="cyan4",lwd=3,lty="dashed")
-text(x=0.22, y=50, "LST",cex=0.8,col='darkblue',font=3)
-text(x=0.78, y=50, "TST",cex=0.8,col='darkblue',font=3)
-text(x=1.28, y=50, "HST",cex=0.8,col='darkblue',font=3)
-text(x=1.8, y=50, "FSST",cex=0.8,col='darkblue',font=3)
+###  6 km       adm
+h6 = data_kitten$adm12..m. 
+plot(h6,type='l')                                           # Entire runtime (6 Myr)
+###  7 km       adm                                       
+h7 = data_kitten$adm14..m.                                 
+plot(h7,type='l')                                           # Entire runtime (7 Myr)
+
 
 ###  8 km       adm
 h8 = data_kitten$adm16..m.

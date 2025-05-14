@@ -260,7 +260,191 @@ sum(get_hiat_duration(adm_TST_15km))
 sum(get_hiat_duration(adm_HST_15km))
 sum(get_hiat_duration(adm_FSST_15km))
 
-#Incompleteness percentage per adm #################
+# Compare completeness per sedimentary environment
+# First isolate 1.25 Myr - 3.25 Myr per ADM
+
+###  1 km       adm
+h1 = data_kitten$adm2..m. 
+plot(h1,type='l')  
+h1_mod = h1[t >= 1.25 & t <= 3.25]                          # modify to show 1.25-3.25 Myr
+h1_mod_shifted = h1_mod - min(h1_mod)                       # shift to 0-2 Myr
+adm1_mod = tp_to_adm(t = t_mod, h1_mod)                    
+adm_1km = tp_to_adm(t = t_mod_shifted, h1_mod_shifted)
+plot(adm_1km,lwd_acc = 2,lwd_destr = 0)
+
+###  2 km       adm
+h2 = data_kitten$adm4..m. 
+plot(h2,type='l')  
+h2_mod = h2[t >= 1.25 & t <= 3.25]                          # modify to show 1.25-3.25 Myr
+h2_mod_shifted = h2_mod - min(h2_mod)                       # shift to 0-2 Myr
+adm2_mod = tp_to_adm(t = t_mod, h2_mod)                    
+adm_2km = tp_to_adm(t = t_mod_shifted, h2_mod_shifted)
+plot(adm_2km,lwd_acc = 2,lwd_destr = 0)
+
+###  3 km       adm
+h3 = data_kitten$adm6..m. 
+plot(h3,type='l')  
+h3_mod = h3[t >= 1.25 & t <= 3.25]                          # modify to show 1.25-3.25 Myr
+h3_mod_shifted = h3_mod - min(h3_mod)                       # shift to 0-2 Myr
+adm3_mod = tp_to_adm(t = t_mod, h3_mod)                    
+adm_3km = tp_to_adm(t = t_mod_shifted, h3_mod_shifted)
+plot(adm_3km,lwd_acc = 2,lwd_destr = 0)
+
+###  4 km       adm
+h4 = data_kitten$adm8..m. 
+plot(h4,type='l')  
+h4_mod = h4[t >= 1.25 & t <= 3.25]                          # modify to show 1.25-3.25 Myr
+h4_mod_shifted = h4_mod - min(h4_mod)                       # shift to 0-2 Myr
+adm4_mod = tp_to_adm(t = t_mod, h4_mod)                    
+adm_4km = tp_to_adm(t = t_mod_shifted, h4_mod_shifted)
+plot(adm_4km,lwd_acc = 2,lwd_destr = 0)
+
+###  5 km       adm
+h5 = data_kitten$adm10..m. 
+plot(h5,type='l')  
+h5_mod = h5[t >= 1.25 & t <= 3.25]                          # modify to show 1.25-3.25 Myr
+h5_mod_shifted = h5_mod - min(h5_mod)                       # shift to 0-2 Myr
+adm5_mod = tp_to_adm(t = t_mod, h5_mod)                    
+adm_5km = tp_to_adm(t = t_mod_shifted, h5_mod_shifted)
+plot(adm_5km,lwd_acc = 2,lwd_destr = 0)
+                              
+###  6 km       adm
+h6 = data_kitten$adm12..m. 
+plot(h6,type='l')                                           # Entire runtime (6 Myr)
+h6_mod = h6[t >= 1.25 & t <= 3.25]                          # modify to show 1.25-3.25 Myr
+h6_mod_shifted = h6_mod - min(h6_mod)                       # shift to 0-2 Myr
+adm6_mod = tp_to_adm(t = t_mod, h6_mod)                    
+adm_6km = tp_to_adm(t = t_mod_shifted, h6_mod_shifted)
+plot(adm_6km,lwd_acc = 2,lwd_destr = 0)
+
+###  7 km       adm                                       
+h7 = data_kitten$adm14..m.                                  # Entire runtime (7 Myr)
+plot(h7,type='l')
+h7_mod = h7[t >= 1.25 & t <= 3.25]                          # modify to show 1.25-3.25 Myr
+h7_mod_shifted = h7_mod - min(h7_mod)                       # shift to 0-2 Myr
+adm7_mod = tp_to_adm(t = t_mod, h7_mod)                    
+adm_7km = tp_to_adm(t = t_mod_shifted, h7_mod_shifted)
+plot(adm_7km,lwd_acc = 2,lwd_destr = 0)
+
+###  8 km       adm                                       
+h8 = data_kitten$adm16..m.                                  # Entire runtime (8 Myr)
+plot(h8,type='l')  
+h8_mod = h8[t >= 1.25 & t <= 3.25]                          # modify to show 1.25-3.25 Myr
+h8_mod_shifted = h8_mod - min(h8_mod)                       # shift to 0-2 Myr
+adm8_mod = tp_to_adm(t = t_mod, h8_mod)                    
+adm_8km = tp_to_adm(t = t_mod_shifted, h8_mod_shifted)     
+plot(adm_8km,lwd_acc = 2,lwd_destr = 0)
+
+###  9 km       adm                                       
+h9 = data_kitten$adm18..m.                                  # Entire runtime (9 Myr)
+plot(h9,type='l')  
+h9_mod = h9[t >= 1.25 & t <= 3.25]                          # modify to show 1.25-3.25 Myr
+h9_mod_shifted = h9_mod - min(h9_mod)                       # shift to 0-2 Myr
+adm9_mod = tp_to_adm(t = t_mod, h9_mod)                    
+adm_9km = tp_to_adm(t = t_mod_shifted, h9_mod_shifted)     
+plot(adm_9km,lwd_acc = 2,lwd_destr = 0)
+
+###  10 km       adm                                       
+h10 = data_kitten$adm20..m.                                  # Entire runtime (10 Myr)
+plot(h10,type='l')  
+h10_mod = h10[t >= 1.25 & t <= 3.25]                          # modify to show 1.25-3.25 Myr
+h10_mod_shifted = h10_mod - min(h10_mod)                       # shift to 0-2 Myr
+adm10_mod = tp_to_adm(t = t_mod, h10_mod)                    
+adm_10km = tp_to_adm(t = t_mod_shifted, h10_mod_shifted)     
+plot(adm_10km,lwd_acc = 2,lwd_destr = 0)
+
+###  11 km       adm 
+h11 = data_kitten$adm22..m.                                  # Entire runtime (11 Myr)
+plot(h11, type = 'l')  
+h11_mod = h11[t >= 1.25 & t <= 3.25]                          # modify to show 1.25–3.25 Myr
+h11_mod_shifted = h11_mod - min(h11_mod)                     # shift to 0–2 Myr
+adm11_mod = tp_to_adm(t = t_mod, h11_mod)                    
+adm_11km = tp_to_adm(t = t_mod_shifted, h11_mod_shifted)     
+plot(adm_11km, lwd_acc = 2, lwd_destr = 0)
+
+###  12 km       adm                                       
+h12 = data_kitten$adm24..m.                                  # Entire runtime (12 Myr)
+plot(h12, type = 'l')  
+h12_mod = h12[t >= 1.25 & t <= 3.25]                          # modify to show 1.25–3.25 Myr
+h12_mod_shifted = h12_mod - min(h12_mod)                     # shift to 0–2 Myr
+adm12_mod = tp_to_adm(t = t_mod, h12_mod)                    
+adm_12km = tp_to_adm(t = t_mod_shifted, h12_mod_shifted)     
+plot(adm_12km, lwd_acc = 2, lwd_destr = 0)
+
+###  13 km       adm                                       
+h13 = data_kitten$adm26..m.                                  # Entire runtime (13 Myr)
+plot(h13, type = 'l')  
+h13_mod = h13[t >= 1.25 & t <= 3.25]                          # modify to show 1.25–3.25 Myr
+h13_mod_shifted = h13_mod - min(h13_mod)                     # shift to 0–2 Myr
+adm13_mod = tp_to_adm(t = t_mod, h13_mod)                    
+adm_13km = tp_to_adm(t = t_mod_shifted, h13_mod_shifted)     
+plot(adm_13km, lwd_acc = 2, lwd_destr = 0)
+
+###  14 km       adm                                       
+h14 = data_kitten$adm28..m.                                  # Entire runtime (14 Myr)
+plot(h14, type = 'l')  
+h14_mod = h14[t >= 1.25 & t <= 3.25]                          # modify to show 1.25–3.25 Myr
+h14_mod_shifted = h14_mod - min(h14_mod)                     # shift to 0–2 Myr
+adm14_mod = tp_to_adm(t = t_mod, h14_mod)                    
+adm_14km = tp_to_adm(t = t_mod_shifted, h14_mod_shifted)     
+plot(adm_14km, lwd_acc = 2, lwd_destr = 0)
+
+###  15 km       adm                                       
+h15 = data_kitten$adm30..m.                                  # Entire runtime (15 Myr)
+plot(h15, type = 'l')  
+h15_mod = h15[t >= 1.25 & t <= 3.25]                          # modify to show 1.25–3.25 Myr
+h15_mod_shifted = h15_mod - min(h15_mod)                     # shift to 0–2 Myr
+adm15_mod = tp_to_adm(t = t_mod, h15_mod)                    
+adm_15km = tp_to_adm(t = t_mod_shifted, h15_mod_shifted)     
+plot(adm_15km, lwd_acc = 2, lwd_destr = 0)
+
+
+###  16 km       adm 
+h16 = data_kitten$adm32..m.                                  # Entire runtime (16 Myr)
+plot(h16, type = 'l')  
+h16_mod = h16[t >= 1.25 & t <= 3.25]                          # modify to show 1.25–3.25 Myr
+h16_mod_shifted = h16_mod - min(h16_mod)                     # shift to 0–2 Myr
+adm16_mod = tp_to_adm(t = t_mod, h16_mod)                    
+adm_16km = tp_to_adm(t = t_mod_shifted, h16_mod_shifted)     
+plot(adm_16km, lwd_acc = 2, lwd_destr = 0)
+
+###  17 km       adm 
+h17 = data_kitten$adm34..m.                                  # Entire runtime (17 Myr)
+plot(h17, type = 'l')  
+h17_mod = h17[t >= 1.25 & t <= 3.25]                          # modify to show 1.25–3.25 Myr
+h17_mod_shifted = h17_mod - min(h17_mod)                     # shift to 0–2 Myr
+adm17_mod = tp_to_adm(t = t_mod, h17_mod)                    
+adm_17km = tp_to_adm(t = t_mod_shifted, h17_mod_shifted)     
+plot(adm_17km, lwd_acc = 2, lwd_destr = 0)
+
+###  18 km       adm
+h18 = data_kitten$adm36..m.                                  # Entire runtime (18 Myr)
+plot(h18, type = 'l')  
+h18_mod = h18[t >= 1.25 & t <= 3.25]                          # modify to show 1.25–3.25 Myr
+h18_mod_shifted = h18_mod - min(h18_mod)                     # shift to 0–2 Myr
+adm18_mod = tp_to_adm(t = t_mod, h18_mod)                    
+adm_18km = tp_to_adm(t = t_mod_shifted, h18_mod_shifted)     
+plot(adm_18km, lwd_acc = 2, lwd_destr = 0)
+
+###  19 km       adm
+h19 = data_kitten$adm38..m.                                  # Entire runtime (19 Myr)
+plot(h19, type = 'l')  
+h19_mod = h19[t >= 1.25 & t <= 3.25]                          # modify to show 1.25–3.25 Myr
+h19_mod_shifted = h19_mod - min(h19_mod)                     # shift to 0–2 Myr
+adm19_mod = tp_to_adm(t = t_mod, h19_mod)                    
+adm_19km = tp_to_adm(t = t_mod_shifted, h19_mod_shifted)     
+plot(adm_19km, lwd_acc = 2, lwd_destr = 0)
+
+###  20 km       adm
+h20 = data_kitten$adm40..m.                                  # Entire runtime (20 Myr)
+plot(h20, type = 'l')  
+h20_mod = h20[t >= 1.25 & t <= 3.25]                          # modify to show 1.25–3.25 Myr
+h20_mod_shifted = h20_mod - min(h20_mod)                     # shift to 0–2 Myr
+adm20_mod = tp_to_adm(t = t_mod, h20_mod)                    
+adm_20km = tp_to_adm(t = t_mod_shifted, h20_mod_shifted)     
+plot(adm_20km, lwd_acc = 2, lwd_destr = 0)
+
+#Incompleteness percentage per ADM #################
 w_incompleteness <- c()
 for(incompleteness in adm){
   v_incompleteness <- get_incompleteness(incompleteness)
@@ -285,13 +469,13 @@ plot(w_completeness,
      pch = c(16))
 
 #completeness average _ interior
-(get_completeness(adm_1km)+get_completeness(adm_2km)+get_completeness(adm_3km)+get_completeness(adm_4km)+get_completeness(adm_5km))/5
+(get_completeness(adm_1km)+get_completeness(adm_2km)+get_completeness(adm_3km)+get_completeness(adm_4km)+get_completeness(adm_5km)+get_completeness(adm_6km)+get_completeness(adm_7km))/7
 #completeness average _ all states
-(get_completeness(adm_7km)+get_completeness(adm_8km)+get_completeness(adm_9km)+get_completeness(adm_10km)+get_completeness(adm_11km))/5
+(get_completeness(adm_8km)+get_completeness(adm_9km)+get_completeness(adm_10km)+get_completeness(adm_11km))/4
 #completeness average _ basin
-(get_completeness(adm_13km)+get_completeness(adm_14km)+get_completeness(adm_15km)+get_completeness(adm_16km)+get_completeness(adm_17km)+get_completeness(adm_18km)+get_completeness(adm_19km)+get_completeness(adm_20km))/8
+(get_completeness(adm_12km)+get_completeness(adm_13km)+get_completeness(adm_14km)+get_completeness(adm_15km)+get_completeness(adm_16km)+get_completeness(adm_17km)+get_completeness(adm_18km)+get_completeness(adm_19km)+get_completeness(adm_20km))/9
 
-#Number of gaps per adm ##############################
+#Number of hiatuses per ADM ##############################
 w_hiat_no <- c()
 for(hiat_no in adm){
   v_hiat_no <- get_hiat_no(hiat_no)
@@ -303,13 +487,13 @@ plot(w_hiat_no,
      ylab = "number of gaps",
      pch = c(16))
 #hiat_no average _ platform interior
-(get_hiat_no(adm_1km)+get_hiat_no(adm_2km)+get_hiat_no(adm_3km)+get_hiat_no(adm_4km)+get_hiat_no(adm_5km))/5
+(get_hiat_no(adm_1km)+get_hiat_no(adm_2km)+get_hiat_no(adm_3km)+get_hiat_no(adm_4km)+get_hiat_no(adm_5km)+get_hiat_no(adm_6km)+get_hiat_no(adm_7km))/7
 #hiat_no average _ all states of platform
-(get_hiat_no(adm_7km)+get_hiat_no(adm_8km)+get_hiat_no(adm_9km)+get_hiat_no(adm_10km)+get_hiat_no(adm_11km))/5
+(get_hiat_no(adm_8km)+get_hiat_no(adm_9km)+get_hiat_no(adm_10km)+get_hiat_no(adm_11km))/4
 #hiat_no average _ basin
 (get_hiat_no(adm_13km)+get_hiat_no(adm_14km)+get_hiat_no(adm_15km)+get_hiat_no(adm_16km)+get_hiat_no(adm_17km)+get_hiat_no(adm_18km)+get_hiat_no(adm_19km)+get_hiat_no(adm_20km))/8
 
-#Average duration of hiatus per adm ##################
+#Average duration of hiatus per ADM ##################
 w_hiat_dur <- c()
 for(hiat_dur in adm){
   v_hiat_dur <- mean(get_hiat_duration(hiat_dur))
@@ -320,10 +504,11 @@ plot(w_hiat_dur,
      xlab = "km",
      ylab = "Myr",
      pch = c(16))
+
 #hiat_duration average _ platform interior
-(mean(get_hiat_duration(adm_1km))+mean(get_hiat_duration(adm_2km))+mean(get_hiat_duration(adm_3km))+mean(get_hiat_duration(adm_4km))+mean(get_hiat_duration(adm_5km)))/5
+(mean(get_hiat_duration(adm_1km))+mean(get_hiat_duration(adm_2km))+mean(get_hiat_duration(adm_3km))+mean(get_hiat_duration(adm_4km))+mean(get_hiat_duration(adm_5km))+mean(get_hiat_duration(adm_4km))+mean(get_hiat_duration(adm_5km)))/7
 #hiat_duration average _ all stages of platform
-(mean(get_hiat_duration(adm_6km))+mean(get_hiat_duration(adm_7km))+mean(get_hiat_duration(adm_8km))+mean(get_hiat_duration(adm_9km))+mean(get_hiat_duration(adm_10km))+mean(get_hiat_duration(adm_11km)))/5
+(mean(get_hiat_duration(adm_8km))+mean(get_hiat_duration(adm_9km))+mean(get_hiat_duration(adm_10km))+mean(get_hiat_duration(adm_11km)))/4
 #hiat_duration average basin
 (mean(get_hiat_duration(adm_13km))+mean(get_hiat_duration(adm_14km))+mean(get_hiat_duration(adm_15km))+mean(get_hiat_duration(adm_16km))+mean(get_hiat_duration(adm_17km))+mean(get_hiat_duration(adm_18km))+mean(get_hiat_duration(adm_19km))+mean(get_hiat_duration(adm_20km)))/8
 
@@ -339,19 +524,7 @@ plot(w_hiat_sum,
      ylab = "Myr",
      pch = c(16))
 
-#Height per adm ######################################
-w_height <- c()
-for(height in adm){
-  v_height <- get_height(height)
-  w_height <- c(w_height,v_height)
-}
-plot(w_height,
-     main = "height",
-     xlab = "?",
-     ylab = "meter",
-     pch = c(16))    
-
-#Total thickness per adm ######################################
+#Total thickness per ADM ######################################
 w_thickness <- c()
 for(thickness in adm){
   v_thickness <- get_total_thickness(thickness)
@@ -359,7 +532,7 @@ for(thickness in adm){
 }
 plot(w_thickness,
      main = "total thickness",
-     xlab = "adm km",
+     xlab = "ADM km",
      ylab = "meter",
      pch = c(16))   
 
@@ -369,3 +542,4 @@ get_height(adm_9km,1.98,destructive = FALSE)
 get_height(adm_11km,2,destructive = FALSE)
 get_height(adm_15km,1.98,destructive = FALSE)
 get_height(adm_9km,destructive=FALSE)
+
