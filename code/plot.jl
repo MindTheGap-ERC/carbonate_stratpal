@@ -1,6 +1,3 @@
-#| creates: docs/src/_fig/alcaps-alternative.png
-#| requires: data/output/lineage-example.h5
-
 import Pkg
 Pkg.add("GLMakie")
 
