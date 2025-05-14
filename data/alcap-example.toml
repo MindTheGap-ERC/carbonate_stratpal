@@ -1,0 +1,212 @@
+[[locations]]
+number = 1
+x = [400.0, "m"]
+initial_topography = [-1.3333333333333333, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 2
+x = [900.0, "m"]
+initial_topography = [-3.0, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 3
+x = [1400.0, "m"]
+initial_topography = [-4.666666666666667, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 4
+x = [1900.0, "m"]
+initial_topography = [-6.333333333333333, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 5
+x = [2400.0, "m"]
+initial_topography = [-8.0, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 6
+x = [2900.0, "m"]
+initial_topography = [-9.666666666666666, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 7
+x = [3400.0, "m"]
+initial_topography = [-11.333333333333334, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 8
+x = [3900.0, "m"]
+initial_topography = [-13.0, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 9
+x = [4400.0, "m"]
+initial_topography = [-14.666666666666666, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 10
+x = [4900.0, "m"]
+initial_topography = [-16.333333333333332, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 11
+x = [5400.0, "m"]
+initial_topography = [-18.0, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 12
+x = [5900.0, "m"]
+initial_topography = [-19.666666666666668, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 13
+x = [6400.0, "m"]
+initial_topography = [-21.333333333333332, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 14
+x = [6900.0, "m"]
+initial_topography = [-23.0, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 15
+x = [7400.0, "m"]
+initial_topography = [-24.666666666666668, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 16
+x = [7900.0, "m"]
+initial_topography = [-26.333333333333332, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 17
+x = [8400.0, "m"]
+initial_topography = [-28.0, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 18
+x = [8900.0, "m"]
+initial_topography = [-29.666666666666668, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 19
+x = [9400.0, "m"]
+initial_topography = [-31.333333333333332, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 20
+x = [9900.0, "m"]
+initial_topography = [-33.0, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 21
+x = [10400.0, "m"]
+initial_topography = [-34.666666666666664, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 22
+x = [10900.0, "m"]
+initial_topography = [-36.333333333333336, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 23
+x = [11400.0, "m"]
+initial_topography = [-38.0, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 24
+x = [11900.0, "m"]
+initial_topography = [-39.666666666666664, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 25
+x = [12400.0, "m"]
+initial_topography = [-41.333333333333336, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 26
+x = [12900.0, "m"]
+initial_topography = [-43.0, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 27
+x = [13400.0, "m"]
+initial_topography = [-44.666666666666664, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 28
+x = [13900.0, "m"]
+initial_topography = [-46.333333333333336, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 29
+x = [14400.0, "m"]
+initial_topography = [-48.0, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 30
+x = [14900.0, "m"]
+initial_topography = [-49.666666666666664, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 31
+x = [15400.0, "m"]
+initial_topography = [-51.333333333333336, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 32
+x = [15900.0, "m"]
+initial_topography = [-53.0, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 33
+x = [16400.0, "m"]
+initial_topography = [-54.666666666666664, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 34
+x = [16900.0, "m"]
+initial_topography = [-56.333333333333336, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 35
+x = [17400.0, "m"]
+initial_topography = [-58.0, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 36
+x = [17900.0, "m"]
+initial_topography = [-59.666666666666664, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 37
+x = [18400.0, "m"]
+initial_topography = [-61.333333333333336, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 38
+x = [18900.0, "m"]
+initial_topography = [-63.0, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 39
+x = [19400.0, "m"]
+initial_topography = [-64.66666666666667, "m"]
+y = [2400.0, "m"]
+[[locations]]
+number = 40
+x = [19900.0, "m"]
+initial_topography = [-66.33333333333333, "m"]
+y = [2400.0, "m"]
+
+[global]
+tag = "alcap-example"
+time_steps = 20000
+subsidence_rate = [50.0, "m Myr^-1"]
+delta_t = [0.0002, "Myr"]
+
+[files]
+age_depth_model = "data/alcap-example_adm.csv"
+metadata = "data/alcap-example.toml"
+sediment_accumulation_curve = "data/alcap-example_sac.csv"
+stratigraphic_column = "data/alcap-example_sc.csv"

@@ -8,7 +8,7 @@ using Unitful
 using CarboKitten
 using CarboKitten.Export: data_export, CSV
 
-const PATH = "data/output"
+const PATH = "data"
 
 # ~/~ begin <<docs/src/model-alcap.md#alcap-example-input>>[init]
 const TAG = "alcap-example"
@@ -37,6 +37,7 @@ const FACIES = [
         diffusion_coefficient=35u"m/yr")
 ]
 
+
 const PERIOD1 = 2u"Myr"
 const AMPLITUDE1 = 15u"m"
 const PERIOD2 = 0.2u"Myr"
@@ -48,7 +49,7 @@ const INPUT = ALCAP.Input(
     time=TimeProperties(
         Δt=0.0002u"Myr",
         steps=20000,
-        write_interval=1),
+        write_interval=100),
     ca_interval=1,
     initial_topography=(x, y) -> -x / 300.0,
     sea_level=t -> (AMPLITUDE1*sin(2*pi*t/PERIOD1)) + (AMPLITUDE2*sin(2*pi*t/PERIOD2)),
@@ -64,11 +65,11 @@ function main()
     run_model(Model{ALCAP}, INPUT, "$(PATH)/$(TAG).h5")
 
     data_export(
-        CSV(tuple.(10:20:70, 25),
+        CSV(tuple.(5:5:200, 25),
             :sediment_accumulation_curve => "$(PATH)/$(TAG)_sac.csv",
             :age_depth_model => "$(PATH)/$(TAG)_adm.csv",
             :stratigraphic_column => "$(PATH)/$(TAG)_sc.csv",
-            :water_depth => "$(PATH)/$(TAG)_wd.csv",
+            #:water_depth => "$(PATH)/$(TAG)_wd.csv",
             :metadata => "$(PATH)/$(TAG).toml"),
         "$(PATH)/$(TAG).h5")
 end
