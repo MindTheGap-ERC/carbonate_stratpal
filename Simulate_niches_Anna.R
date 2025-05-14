@@ -8,7 +8,7 @@ library(admtools) #stratigraphy
 #parameters
 set.seed(123)              
 n_niches <- 100              # Number of niches
-depth_range <- seq(0, 80, length.out = 400)  # Water depths from 0 to 80 meters: to be changed when I get the CarboKitten range
+depth_range <- seq(0, 80, length.out = 100)  # Water depths from 0 to 80 meters: to be changed when I get the CarboKitten range
 
 # Generate optima more densely toward shallow depth
 # Step 1: Create a uniform sequence between 0 and 1
@@ -27,21 +27,34 @@ niche_widths <- min_width + (optima / max(optima)) * (max_width - min_width)
 # You can change this to a nonlinear function if you'd like (e.g., log, exp, etc.):
 #niche_widths <- min_width + log1p(optima) / log1p(max(optima)) * (max_width - min_width)
 
-# Create response matrix
-niche_matrix <- matrix(0, nrow = n_niches, ncol = length(depth_range))
+# Create list
+niches <- list()
 for (i in 1:n_niches) {
-  niche_matrix[i, ] <- exp(-((depth_range - optima[i])^2) / (2 * niche_widths[i]^2))
+  niches[[i]] <- StratPal::snd_niche(opt = optima[i],
+                                     tol = niche_widths[i],
+                                     cutoff_val = 0)
 }
 
+#unlist 
+numeric_vector <- as.numeric(unlist(niches))
+
+#plot niches from list
+plot(x, numeric_vector(x),
+     type = "l",
+     lwd = 2,
+     xlab = "Water depth [m]",
+     ylab = "Niche optima",
+     main = "Niche optima across different depths")
+
 # Plot to see how optima cluster near shallow depths
-matplot(depth_range, t(niche_matrix[seq(1, 80, by = 8), ]), type = "l",
-        lty = 1, col = rainbow(10), lwd = 2,
-        xlab = "Water Depth (m)", ylab = "Niche Suitability",
-        main = "Niches Clustered at Shallow Depths")
-legend("topright", legend = paste("Niche", seq(1, 80, by = 8)),
-       col = rainbow(10), lty = 1, lwd = 2)
+#matplot(depth_range, t(niche_matrix[seq(1, 80, by = 8), ]), type = "l",
+#        lty = 1, col = rainbow(10), lwd = 2,
+#        xlab = "Water Depth (m)", ylab = "Niche Suitability",
+#        main = "Niches Clustered at Shallow Depths")
+#legend("topright", legend = paste("Niche", seq(1, 80, by = 8)),
+#       col = rainbow(10), lty = 1, lwd = 2)
 
 # Plot histogram of niche optima
-hist(optima, breaks = 20, col = "skyblue", border = "white",
-     main = "Distribution of Niche Optima Across Depth",
-     xlab = "Water Depth (m)", ylab = "Number of Niches")
+#hist(optima, breaks = 20, col = "skyblue", border = "white",
+#     main = "Distribution of Niche Optima Across Depth",
+#     xlab = "Water Depth (m)", ylab = "Number of Niches")
