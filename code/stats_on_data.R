@@ -1,5 +1,4 @@
-data_kitten = read.csv("data/alcap-example7_adm.csv")
-water_depth = read.csv("data/alcap-example7_wd.csv")
+data_kitten = read.csv("alcap-example_adm_12.csv")
 
 library(admtools)
 library(StratPal)
@@ -292,7 +291,6 @@ plot(w_completeness,
 #completeness average _ basin
 (get_completeness(adm_13km)+get_completeness(adm_14km)+get_completeness(adm_15km)+get_completeness(adm_16km)+get_completeness(adm_17km)+get_completeness(adm_18km)+get_completeness(adm_19km)+get_completeness(adm_20km))/8
 
-
 #Number of gaps per adm ##############################
 w_hiat_no <- c()
 for(hiat_no in adm){
@@ -365,3 +363,9 @@ plot(w_thickness,
      ylab = "meter",
      pch = c(16))   
 
+
+get_height(adm_4km,1.98,destructive = FALSE)
+get_height(adm_9km,1.98,destructive = FALSE)
+get_height(adm_11km,2,destructive = FALSE)
+get_height(adm_15km,1.98,destructive = FALSE)
+get_height(adm_9km,destructive=FALSE)
