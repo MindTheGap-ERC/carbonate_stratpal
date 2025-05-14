@@ -33,7 +33,8 @@ Base R (version >= 4.0) and the RStudio IDE.
 
 ## Reproduction
 
-To reproduce the data, first use `code/run.jl` in Julia. Then run `code/package_installation.R` in RStudio to install `admtools` and `StratPal`, which makes you able to simulate age depth models and the phenotypic evolution behind them. Then run `code/make_figures.R` which uses the raw data from `CarboKitten.jl` to produce all the figures used in this research. 
+To reproduce the data, first use `code/run.jl` in Julia. This creates the .csv files `lineage-example_adm`, `lineage-example_sac`, and `lineage-example_sc`, containing the data used for all the scenarios. It also creates the file `lineage-example.h5`. This file is used in `code/plot.jl` in Julia to produce the figure of the carbonate platform which is saved as `lineage_ecology.png`. 
+Then run `code/package_installation.R` in RStudio to install `admtools` and `StratPal`. This makes you able to simulate Age Depth Models and the phenotypic evolution behind them. Then run `code/make_figures.R` which uses the raw data from `CarboKitten.jl` to produce all the figures used in this research. 
 
 ## Repository structure  
 
@@ -42,7 +43,7 @@ To reproduce the data, first use `code/run.jl` in Julia. Then run `code/package_
   * _plot.jl_ : creates a plot of the carbonate platform using `CarboKitten.jl`
   * _make_figures.R_ : script to generate all figures
   * _package_installation.R_ : script to install the used packages and download data
-  * _stats_on_data.R_ : script to calculate statistics and additional figures
+  * _stats_on_data.R_ : script to calculate statistics and specific numbers mentioned in the paper
 * _data_ : folder with raw data from CarboKitten.
 * _figs_ : folder for all used figures figures. 
 * _.gitignore_ : untracked files.
