@@ -8,20 +8,20 @@ library(admtools) #stratigraphy
 #parameters
 set.seed(123)              
 n_niches <- 100              # Number of niches
-depth_range <- seq(0, 80, length.out = 100)  # Water depths from 0 to 80 meters: to be changed when I get the CarboKitten range
+depth_range <- seq(-4.10, 42.44, length.out = 100)  # Water depths from -4.10 to 42.44 meters, min and max across all 4 locations 
 
 # Generate optima more densely toward shallow depth
 # Step 1: Create a uniform sequence between 0 and 1
 uniform_seq <- seq(0, 1, length.out = n_niches)
 # Step 2: Apply a transformation to bias toward 0 (shallow)
 # Try squaring or taking sqrt, log, etc.
-optima <- 80 * (uniform_seq)^2  # Quadratic: more values near 0
+optima <- -4.10 + (42.44 + 4.10) * (uniform_seq)^2  # Quadratic: more values near minimum depth (for now this means a bias towards -4.10, not sure yet if this should still be around 0)
 #other options for bias toward deep: 'sqrt(uniform_seq)' or 'exp(x) / exp(1)'
 #for bias toward shallow: 'log1p(uniform_seq) / log1p(1)'
 
 # Define niche width as a function of depth (e.g., linearly increasing)
 min_width <- 2   # Narrowest at shallowest depth
-max_width <- 20  # Widest at deepest depth
+max_width <- 10  # Widest at deepest depth
 niche_widths <- min_width + (optima / max(optima)) * (max_width - min_width)
 
 # You can change this to a nonlinear function if you'd like (e.g., log, exp, etc.):
@@ -32,7 +32,7 @@ niches <- list()
 for (i in 1:n_niches) {
   niches[[i]] <- StratPal::snd_niche(opt = optima[i],
                                      tol = niche_widths[i],
-                                     cutoff_val = 0)
+                                     cutoff_val = -4.10)
 }
 
 niche_val = list(niches)
@@ -72,7 +72,7 @@ for (i in 1:n_niches) {
   }
 }
 
-plot(NA, xlim = c(0, 80), ylim = c(1, n_niches),
+plot(NA, xlim = c(-4.10, 42.44), ylim = c(1, n_niches),
      xlab = "Water depth [m]", ylab = "Niche",
      main = "Depth range of each niche", yaxt = "n")
 axis(2, at = 1:n_niches, labels = 1:n_niches, las = 2, cex.axis = 0.5)
