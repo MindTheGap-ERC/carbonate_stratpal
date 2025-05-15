@@ -84,6 +84,7 @@ text(x=0.75, y=80, "TST",cex=0.8,col='darkblue',font=3)
 text(x=1.25, y=40, "HST",cex=0.8,col='darkblue',font=3)
 text(x=1.8, y=40, "FSST",cex=0.8,col='darkblue',font=3)
 
+
 str(adm_4km)
 adm_4km_h <- adm_4km$h        # Extract height from adm_4km
 adm_4km_t <- adm_4km$t        # and time
