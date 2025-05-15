@@ -172,7 +172,8 @@ plot(adm_11km, lwd_acc = 2, lwd_destr = 0)
   
 basin_boundary_11km = abline(v=(1.6))                                     # end of basin
 slope_boundary_11km = abline(v=(1.78))                                    # end of slope
-slope_dur_11km = 1.78-1.6                                                 # duration of slope          
+slope_dur_11km = 1.78-1.6                                                 # duration of slope
+time_to_strat(1.78,adm_11km); time_to_strat(1.6,adm_11km)                 # in the depth domain
 interior_dur_11km = 2-1.78                                                # duration of platform interior
 basin_height_11km = get_height(adm_11km,1.6)                              # height of the basin
 slope_height_11km = get_height(adm_11km,1.78)-basin_height_11km           # height of the slope

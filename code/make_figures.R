@@ -681,7 +681,7 @@ ggplot(df_ext2.9,aes(x=value)) +                                        # plot h
   geom_text(aes(x=140,y=50,label="HST"),color="deepskyblue3",size=4) +
   geom_text(aes(x=155,y=50,label="FSST"),color="deepskyblue3",size=4) +
   theme_minimal()
-
+strat_to_time(111,adm_9km)
 #11km TST
 ext2.11 <- p3_var_rate(x = c(0,0.5,0.75,1,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>    # determine position and rate of extinction
   time_to_strat(adm_11km, destructive = FALSE)                      # transform into depth domain
