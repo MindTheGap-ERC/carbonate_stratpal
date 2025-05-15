@@ -191,18 +191,21 @@ h11_TST_shifted = h11_TST - min(h11_LST)
 adm_TST_11km = tp_to_adm(t = TST_shifted, h11_TST_shifted)
 plot(adm_TST_11km)
 title('11km TST adm')
+TST_height_11km = get_height(adm_11km,1) - get_height(adm_11km,0.5)
 
 h11_HST = h11[ t >= 2.25 & t <= 2.75]                       #HST 11km
 h11_HST_shifted = h11_HST - min(h11_LST)
 adm_HST_11km = tp_to_adm(t = HST_shifted, h11_HST_shifted)
 plot(adm_HST_11km)
 title('11km HST adm')
+HST_height_11km = get_height(adm_11km,1.5) - get_height(adm_11km,1)
 
 h11_FSST = h11[ t >= 2.75 & t <= 3.25]                      #FSST 11km
 h11_FSST_shifted = h11_FSST - min(h11_FSST)
 adm_FSST_11km = tp_to_adm(t = FSST_shifted, h11_FSST_shifted)
 plot(adm_FSST_11km)
 title('11km FSST adm')
+FSST_height_11km = max_height_11km - get_height(adm_11km,1.5,destructive=FALSE)
 
 w_hiat_no_11km <- c()                          # Number of hiatuses per Systems Track at 11km.
 for(hiat_no_11km in adm_st_11km){
@@ -531,13 +534,17 @@ plot(w_hiat_dur,
      xlab = "km",
      ylab = "Myr",
      pch = c(16))
-
+get_hiat_duration(adm_4km)                # List of duration of all hiatuses at given distance
+get_hiat_duration(adm_9km)
+get_hiat_duration(adm_11km)
+get_hiat_duration(adm_15km)
 #hiat_duration average _ platform interior
 (mean(get_hiat_duration(adm_1km))+mean(get_hiat_duration(adm_2km))+mean(get_hiat_duration(adm_3km))+mean(get_hiat_duration(adm_4km))+mean(get_hiat_duration(adm_5km))+mean(get_hiat_duration(adm_4km))+mean(get_hiat_duration(adm_5km)))/7
 #hiat_duration average _ all stages of platform
 (mean(get_hiat_duration(adm_8km))+mean(get_hiat_duration(adm_9km))+mean(get_hiat_duration(adm_10km))+mean(get_hiat_duration(adm_11km)))/4
 #hiat_duration average basin
 (mean(get_hiat_duration(adm_13km))+mean(get_hiat_duration(adm_14km))+mean(get_hiat_duration(adm_15km))+mean(get_hiat_duration(adm_16km))+mean(get_hiat_duration(adm_17km))+mean(get_hiat_duration(adm_18km))+mean(get_hiat_duration(adm_19km))+mean(get_hiat_duration(adm_20km)))/8
+
 
 #Total hiatus duration per adm #######################
 w_hiat_sum <- c()

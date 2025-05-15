@@ -180,7 +180,7 @@ text(x=1.8, y=50, "FSST",cex=0.8,col='darkblue',font=3)
 abline(v=0.52)              # start of slope
 abline(v=0.66)              # end
 time_to_strat(0.66,adm_9km,destructive=FALSE)-time_to_strat(0.52,adm_9km) # change to depth domain to get slope elevation
-
+time_to_strat(0.52,adm_9km,destructive=FALSE)
 adm_9km_h <- adm_9km$h        # Extract height from adm_9km
 adm_9km_t <- adm_9km$t        # and time
 
@@ -506,7 +506,7 @@ p3(rate = 500, from = min_time(adm_12km), to = max_time(adm_12km)) |>  # constan
 ext0.15 <- p3(rate = 500, from = min_time(adm_15km), to = max_time(adm_15km)) |>  # constant rate in time domain
   time_to_strat(adm_15km, destructive = FALSE)                       # transform into depth domain
 
-c_15km <- qplot(ext0.15, geom="histogram",binwidth=1) + coord_flip() + geom_vline(          # plot histogram
+qplot(ext0.15, geom="histogram",binwidth=1) + coord_flip() + geom_vline(          # plot histogram
   xintercept=time_to_strat(LST_to_TST,adm_15km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
     xintercept=time_to_strat(TST_to_HST,adm_15km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
       xintercept=time_to_strat(HST_to_FSST,adm_15km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) +
@@ -516,7 +516,8 @@ c_15km <- qplot(ext0.15, geom="histogram",binwidth=1) + coord_flip() + geom_vlin
   geom_text(aes(x=21,y=70,label="HST"),color="deepskyblue3",size=4) +
   geom_text(aes(x=32,y=70,label="FSST"),color="deepskyblue3",size=4) +
   theme_minimal()
-#
+
+# 
 grid.arrange(c_4km, c_9km, c_11km, c_15km, nrow = 2, ncol = 2)
 ################################################################################
 ### Extinction event simulations
