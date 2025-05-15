@@ -64,6 +64,7 @@ adm_19km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm38..m.)
 adm_20km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm40..m.)
 
 par(mfrow = c(2, 2))
+
 ###  4 km     adm
 h4 = data_kitten$adm8..m.      
 plot(h4,type='l')                                           # entire runtime (4 Myr)

@@ -46,24 +46,28 @@ h4_LST_shifted = h4_LST - min(h4_LST)
 adm_LST_4km = tp_to_adm(t = LST_shifted, h4_LST_shifted)
 plot(adm_LST_4km)
 title('4km LST adm')
+LST_height_4km = get_height(adm_4km,0.5)
 
 h4_TST = h4[ t >= 1.75 & t <= 2.25]                       # TST 4 km
 h4_TST_shifted = h4_TST - min(h4_LST)
 adm_TST_4km = tp_to_adm(t = TST_shifted, h4_TST_shifted)
 plot(adm_TST_4km)
 title('4km TST adm')
+TST_height_4km = get_height(adm_4km,1) - get_height(adm_4km,0.5)
 
 h4_HST = h4[ t >= 2.25 & t <= 2.75]                       # HST 4 km
 h4_HST_shifted = h4_HST - min(h4_LST)
 adm_HST_4km = tp_to_adm(t = HST_shifted, h4_HST_shifted)
 plot(adm_HST_4km)
 title('4km HST adm')
+HST_height_4km = get_height(adm_4km,1.5,destructive=FALSE) - get_height(adm_4km,1)
 
 h4_FSST = h4[ t >= 2.75 & t <= 3.25]                      # FSST 4 km
 h4_FSST_shifted = h4_FSST - min(h4_LST)
 adm_FSST_4km = tp_to_adm(t = FSST_shifted, h4_FSST_shifted)
 plot(adm_FSST_4km)
 title('4km FSST adm')
+FSST_height_4km = max_height_4km - get_height(adm_4km,1.5,destructive=FALSE)
 
 adm_st_4km <- list(adm_LST_4km,adm_TST_4km,adm_HST_4km,adm_FSST_4km)
 
@@ -559,10 +563,4 @@ plot(w_thickness,
      ylab = "meter",
      pch = c(16))   
 
-
-get_height(adm_4km,1.98,destructive = FALSE)
-get_height(adm_9km,1.98,destructive = FALSE)
-get_height(adm_11km,2,destructive = FALSE)
-get_height(adm_15km,1.98,destructive = FALSE)
-get_height(adm_9km,destructive=FALSE)
 
