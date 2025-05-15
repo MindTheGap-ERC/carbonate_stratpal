@@ -38,6 +38,8 @@ h4_mod_shifted = h4_mod - min(h4_mod)                       # shift to 0-2 Myr
 adm4_mod = tp_to_adm(t = t_mod, h4_mod)                    
 adm_4km = tp_to_adm(t = t_mod_shifted, h4_mod_shifted)
 plot(adm_4km,lwd_acc = 2,lwd_destr = 0)
+
+max_height_4km = max(get_height(adm_4km,destructive=FALSE))             # maximum height at 4 km
                                        
 h4_LST = h4[ t >= 1.25 & t <= 1.75]                       # LST 4 km
 h4_LST_shifted = h4_LST - min(h4_LST)
@@ -170,7 +172,6 @@ slope_dur_11km = 1.78-1.6                                                 # dura
 interior_dur_11km = 2-1.78                                                # duration of platform interior
 basin_height_11km = get_height(adm_11km,1.6)                              # height of the basin
 slope_height_11km = get_height(adm_11km,1.78)-basin_height_11km           # height of the slope
-
 max_height_11km = max(get_height(adm_11km,destructive=FALSE))             # maximum height at 11 km
 interior_height_11km = max_height_11km-get_height(adm_11km,1.78)          # height of platform interior
 
