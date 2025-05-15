@@ -408,15 +408,17 @@ plot(adm_18km,lwd_acc = 2,lwd_destr = 0)
 
 par(mfrow = c(1, 1))
 ###############################################################################
+install.packages("gridExtra")
+library(gridExtra)
 ### 4 km       constant extinction rate
 ext0.4 <- p3(rate = 500, from = min_time(adm_4km), to = max_time(adm_4km)) |>   # constant rate in time domain
   time_to_strat(adm_4km, destructive = FALSE)                                   # transform into depth domain
 
-qplot(ext0.4, geom="histogram",binwidth=1) + coord_flip() + geom_vline(         # plot histogram
+c_4km <- qplot(ext0.4, geom="histogram",binwidth=1) + coord_flip() + geom_vline(         # plot histogram
   xintercept=time_to_strat(LST_to_TST,adm_4km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
     xintercept=time_to_strat(TST_to_HST,adm_4km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
       xintercept=time_to_strat(HST_to_FSST,adm_4km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) +
-  labs(title = "4 km with constant extinction rate",x = "stratigraphic height [m]",y = "Last occurrences per m") +
+  labs(title = "4 km",x = "stratigraphic height [m]",y = "Last occurrences per m") +
   geom_text(aes(x=10,y=100,label="LST"),color="deepskyblue3",size=4) + 
   geom_text(aes(x=50,y=100,label="TST"),color="deepskyblue3",size=4) +
   geom_text(aes(x=85,y=100,label="HST"),color="deepskyblue3",size=4) +
@@ -442,11 +444,11 @@ qplot(ext0.8, geom="histogram",binwidth=1) + coord_flip() + geom_vline(         
 ext0.9 <- p3(rate = 500, from = min_time(adm_9km), to = max_time(adm_9km)) |>   # constant rate in time domain
   time_to_strat(adm_9km, destructive = FALSE)                                   # transform into depth domain
 
-qplot(ext0.9, geom="histogram",binwidth=1) + coord_flip() + geom_vline(         # plot histogram
+c_9km <- qplot(ext0.9, geom="histogram",binwidth=1) + coord_flip() + geom_vline(         # plot histogram
   xintercept=time_to_strat(LST_to_TST,adm_9km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
     xintercept=time_to_strat(TST_to_HST,adm_9km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
       xintercept=time_to_strat(HST_to_FSST,adm_9km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) +
-  labs(title = "9 km with constant extinction rate",x = "stratigraphic height [m]",y = "Last occurrences per m") +
+  labs(title = "9 km",x = "stratigraphic height [m]",y = "Last occurrences per m") +
   geom_text(aes(x=0,y=100,label="LST"),color="deepskyblue3",size=4) + 
   geom_text(aes(x=70,y=100,label="TST"),color="deepskyblue3",size=4) +
   geom_text(aes(x=140,y=100,label="HST"),color="deepskyblue3",size=4) +
@@ -472,11 +474,11 @@ qplot(ext0.10, geom="histogram",binwidth=1) + coord_flip() + geom_vline(        
 ext0.11 <- p3(rate = 500, from = min_time(adm_11km), to = max_time(adm_11km)) |>  # constant rate in time domain
   time_to_strat(adm_11km, destructive = FALSE)                                    # transform into depth domain
 
-qplot(ext0.11, geom="histogram",binwidth=1) + coord_flip() + geom_vline(          # plot histogram
+c_11km <- qplot(ext0.11, geom="histogram",binwidth=1) + coord_flip() + geom_vline(          # plot histogram
   xintercept=time_to_strat(LST_to_TST,adm_11km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
     xintercept=time_to_strat(TST_to_HST,adm_11km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
       xintercept=time_to_strat(HST_to_FSST,adm_11km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) +
-  labs(title = "11 km with constant extinction rate",x = "stratigraphic height [m]",y = "Last occurrences per m") +
+  labs(title = "11 km",x = "stratigraphic height [m]",y = "Last occurrences per m") +
   geom_text(aes(x=0,y=52,label="LST"),color="deepskyblue3",size=4) + 
   geom_text(aes(x=13,y=52,label="TST"),color="deepskyblue3",size=4) +
   geom_text(aes(x=22,y=52,label="HST"),color="deepskyblue3",size=4) +
@@ -503,17 +505,18 @@ p3(rate = 500, from = min_time(adm_12km), to = max_time(adm_12km)) |>  # constan
 ext0.15 <- p3(rate = 500, from = min_time(adm_15km), to = max_time(adm_15km)) |>  # constant rate in time domain
   time_to_strat(adm_15km, destructive = FALSE)                       # transform into depth domain
 
-qplot(ext0.15, geom="histogram",binwidth=1) + coord_flip() + geom_vline(          # plot histogram
+c_15km <- qplot(ext0.15, geom="histogram",binwidth=1) + coord_flip() + geom_vline(          # plot histogram
   xintercept=time_to_strat(LST_to_TST,adm_15km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
     xintercept=time_to_strat(TST_to_HST,adm_15km,destructive=FALSE),color="cyan4", linetype="dashed",size=1) + geom_vline(
       xintercept=time_to_strat(HST_to_FSST,adm_15km,destructive=FALSE),color="cyan4",linetype="dashed",size=1) +
-  labs(title = "15 km with constant extinction rate",x = "stratigraphic height [m]",y = "Last occurrences per m") +
+  labs(title = "15 km",x = "stratigraphic height [m]",y = "Last occurrences per m") +
   geom_text(aes(x=4,y=70,label="LST"),color="deepskyblue3",size=4) + 
   geom_text(aes(x=14,y=70,label="TST"),color="deepskyblue3",size=4) +
   geom_text(aes(x=21,y=70,label="HST"),color="deepskyblue3",size=4) +
   geom_text(aes(x=32,y=70,label="FSST"),color="deepskyblue3",size=4) +
   theme_minimal()
-
+#
+grid.arrange(c_4km, c_9km, c_11km, c_15km, nrow = 2, ncol = 2)
 ################################################################################
 ### Extinction event simulations
 # Shape of extinction
@@ -536,6 +539,7 @@ lines(tp,constantrate,col="black",type='l',lwd=3)
 legend(0.2,28,legend=c("LST scen.","TST scen.","HST scen.","FSST scen."),col=c("gold1","gold3","gold4","orange4"),lty=c(1,1,1,1),lwd=3,cex=.85,ncol=4)
 
 ### Lowstand Systems Tract extincion - time: 1.25-1.75 Myr (shifted to 0-0.5 Myr)
+
 #4 km LST
 ext1.4 <- p3_var_rate(x = c(0,0,0.25,0.5,2), y = c(1,1,25,1,1), from = 0, to = 2, n = 500, f_max = 50) |>     # determine position and rate of extinction
   time_to_strat(adm_4km, destructive = FALSE)                           # transform into depth domain
