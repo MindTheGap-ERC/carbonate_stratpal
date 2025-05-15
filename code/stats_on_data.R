@@ -180,6 +180,7 @@ slope_height_11km = get_height(adm_11km,1.78)-basin_height_11km           # heig
 max_height_11km = max(get_height(adm_11km,destructive=FALSE))             # maximum height at 11 km
 interior_height_11km = max_height_11km-get_height(adm_11km,1.78)          # height of platform interior
 
+
 h11_LST = h11[ t >= 1.25 & t <= 1.75]                       #LST 11km
 h11_LST_shifted = h11_LST - min(h11_LST)
 adm_LST_11km = tp_to_adm(t = LST_shifted, h11_LST_shifted)
