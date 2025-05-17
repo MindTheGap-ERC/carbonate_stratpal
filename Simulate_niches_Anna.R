@@ -3,20 +3,22 @@ library(admtools) #stratigraphy
 
 #task is to create 100 niches described by water depth from CarboKitten model
 
-#Created using chatgpt 
+#Created using AI sources and the help of dr. Emilia Jarochowska, Niklas Hohmann, and dr. Charlotte ...
+
+Anna_wd <- read.csv("~/Documents/thesis/example_Anna_wd.csv") #had some problems syncing GitHub and my computer so saved them here locally for now, sorry
+Anna_adm <- read.csv("~/Documents/thesis/example_Anna_adm.csv")
 
 #parameters
 set.seed(123)              
 n_niches <- 100              # Number of niches
-depth_range <- seq(-4.10, 42.44, length.out = 100)  # Water depths from -4.10 to 42.44 meters, min and max across all 4 locations 
+depth_range <- seq(min(Anna_wd), max(Anna_wd), length.out = 100)  # Water depths from -4.10 to 42.44 meters, min and max across all 4 locations 
 
 # Generate optima more densely toward shallow depth
 # Step 1: Create a uniform sequence between 0 and 1
 uniform_seq <- seq(0, 1, length.out = n_niches)
 # Step 2: Apply a transformation to bias toward 0 (shallow)
-# Try squaring or taking sqrt, log, etc.
-optima <- -4.10 + (42.44 + 4.10) * (uniform_seq)^2  # Quadratic: more values near minimum depth (for now this means a bias towards -4.10, not sure yet if this should still be around 0)
-#other options for bias toward deep: 'sqrt(uniform_seq)' or 'exp(x) / exp(1)'
+# There are optima at wd 0 since those would represent intertidal species, who are quite important when it comes to marine coastal environments (Andrades et al. 2019) and (Bradley et al. 2020)
+optima <- max(Anna_wd) * (uniform_seq)^2  # Quadratic: more values near minimum depth (bias towards 0) # -4.10 + (42.44 + 4.10)
 #for bias toward shallow: 'log1p(uniform_seq) / log1p(1)'
 
 # Define niche width as a function of depth (e.g., linearly increasing)
@@ -32,7 +34,7 @@ niches <- list()
 for (i in 1:n_niches) {
   niches[[i]] <- StratPal::snd_niche(opt = optima[i],
                                      tol = niche_widths[i],
-                                     cutoff_val = -4.10)
+                                     cutoff_val = 0)
 }
 
 niche_val = list(niches)
@@ -72,7 +74,7 @@ for (i in 1:n_niches) {
   }
 }
 
-plot(NA, xlim = c(-4.10, 42.44), ylim = c(1, n_niches),
+plot(NA, xlim = c(min(Anna_wd), max(Anna_wd)), ylim = c(1, n_niches),
      xlab = "Water depth [m]", ylab = "Niche",
      main = "Depth range of each niche", yaxt = "n")
 axis(2, at = 1:n_niches, labels = 1:n_niches, las = 2, cex.axis = 0.5)
@@ -83,22 +85,58 @@ for (i in 1:n_niches) {
   }
 }
 
-#plot(x, numeric_vector(x),
-#     type = "l",
-#     lwd = 2,
-#     xlab = "Water depth [m]",
-#     ylab = "Niche optima",
-#     main = "Niche optima across different depths")
-
-# Plot to see how optima cluster near shallow depths
-#matplot(depth_range, t(niche_matrix[seq(1, 80, by = 8), ]), type = "l",
-#        lty = 1, col = rainbow(10), lwd = 2,
-#        xlab = "Water Depth (m)", ylab = "Niche Suitability",
-#        main = "Niches Clustered at Shallow Depths")
-#legend("topright", legend = paste("Niche", seq(1, 80, by = 8)),
-#       col = rainbow(10), lty = 1, lwd = 2)
-
 # Plot histogram of niche optima
-#hist(optima, breaks = 20, col = "skyblue", border = "white",
-#     main = "Distribution of Niche Optima Across Depth",
-#     xlab = "Water Depth (m)", ylab = "Number of Niches")
+hist(optima, breaks = 20, col = "blue", border = "white",
+     main = "Distribution of Niche Optima Across Depth",
+     xlab = "Water Depth (m)", ylab = "Number of Niches")
+
+#adapted from:
+vignette("event_data")
+
+#change numbers to 1, 2, 3, or 4 depending on which location
+#Niche modeling
+#how gradient changes with time (in this case water depth)
+t = Anna_wd$time..Myr.           # time steps of the model
+wd = Anna_wd$wd1..m.   # water depth 2 km offshore at model time steps
+gc = approxfun(t, wd)         # define function that defines how the gradient changes with time (gc = *G*radient *C*hange)
+
+plot(t, gc(t), 
+     type = "l", 
+     xlab = "Time [Myr]",
+     ylab = "Water depth [m]",
+     main = "Water depth 1.5 km offshore")
+
+#niche model in time dimension => help results are different each run => is this because it takes 3 random niches?
+
+niches_applied_t <- list()
+for (i in 1:3) {
+  niches_applied_t[[i]] <- p3(rate = 300, from = min(t), to = max(t)) |> # model occurrences based on constant rate of 300: to be changed!
+    apply_niche(niche_def = niches[[i]], gc = gc) |>
+    hist(xlab = "Time [Myr]",
+         main = "Fossil abundance 1.5 km from shore",
+         ylab = "# Fossils",
+         breaks = seq(from = min(t), to = max(t), length.out = 60))
+}
+
+#niche model in terms of stratigraphy 
+
+niches_applied_strat <- list()
+for (i in 1:3) {
+  niches_applied_strat[[i]] <- p3(rate = 300, from = min(t), to = max(t)) |> 
+    apply_niche(niche_def = niches[[i]], gc = gc) |>                    
+    time_to_strat(niche_val[[i]], Anna_adm$adm1..m., destructive = TRUE) |>                     # transform into strat. domain, destroy fossils that coincide with hiatuses 
+    hist(xlab = "Stratigraphic height [m]",                       
+         main = "Fossil abundance 1.5 km from shore",
+         ylab = "# Fossils",
+         breaks = seq(from = min(Anna_adm), to = max(Anna_adm), length.out = 60))
+}
+
+#water depth as presented by the stratigraphy  
+list("t" = t, "y" = wd) |>    # create list with time - water depth information
+  time_to_strat(Anna_adm$adm1..m.) |>   # transform into the strat. domain
+  plot(orientation = "lr",    # plot water depth information in the stratigraphic domain
+       type = "l",
+       xlab = "Stratigraphic position [m]",
+       ylab = "Water depth [m]",
+       main = "Water depth in section 1.5 km from shore")
+
