@@ -133,7 +133,7 @@ niches_applied_strat <- list()
 for (i in 1:3) {
   niches_applied_strat[[i]] <- p3(rate = 300, from = min(t), to = max(t)) |> 
     apply_niche(niche_def = niches[[i]], gc = gc) |>                    
-    time_to_strat(niche_val[[i]], Anna_adm_list$adm1, destructive = TRUE) |>                     # transform into strat. domain, destroy fossils that coincide with hiatuses 
+    time_to_strat(Anna_adm_list$adm1, t, destructive = TRUE, out_dom_val_h = "default") |>                     # transform into strat. domain, destroy fossils that coincide with hiatuses 
     hist(xlab = "Stratigraphic height [m]",                       
          main = "Fossil abundance 1.5 km from shore",
          ylab = "# Fossils",
