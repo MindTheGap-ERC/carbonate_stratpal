@@ -6,7 +6,7 @@ library(admtools) #stratigraphy
 #Created using AI sources and the help of dr. Emilia Jarochowska, Niklas Hohmann, and dr. Charlotte ...
 
 Anna_wd <- read.csv("~/Documents/thesis/example_Anna_wd.csv") #had some problems syncing GitHub and my computer so saved them here locally for now, sorry
-Anna_adm <- read.csv("~/Documents/thesis/example_Anna_adm.csv")
+Anna_adm <- read.csv("~/Documents/GitHub/stratpal/data/example_Anna_adm.csv")
 
 #as list to try and fix error
 Anna_adm_list <- list(
@@ -115,17 +115,44 @@ plot(t, gc(t),
      ylab = "Water depth [m]",
      main = "Water depth 1.5 km offshore")
 
-#niche model in time dimension => help results are different each run => is this because it takes 3 random niches?
+#niche model in time dimension
+
+set.seed(123)
 
 niches_applied_t <- list()
-for (i in 1:3) {
-  niches_applied_t[[i]] <- p3(rate = 300, from = min(t), to = max(t)) |> # model occurrences based on constant rate of 300: to be changed!
-    apply_niche(niche_def = niches[[i]], gc = gc) |>
-    hist(xlab = "Time [Myr]",
-         main = "Fossil abundance 1.5 km from shore",
-         ylab = "# Fossils",
-         breaks = seq(from = min(t), to = max(t), length.out = 60))
+for (i in 1:100) {
+  niches_applied_t[[i]] <- p3(rate = 300, from = min(t), to = max(t)) |> 
+    apply_niche(niche_def = niches[[i]], gc = gc)
 }
+
+#histograms
+hist_list_t <- lapply(niches_applied_t, function(x) {
+  x_num <- as.numeric(x)
+  x_num <- x_num[!is.na(x_num)]
+  if (length(x_num) > 1 && length(unique(x_num)) > 1) {
+    hist(x_num, plot = FALSE)
+  } else {
+    NULL
+  }
+})
+
+# Remove NULLs
+hist_list_t <- Filter(Negate(is.null), hist_list_t)
+
+# Combine into a data frame
+hist_data_t <- do.call(rbind, lapply(seq_along(hist_list_t), function(i) {
+  h <- hist_list_t[[i]]
+  data.frame(
+    mid = h$mids,
+    count = h$counts,
+    niche = as.factor(i)
+  )
+}))
+
+library(ggplot2)
+ggplot(hist_data_t, aes(x = mid, y = count, fill = niche)) +
+  geom_density(aes(y = after_stat(count)), alpha = 0.15) +
+  labs (x = "Time [Myr]", y = "#Fossils")
 
 #niche model in terms of stratigraphy 
 
