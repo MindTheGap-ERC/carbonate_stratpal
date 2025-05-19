@@ -18,7 +18,7 @@ Anna_adm_list <- list(
 )
 
 #parameters
-set.seed(123)              
+set.seed(124)              
 n_niches <- 100              # Number of niches
 depth_range <- seq(min(Anna_wd), max(Anna_wd), length.out = 100)  # Water depths from -4.10 to 42.44 meters, min and max across all 4 locations 
 
@@ -117,7 +117,7 @@ plot(t, gc(t),
 
 #niche model in time dimension
 
-set.seed(123)
+set.seed(124)
 
 niches_applied_t <- list()
 for (i in 1:100) {
