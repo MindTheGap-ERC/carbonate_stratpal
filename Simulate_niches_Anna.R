@@ -8,15 +8,6 @@ library(admtools) #stratigraphy
 Anna_wd <- read.csv("data/example_Anna_wd.csv") 
 Anna_adm <- read.csv("data/example_Anna_adm.csv")
 
-#as list to try and fix error
-#Anna_adm_list <- list(
- # "t" = Anna_adm$time..Myr.,
-# "adm1" = Anna_adm$adm1..m.,
-  #"adm2" = Anna_adm$adm2..m.,
-  #"adm3" = Anna_adm$adm3..m.,
-  #"adm4" = Anna_adm$adm4..m.
-#)
-
 #parameters
 set.seed(124)              
 n_niches <- 100              # Number of niches
