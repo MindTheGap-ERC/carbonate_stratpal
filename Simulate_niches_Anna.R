@@ -5,17 +5,17 @@ library(admtools) #stratigraphy
 
 #Created using AI sources and the help of dr. Emilia Jarochowska, Niklas Hohmann, and dr. Charlotte ...
 
-Anna_wd <- read.csv("~/Documents/thesis/example_Anna_wd.csv") #had some problems syncing GitHub and my computer so saved them here locally for now, sorry
-Anna_adm <- read.csv("~/Documents/GitHub/stratpal/data/example_Anna_adm.csv")
+Anna_wd <- read.csv("~/Documents/GitHub/niche_stratpal/data/example_Anna_wd.csv") #for me it is in documents, so i still had to include it in the read
+Anna_adm <- read.csv("~/Documents/GitHub/niche_stratpal/data/example_Anna_adm.csv")
 
 #as list to try and fix error
-Anna_adm_list <- list(
-  "t" = Anna_adm$time..Myr.,
-  "adm1" = Anna_adm$adm1..m.,
-  "adm2" = Anna_adm$adm2..m.,
-  "adm3" = Anna_adm$adm3..m.,
-  "adm4" = Anna_adm$adm4..m.
-)
+#Anna_adm_list <- list(
+ # "t" = Anna_adm$time..Myr.,
+# "adm1" = Anna_adm$adm1..m.,
+  #"adm2" = Anna_adm$adm2..m.,
+  #"adm3" = Anna_adm$adm3..m.,
+  #"adm4" = Anna_adm$adm4..m.
+#)
 
 #parameters
 set.seed(124)              
@@ -125,6 +125,7 @@ for (i in 1:100) {
     apply_niche(niche_def = niches[[i]], gc = gc)
 }
 
+#used AI to fix the errors with getting and saving the data as histograms
 #histograms
 hist_list_t <- lapply(niches_applied_t, function(x) {
   x_num <- as.numeric(x)
