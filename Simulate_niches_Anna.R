@@ -33,7 +33,7 @@ optima <- max(Anna_wd) * (uniform_seq)^2  # Quadratic: more values near minimum 
 # Define niche width as a function of depth (e.g., linearly increasing)
 min_width <- 2   # Narrowest at shallowest depth
 max_width <- 10  # Widest at deepest depth
-niche_widths <- min_width + (optima / max(optima)) * (max_width - min_width)
+niche_widths <- min_width + (optima / max(optima)) * (max_width - min_width) #skewed towards 0 (see figure 2 from Reijmer, 2021)
 
 # You can change this to a nonlinear function if you'd like (e.g., log, exp, etc.):
 #niche_widths <- min_width + log1p(optima) / log1p(max(optima)) * (max_width - min_width)
@@ -63,7 +63,7 @@ matplot(depth_range, niche_mat, type = "l",
         main = "Niche optima across different depths")
 
 #(using AI) plotting them as depth ranges to show more clearly the range and abundance differences across the depths
-#note: the ranges continue after 80 for the highest numbered niches, because their optima fall close to or around 80, which means although it does not show they still have the broadest suitable depth range 
+#note: the ranges continue after 42 for the highest numbered niches, because their optima fall close to or around 42, which means although it does not show they still have the broadest suitable depth range 
 threshold <- 0.005  # Set your threshold; chose 0.005 since that means there is only a 0.5% likelihood of finding the organism at that depth
 
 n_niches <- length(niches)
@@ -160,7 +160,7 @@ niches_applied_strat <- list()
 for (i in 1:3) {
   niches_applied_strat[[i]] <- p3(rate = 300, from = min(t), to = max(t)) |> 
     apply_niche(niche_def = niches[[i]], gc = gc) |>                    
-    time_to_strat(Anna_adm_list$adm1, t, destructive = TRUE, out_dom_val_h = "default") |>                     # transform into strat. domain, destroy fossils that coincide with hiatuses 
+    time_to_strat(Anna_adm_list$adm1, destructive = TRUE, out_dom_val_h = "default") |>                     # transform into strat. domain, destroy fossils that coincide with hiatuses 
     hist(xlab = "Stratigraphic height [m]",                       
          main = "Fossil abundance 1.5 km from shore",
          ylab = "# Fossils",
