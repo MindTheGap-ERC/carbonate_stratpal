@@ -157,20 +157,53 @@ ggplot(hist_data_t, aes(x = mid, y = count, fill = niche)) +
 
 #niche model in terms of stratigraphy 
 
+strat_adm = tp_to_adm(Anna_adm$time..Myr., Anna_adm$adm1..m.)
+
+set.seed(124)
+
 niches_applied_strat <- list()
-for (i in 1:3) {
+for (i in 1:100) {
   niches_applied_strat[[i]] <- p3(rate = 300, from = min(t), to = max(t)) |> 
     apply_niche(niche_def = niches[[i]], gc = gc) |>                    
-    time_to_strat(Anna_adm$adm1, destructive = TRUE, out_dom_val_h = "default") |>                     # transform into strat. domain, destroy fossils that coincide with hiatuses 
-    hist(xlab = "Stratigraphic height [m]",                       
-         main = "Fossil abundance 1.5 km from shore",
-         ylab = "# Fossils",
-         breaks = seq(from = min(Anna_adm), to = max(Anna_adm), length.out = 60))
+    time_to_strat(strat_adm, destructive = TRUE, out_dom_val_h = "default")                      # transform into strat. domain, destroy fossils that coincide with hiatuses 
+#    hist(xlab = "Stratigraphic height [m]",                       
+ #        main = "Fossil abundance 1.5 km from shore",
+  #       ylab = "# Fossils",
+   #      breaks = seq(from = min(Anna_adm), to = max(Anna_adm), length.out = 60))
 }
+
+#histograms
+hist_list_strat <- lapply(niches_applied_strat, function(x) {
+  x_num <- as.numeric(x)
+  x_num <- x_num[!is.na(x_num)]
+  if (length(x_num) > 1 && length(unique(x_num)) > 1) {
+    hist(x_num, plot = FALSE)
+  } else {
+    NULL
+  }
+})
+
+# Remove NULLs
+hist_list_strat <- Filter(Negate(is.null), hist_list_strat)
+
+# Combine into a data frame
+hist_data_strat <- do.call(rbind, lapply(seq_along(hist_list_strat), function(i) {
+  h <- hist_list_strat[[i]]
+  data.frame(
+    mid = h$mids,
+    count = h$counts,
+    niche = as.factor(i)
+  )
+}))
+
+library(ggplot2)
+ggplot(hist_data_strat, aes(x = mid, y = count, fill = niche)) +
+  geom_density(aes(y = after_stat(count)), alpha = 0.15) +
+  labs (x = "Stratigraphic position [m]", y = "#Fossils")
 
 #water depth as presented by the stratigraphy  
 list("t" = t, "y" = wd) |>    # create list with time - water depth information
-  time_to_strat(Anna_adm$adm1) |>   # transform into the strat. domain
+  time_to_strat(strat_adm) |>   # transform into the strat. domain
   plot(orientation = "lr",    # plot water depth information in the stratigraphic domain
        type = "l",
        xlab = "Stratigraphic position [m]",
