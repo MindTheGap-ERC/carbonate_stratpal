@@ -5,8 +5,8 @@ library(admtools) #stratigraphy
 
 #Created using AI sources and the help of dr. Emilia Jarochowska, Niklas Hohmann, and dr. Charlotte ...
 
-Anna_wd <- read.csv("~/Documents/GitHub/niche_stratpal/data/example_Anna_wd.csv") #for me it is in documents, so i still had to include it in the read
-Anna_adm <- read.csv("~/Documents/GitHub/niche_stratpal/data/example_Anna_adm.csv")
+Anna_wd <- read.csv("data/example_Anna_wd.csv") 
+Anna_adm <- read.csv("data/example_Anna_adm.csv")
 
 #as list to try and fix error
 #Anna_adm_list <- list(
@@ -161,7 +161,7 @@ niches_applied_strat <- list()
 for (i in 1:3) {
   niches_applied_strat[[i]] <- p3(rate = 300, from = min(t), to = max(t)) |> 
     apply_niche(niche_def = niches[[i]], gc = gc) |>                    
-    time_to_strat(Anna_adm_list$adm1, destructive = TRUE, out_dom_val_h = "default") |>                     # transform into strat. domain, destroy fossils that coincide with hiatuses 
+    time_to_strat(Anna_adm$adm1, destructive = TRUE, out_dom_val_h = "default") |>                     # transform into strat. domain, destroy fossils that coincide with hiatuses 
     hist(xlab = "Stratigraphic height [m]",                       
          main = "Fossil abundance 1.5 km from shore",
          ylab = "# Fossils",
@@ -170,7 +170,7 @@ for (i in 1:3) {
 
 #water depth as presented by the stratigraphy  
 list("t" = t, "y" = wd) |>    # create list with time - water depth information
-  time_to_strat(Anna_adm_list$adm1) |>   # transform into the strat. domain
+  time_to_strat(Anna_adm$adm1) |>   # transform into the strat. domain
   plot(orientation = "lr",    # plot water depth information in the stratigraphic domain
        type = "l",
        xlab = "Stratigraphic position [m]",
