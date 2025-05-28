@@ -179,12 +179,104 @@ ggplot(niches_fossils_strat, aes(x = t, fill = niche, color = niche)) +
     y = "Density probability"
   )
 
-#water depth as presented by the stratigraphy  
-list("t" = t, "y" = wd) |>    # create list with time - water depth information
-  time_to_strat(strat_adm) |>   # transform into the strat. domain
-  plot(orientation = "lr",    # plot water depth information in the stratigraphic domain
+#water depth as presented by the stratigraphy 
+
+wds <- list("t" = t, "y" = wd) |>    # create list with time - water depth information
+  time_to_strat(strat_adm)    # transform into the strat. domain
+  
+plot(wds, orientation = "lr",    # plot water depth information in the stratigraphic domain
        type = "l",
        xlab = "Stratigraphic position [m]",
        ylab = "Water depth [m]",
-       main = "Water depth in section 1.5 km from shore")
+       main = "Water depth in section 1.5 km from shore") 
 
+#wds <- list("t" = t, "y" = wd) |> # create list with time - water depth information
+#  time_to_strat(strat_adm) # transform into the strat. domain
+
+wds <- as.data.frame(wds)
+
+#to be p2
+ggplot(wds, aes(x = h, y = y)) +
+  geom_line() +
+  labs(
+    x = "Stratigraphic position [m]",
+    y = "Water depth [m]",
+    title = "Water depth in section 1.5 km from shore"
+  ) +
+  theme_minimal()
+
+#niche model in terms of last occurrences (strat domain)
+
+set.seed(124)
+
+niches_applied_strat_occ <- list()
+for (i in 1:100) {
+  niches_applied_strat_occ[[i]] <- p3(rate = 300, from = min(t), to = max(t)) |> 
+    apply_niche(niche_def = niches[[i]], gc = gc) |>                    
+    time_to_strat(strat_adm, destructive = FALSE, out_dom_val_h = "default") # transform into strat. domain, do not destroy fossils that coincide with hiatuses for last occurrences
+}
+
+#AI for how to find the min for each grouped niche and how to plot them based on their niche group
+library(dplyr)
+
+niches_strat_occ <- niches_strat_occ |>
+  mutate(
+    niche_num = as.integer(as.character(niche)),
+    niche_group = cut(niche_num,
+                      breaks = seq(0, 100, by = 10),
+                      labels = paste(seq(1, 91, by = 10), seq(10, 100, by = 10), sep = "-"),
+                      right = TRUE,
+                      include.lowest = TRUE)
+  )
+
+niches_last_occ <- niches_strat_occ |>
+  filter(!is.na(t)) |>
+  group_by(niche, niche_group) |>
+  summarise(min_t = min(t), .groups = "drop")
+
+library(ggplot2)
+
+p1 <- ggplot(niches_last_occ, aes(x = min_t, fill = niche_group)) +
+  geom_histogram(binwidth = 1, color = "black", position = "identity") +
+  scale_fill_viridis_d() +
+  labs(
+    x = "Stratigraphic height [m]",
+    y = "# Last occurrences",
+    fill = "Niche group",
+    title = "Last occurrences 1.5 km offshore"
+  ) +
+  theme_minimal()
+
+#together with water depth
+install.packages("remotes")
+install.packages("gridGraphics")
+remotes::install_version("cowplot", version = "0.9.4", repos = "http://cran.us.r-project.org")
+library(cowplot)
+plot_grid(p1, p2, ncol = 1)
+
+
+#"normal" histograms 
+
+#niches_strat_occ <- do.call(rbind, lapply(seq_along(niches_applied_strat_occ), function(i) {
+#  x <- as.numeric(niches_applied_strat_occ[[i]])
+#  if (length(x) > 0 && any(!is.na(x))) {
+#    data.frame(t = x, niche = as.factor(i))
+#  } else {
+#    # Insert a row with NA to ensure this niche appears in the plot/legend
+#   data.frame(t = NA, niche = as.factor(i))
+#  }
+#}))
+
+#AI for how to find the min for each grouped niche
+#library(dplyr)
+#niches_last_occ <- niches_strat_occ |>
+#  filter(!is.na(t)) |>
+#  group_by(niche) |>
+#  summarise(min_t = min(t)) |>
+#  pull(min_t)
+
+#hist(niches_last_occ,
+#     xlab = "Stratigraphic height [m]",
+#     main = "Last occurrences 1.5 km offshore",
+#     ylab = "# Last occurrences",
+#     breaks = seq(from = min(Anna_adm$adm1..m.), to = max(Anna_adm$adm1..m.), length.out = 100))
