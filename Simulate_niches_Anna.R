@@ -216,6 +216,16 @@ for (i in 1:100) {
     time_to_strat(strat_adm, destructive = FALSE, out_dom_val_h = "default") # transform into strat. domain, do not destroy fossils that coincide with hiatuses for last occurrences
 }
 
+niches_strat_occ <- do.call(rbind, lapply(seq_along(niches_applied_strat_occ), function(i) {
+  x <- as.numeric(niches_applied_strat_occ[[i]])
+  if (length(x) > 0 && any(!is.na(x))) {
+    data.frame(t = x, niche = as.factor(i))
+  } else {
+    # Insert a row with NA to ensure this niche appears in the plot/legend
+   data.frame(t = NA, niche = as.factor(i))
+  }
+}))
+
 #AI for how to find the min for each grouped niche and how to plot them based on their niche group
 library(dplyr)
 
@@ -246,7 +256,8 @@ ggplot(niches_last_occ, aes(x = min_t, fill = niche_group)) +
     fill = "Niche group",
     title = "Last occurrences 1.5 km offshore"
   ) +
-  theme_minimal()
+  theme_minimal() +
+  coord_cartesian(xlim = c(min(Anna_adm$adm1..m.), max(Anna_adm$adm1..m.)))
 
 #together with water depth
 install.packages("remotes")
