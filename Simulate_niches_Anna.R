@@ -236,7 +236,8 @@ niches_last_occ <- niches_strat_occ |>
 
 library(ggplot2)
 
-p1 <- ggplot(niches_last_occ, aes(x = min_t, fill = niche_group)) +
+#p1 <- 
+ggplot(niches_last_occ, aes(x = min_t, fill = niche_group)) +
   geom_histogram(binwidth = 1, color = "black", position = "identity") +
   scale_fill_viridis_d() +
   labs(
