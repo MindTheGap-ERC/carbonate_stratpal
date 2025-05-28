@@ -1,0 +1,31 @@
+[[locations]]
+number = 1
+x = [1530.0, "m"]
+initial_topography = [-5.1, "m"]
+y = [4080.0, "m"]
+[[locations]]
+number = 2
+x = [4930.0, "m"]
+initial_topography = [-16.433333333333334, "m"]
+y = [4080.0, "m"]
+[[locations]]
+number = 3
+x = [8330.0, "m"]
+initial_topography = [-27.766666666666666, "m"]
+y = [4080.0, "m"]
+[[locations]]
+number = 4
+x = [11730.0, "m"]
+initial_topography = [-39.1, "m"]
+y = [4080.0, "m"]
+
+[global]
+tag = "example_Anna"
+time_steps = 5000
+subsidence_rate = [30.0, "m Myr^-1"]
+delta_t = [0.0002, "Myr"]
+
+[files]
+age_depth_model = "data/example_Anna_adm.csv"
+metadata = "data/example_Anna.toml"
+water_depth = "data/example_Anna_wd.csv"
