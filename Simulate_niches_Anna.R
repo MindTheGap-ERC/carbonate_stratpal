@@ -3,7 +3,7 @@ library(admtools) #stratigraphy
 
 #task is to create 100 niches described by water depth from CarboKitten model
 
-#Created using AI sources and the help of dr. Emilia Jarochowska, Niklas Hohmann, and dr. Charlotte ...
+#Created using AI sources and the help of dr. Emilia Jarochowska, Niklas Hohmann, and dr. Charlotte Summers 
 
 Anna_wd <- read.csv("data/example_Anna_wd.csv") 
 Anna_adm <- read.csv("data/example_Anna_adm.csv")
