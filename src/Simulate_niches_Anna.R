@@ -97,7 +97,7 @@ vignette("event_data")
 #Niche modeling
 #how gradient changes with time (in this case water depth)
 t = Anna_wd$time..Myr.           # time steps of the model
-wd = Anna_wd$wd1..m.   # water depth 2 km offshore at model time steps
+wd = Anna_wd$wd4..m.   # water depth 2 km offshore at model time steps
 gc = approxfun(t, wd)         # define function that defines how the gradient changes with time (gc = *G*radient *C*hange)
 
 plot(gc(t), t, 
@@ -143,7 +143,7 @@ ggplot(niches_fossils_t, aes(x = t, fill = niche, color = niche)) +
 
 #niche model in terms of stratigraphy 
 
-strat_adm = tp_to_adm(Anna_adm$time..Myr., Anna_adm$adm1..m.)
+strat_adm = tp_to_adm(Anna_adm$time..Myr., Anna_adm$adm4..m.)
 
 set.seed(124)
 
@@ -188,22 +188,23 @@ plot(wds, orientation = "du",    # plot water depth information in the stratigra
        type = "l",
        ylab = "Stratigraphic position [m]",
        xlab = "Water depth [m]",
-       main = "Water depth in section 1.5 km from shore") 
+       main = "Water depth in section 11.7 km from shore",
+     cex.main = 1.5, cex.lab = 1.4) 
 
 #wds <- list("t" = t, "y" = wd) |> # create list with time - water depth information
 #  time_to_strat(strat_adm) # transform into the strat. domain
 
-wds <- as.data.frame(wds)
+#wds <- as.data.frame(wds)
 
 #to be p2
-ggplot(wds, aes(x = h, y = y)) +
-  geom_line() +
-  labs(
-    x = "Stratigraphic position [m]",
-    y = "Water depth [m]",
-    title = "Water depth in section 1.5 km from shore"
-  ) +
-  theme_minimal()
+#ggplot(wds, aes(x = h, y = y)) +
+#  geom_line() +
+#  labs(
+#    x = "Stratigraphic position [m]",
+#    y = "Water depth [m]",
+#    title = "Water depth in section 1.5 km from shore"
+#  ) +
+#  theme_minimal()
 
 #niche model in terms of last occurrences (strat domain)
 
@@ -254,18 +255,17 @@ ggplot(niches_last_occ, aes(x = min_t, fill = niche_group)) +
     x = "Stratigraphic height [m]",
     y = "# Last occurrences",
     fill = "Niche group",
-    title = "Last occurrences 1.5 km offshore"
+    title = "Last occurrences 11.7 km offshore"
   ) +
-  theme_minimal() +
-  coord_flip()
-  coord_cartesian(xlim = c(min(Anna_adm$adm1..m.), max(Anna_adm$adm1..m.)))
+  theme_minimal(base_size = 15) +
+  coord_flip(xlim = c(min(Anna_adm$adm4..m.), max(Anna_adm$adm4..m.)))
 
 #together with water depth
-install.packages("remotes")
-install.packages("gridGraphics")
-remotes::install_version("cowplot", version = "0.9.4", repos = "http://cran.us.r-project.org")
-library(cowplot)
-plot_grid(p1, p2, ncol = 1)
+#install.packages("remotes")
+#install.packages("gridGraphics")
+#remotes::install_version("cowplot", version = "0.9.4", repos = "http://cran.us.r-project.org")
+#library(cowplot)
+#plot_grid(p1, p2, ncol = 1)
 
 
 #"normal" histograms 
