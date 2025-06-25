@@ -257,6 +257,7 @@ ggplot(niches_last_occ, aes(x = min_t, fill = niche_group)) +
     title = "Last occurrences 1.5 km offshore"
   ) +
   theme_minimal() +
+  coord_flip()
   coord_cartesian(xlim = c(min(Anna_adm$adm1..m.), max(Anna_adm$adm1..m.)))
 
 #together with water depth
