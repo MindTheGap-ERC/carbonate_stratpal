@@ -100,8 +100,8 @@ t = Anna_wd$time..Myr.           # time steps of the model
 wd = Anna_wd$wd1..m.   # water depth 2 km offshore at model time steps
 gc = approxfun(t, wd)         # define function that defines how the gradient changes with time (gc = *G*radient *C*hange)
 
-plot(t, gc(t), 
-     type = "l", 
+plot(gc(t), t, 
+     type = "o", 
      xlab = "Time [Myr]",
      ylab = "Water depth [m]",
      main = "Water depth in section 1.5 km from shore")
@@ -184,10 +184,10 @@ ggplot(niches_fossils_strat, aes(x = t, fill = niche, color = niche)) +
 wds <- list("t" = t, "y" = wd) |>    # create list with time - water depth information
   time_to_strat(strat_adm)    # transform into the strat. domain
   
-plot(wds, orientation = "lr",    # plot water depth information in the stratigraphic domain
+plot(wds, orientation = "du",    # plot water depth information in the stratigraphic domain
        type = "l",
-       xlab = "Stratigraphic position [m]",
-       ylab = "Water depth [m]",
+       ylab = "Stratigraphic position [m]",
+       xlab = "Water depth [m]",
        main = "Water depth in section 1.5 km from shore") 
 
 #wds <- list("t" = t, "y" = wd) |> # create list with time - water depth information
