@@ -13,7 +13,6 @@ data/*.h5
 *.pdf
 
 # don't save data files
-
 *.csv
 *.h5
 
