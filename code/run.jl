@@ -40,11 +40,10 @@ const INPUT = ALCAP.Input(
     tag="$TAG",
     box=Box{Coast}(grid_size=(100, 50), phys_scale=150.0u"m"),
     time=TimeProperties(
-        Δt=0.0002u"Myr",
-        steps=5000),
+        Δt=100u"yr",
+        steps=40000),
     output=Dict(
-        :topography => OutputSpec(slice=(:,:), write_interval=10),
-        :profile => OutputSpec(slice=(:, 25), write_interval=1)),
+        :profile => OutputSpec(slice=(:, 25), write_interval=100)),
     ca_interval=1,
     initial_topography=(x, y) -> -x / 300.0,
     sea_level=t -> AMPLITUDE1 * sin(2π * t / PERIOD1) + AMPLITUDE2 * sin(2π * t / PERIOD2),
@@ -55,7 +54,6 @@ const INPUT = ALCAP.Input(
     depositional_resolution=500.0u"m",
     facies=FACIES)
 
-run_model(Model{ALCAP}, INPUT, "$(PATH)/$(TAG).h5")
 
 function main()
     run_model(Model{ALCAP}, INPUT, "$(PATH)/$(TAG).h5")
