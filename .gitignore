@@ -5,6 +5,7 @@
 .Ruserdata
 
 data/*.h5
+*.h5
 
 
 # don't save figures
@@ -65,5 +66,10 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# metadata
+*.toml
+!Manifest.toml
+!Project.toml
 
 

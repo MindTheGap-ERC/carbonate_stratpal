@@ -31,7 +31,7 @@ ORCID: [0000-0002-3851-116X](https://orcid.org/0000-0002-3851-116X)
 
 ## Requirements
 
-Base R (version >= 4.0) and the RStudio IDE, Julia
+Base R (version >= 4.0) and the RStudio IDE, Julia >= 1.10
 
 
 
@@ -64,9 +64,21 @@ this will download and precompile all dependencies. It will take a while when yo
 5. Run a script using the command `include`, for example:
 
 ```{julia}
-include("src/Run_model.jl")
+include("src/run.jl")
+```
+to generate the data,
+
+```{julia}
+include("src/plot.jl")
 ```
 
+to generate the transect plot, and 
+
+```{julia}
+include("src/extract_data.jl")
+```
+
+to extract water depth & age-depth models as .csv files.
 
 ## Copyright
 

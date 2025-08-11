@@ -2,18 +2,22 @@ module Extract_data
 
 using CarboKitten
 using Unitful
-using CarboKitten.Export: data_export, CSV
+using CarboKitten.Export: read_slice, data_export, CSV
 
-const TAG = "example_Anna"
+const TAG = "carbonate_stratpal_1"
 const PATH = "data"
 
 function main()
-data_export(
-        CSV(tuple.(10:20:70, 25),
+header, profile = read_slice("$(PATH)/$(TAG).h5", :profile)
+    columns = [profile[i] for i in 10:20:70]
+    data_export(
+        CSV(:sediment_accumulation_curve => "$(PATH)/$(TAG)_sac.csv",
             :age_depth_model => "$(PATH)/$(TAG)_adm.csv",
+            :stratigraphic_column => "$(PATH)/$(TAG)_sc.csv",
             :water_depth => "$(PATH)/$(TAG)_wd.csv",
             :metadata => "$(PATH)/$(TAG).toml"),
-        "$(PATH)/$(TAG).h5")
+         header,
+         columns)
 end
 
 end
