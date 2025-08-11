@@ -55,7 +55,6 @@ const INPUT = ALCAP.Input(
     depositional_resolution=500.0u"m",
     facies=FACIES)
 
-run_model(Model{ALCAP}, INPUT, "$(PATH)/$(TAG).h5")
 
 function main()
     run_model(Model{ALCAP}, INPUT, "$(PATH)/$(TAG).h5")
