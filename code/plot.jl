@@ -1,4 +1,16 @@
-using CairoMakie
-using CarboKitten.Visualization
 
-save("figs/carbonate_stratpal_1.png", summary_plot("data/carbonate_stratpal_1.h5"))
+module Plot_Profile 
+
+using CairoMakie
+using CarboKitten.Visualization: sediment_profile
+using CarboKitten.Export: read_slice
+
+function plot(path, name)
+    header, data = read_slice(path * name, :profile)
+    fig = sediment_profile(header, data)
+    save("figs/$(name).png", fig)
+end
+
+end
+
+Plot_Profile.plot("data/", "carbonate_stratpal_1.h5")
