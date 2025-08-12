@@ -1,35 +1,39 @@
-data_kitten = read.csv("alcap-example_adm_12.csv")
-
 library(admtools)
-library(StratPal)
 
-#ADM's: 500m:500m:12km
-adm_1km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm2..m.)
-adm_2km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm4..m.)
-adm_3km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm6..m.)
-adm_4km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm8..m.)
-adm_5km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm10..m.)
-adm_6km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm12..m.)
-adm_7km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm14..m.)
-adm_8km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm16..m.)
-adm_9km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm18..m.)
-adm_10km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm20..m.)
-adm_11km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm22..m.)
-adm_12km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm24..m.)
-adm_13km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm26..m.)
-adm_14km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm28..m.)
-adm_15km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm30..m.)
-adm_16km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm32..m.)
-adm_17km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm34..m.)
-adm_18km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm36..m.)
-adm_19km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm38..m.)
-adm_20km = tp_to_adm(t = data_kitten$time..Myr., data_kitten$adm40..m.)
+tag = "carbonate_stratpal_1"
 
-adm <- list(adm_1km,adm_2km,adm_3km,adm_4km,adm_5km,adm_6km,adm_7km,adm_8km,
-            adm_9km,adm_10km,adm_11km,adm_12km,adm_13km,adm_14km,adm_15km,
-            adm_16km,adm_17km,adm_18km,adm_19km,adm_20km)
-df<-adm
-t = data_kitten$time..Myr.
+adm_data = read.csv(paste0("data/", tag, "_adm.csv"))
+
+adm_list = list()
+for (i in 1:(length(adm_data)-2)){
+  adm_list[[i]] = tp_to_adm(t = adm_data$time..Myr.,
+                            h = adm_data[, paste0("adm_", i, "..m.")])
+}
+
+plot(adm_list[[1]])
+plot(adm_list[[2]])
+plot(adm_list[[3]])
+plot(adm_list[[4]])
+
+wd_data = read.csv(paste0("data/", tag, "_wd.csv"))
+wd = list()
+for (i in 1:(length(wd_data)-2)){
+  wd[[i]] = list(t = wd_data$time..Myr.,
+                 wd = wd_data[, paste0("wd_", i, "..m.")])
+}
+for (i in 1:4){
+  plot(wd[[i]]$t, wd[[i]]$wd)
+}
+
+# sea level
+period1 = 2.0 # Myr
+amplitude1 = 15.0 # m
+period2 = 0.2 # Myr
+amplitude2 = 2.5 # m
+
+sl = list(t = adm_data$time..Myr.,
+          sl = amplitude1 * sin(2 * pi * t/ period1) + amplitude2 * sin(2 * pi * t / period2))
+me = read_toml(paste0("data/", tag, ".toml"))
 ######################################### 4km         systems tract isolated
 h4 = data_kitten$adm8..m. 
 plot(h4,type='l')  
