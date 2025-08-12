@@ -1,4 +1,5 @@
 library(admtools)
+library(StratPal)
 
 tag = "carbonate_stratpal_1"
 
@@ -10,7 +11,7 @@ for (i in 1:(length(adm_data)-2)){
                             h = adm_data[, paste0("adm_", i, "..m.")])
 }
 
-plot(adm_list[[1]])
+plot(adm_list[[1]], lty_destr = 0)
 plot(adm_list[[2]])
 plot(adm_list[[3]])
 plot(adm_list[[4]])
@@ -31,9 +32,63 @@ amplitude1 = 15.0 # m
 period2 = 0.2 # Myr
 amplitude2 = 2.5 # m
 
-sl = list(t = adm_data$time..Myr.,
+t = adm_data$time..Myr.
+sl = list(t = t,
           sl = amplitude1 * sin(2 * pi * t/ period1) + amplitude2 * sin(2 * pi * t / period2))
+plot(sl$t, sl$sl, type = "l")
+
 me = read_toml(paste0("data/", tag, ".toml"))
+l = from_toml(me)
+l$locations
+n_locations = length(l$locations)
+loc_list = list()
+distances = c()
+for (loc in seq_len(n_locations)){ # convert to km
+  loc_list[[loc]] = list(x = l$locations[[loc]]$x[[1]]/ 1000,
+                         y = l$locations[[loc]]$y[[1]] / 1000)
+  distances =  c(distances, l$locations[[loc]]$x[[1]]/ 1000)
+}
+
+comp = c()
+for(i in seq_along(adm_list)){
+  comp = c(comp, adm_list[[i]] |> get_completeness())
+}
+plot(distances,comp, type = "l", ylim = c(0, 1),
+     ylab = c("Completeness"))
+
+
+# extinction rates
+adm = adm_list[[1]]
+p3(from = min_time(adm), to = max_time(adm), rate = 100) |>
+  time_to_strat(adm, destructive = FALSE) |>
+  hist(xlab = "Height [m]",
+       ylab = "# Last Occurrences",
+       main = "Last Occurrences")
+
+# Extinction during systems tracts
+#LST = 1.25 to 1.75
+LST_rate = approxfun(x = c(1.25, 1.5, 1.75), y = c(1, 25,1), rule = 2)
+plot(t, LST_rate(t))
+HST_rate = approxfun(x = c(2.25, 2.5, 2.75), y = c(1, 25,1), rule = 2)
+plot(t, HST_rate(t))
+TST_rate = approxfun(x = c(1.75, 2, 2.25), y = c(1, 25,1), rule = 2)
+plot(t, TST_rate(t))
+RST_rate = approxfun(x = c(0.75, 1, 1.25, 2.75, 3, 3.25), y = c(1, 25,1, 1, 25, 1), rule = 2)
+plot(t, RST_rate(t))
+lines(t, LST_rate(t))
+lines(t, HST_rate(t))
+lines(t, TST_rate(t))
+
+Height =  p3_var_rate(x = LST_rate, from = min_time(adm), to = max_time(adm), n = 100, f_max = 25) |>
+  time_to_strat(adm, destructive = FALSE)
+df = data.frame(Height)
+  
+df |> ggplot(aes(x = Height)) +
+  geom_histogram() +
+  coord_flip()
+
+df<-adm
+t = data_kitten$time..Myr.
 ######################################### 4km         systems tract isolated
 h4 = data_kitten$adm8..m. 
 plot(h4,type='l')  
