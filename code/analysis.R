@@ -219,7 +219,6 @@ for (i in seq_len(n_locations)){
     scale_fill_discrete(drop = FALSE) +
     scale_color_discrete(drop = FALSE) +
     labs(
-      title = "Probability for fossil presence 1.5 km from shore",
       x = "Stratigraphic position [m]",
       y = "Density probability"
     )

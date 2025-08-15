@@ -54,6 +54,7 @@ using Pkg
 press `]` to enter the package mode and there type:
 
 ```{julia}
+activate .
 instantiate
 ```
 
@@ -79,6 +80,27 @@ include("src/extract_data.jl")
 ```
 
 to extract water depth & age-depth models as .csv files.
+
+After generating the data, you can run the analysis in R using
+
+```{R}
+source("code/analysis.R")
+```
+
+This will generate figures under `figs/`
+
+## Repository structure
+
+* code: Julia & R scripts
+* data: model outputs. Initially empty, filled after CarboKitten is run.
+* figs: figures. Initially empty, filled after CarboKitten/the R code is run
+* .gitignore: untracked files
+* carbonate_stratpal.Rproj: R project file
+* CONTRIBUTING.md: contribution guidelines
+* LICENSE: Apache 2.0 License text
+* Manifest.toml: Julia project infrastructure
+* Project.toml: Julia project infrastructure
+* README.md: this file
 
 ## Copyright
 
