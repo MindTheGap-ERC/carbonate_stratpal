@@ -61,9 +61,9 @@ indestructible = function(x) rep(1, length(x))
 lo = last_occ(t_ext, rate = rate, adm = adm)
 lo
 
-gradient_from_data(x) = function(x){
+gradient_from_data = function(x){
   if (is.data.frame(x)){
-    return(approxfun(x = df[,1], y = df[,2], rule = 2))
+    return(approxfun(x = x[,1], y = x[,2], rule = 2))
   }
   if(is.list(x)){
     return(approxfun(x = x[[1]], y = x[[2]], rule = 2))
