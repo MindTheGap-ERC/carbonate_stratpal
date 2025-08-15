@@ -2,6 +2,8 @@ library(admtools)
 library(StratPal)
 library(configr)
 library(ggplot2)
+library(dplyr)
+library(tidyr)
 
 tag = "carbonate_stratpal_1"
 
@@ -130,3 +132,94 @@ ggsave(filename = paste0(path_sed_stats, "completeness.png"))
 # 3. sed rates?
 # -> same parameters per systems tract
 
+#### Niches ####
+path_niches = "figs/niches/"
+if (!dir.exists(path_niches)) dir.create(path_niches, recursive = TRUE)
+n_niches = 100
+min_depth = max(min(unlist(wd)), 0)
+max_depth = max(unlist(wd))
+depth_range <- seq(min_depth, max_depth, length.out = 100)
+uniform_seq <- seq(0, 1, length.out = n_niches)
+optima <- max_depth * (uniform_seq)^2
+min_width <- 2   
+max_width <- 10  
+niche_widths <- min_width + (optima / max(optima)) * (max_width - min_width)
+
+niche_list <- list()
+for (i in 1:n_niches) {
+  niche_list[[i]] <- StratPal::snd_niche(opt = optima[i],
+                                     tol = niche_widths[i],
+                                     cutoff_val = 0)
+}
+niche_val = list(niche_list)
+for (i in 1:100) {
+  niche = niche_list[[i]]
+  niche_val[[i]]=niche(depth_range)
+}
+niche_mat <- do.call(cbind, niche_val)
+png(filename = paste0(path_niches, "all_niches_time.png"))
+matplot(depth_range, niche_mat, type = "l",
+        lty = 1, col = rgb(0,0,1,0.2),
+        xlab = "Water depth [m]",
+        ylab = "Niche value",
+        main = "Niche optima across different depths")
+dev.off()
+png(filename = paste0(path_niches, "niche_optima_time.png"))
+hist(optima, breaks = 20, col = "blue", border = "white",
+     main = "Distribution of Niche Optima Across Depth",
+     xlab = "Water Depth (m)", ylab = "Number of Niches")
+dev.off()
+
+
+for (i in seq_len(n_locations)){
+  adm = adm_list[[i]]
+  pos = distances[i]
+  gc = approxfun(x = wd[[i]]$t, y = wd[[i]]$wd)
+
+  # all niches in the time domain
+  niches_fossils_t <- do.call(rbind, lapply(seq_along(niche_list), function(j) {
+    x <- p3(rate = 300, from = min(t), to = max(t)) |> 
+      apply_niche(niche_def = niche_list[[j]], gc = gc)
+    if (length(x) > 0 && any(!is.na(x))) {
+      data.frame(t = x, niche = as.factor(j))
+    } else {
+      # Insert a row with NA to ensure this niche appears in the plot/legend
+      data.frame(t = NA, niche = as.factor(j))
+    }
+  }))
+  
+  ggplot(niches_fossils_t, aes(x = t, fill = niche, color = niche)) +
+    geom_density(alpha = 0.12, color = "black") +
+    scale_fill_discrete(drop = FALSE) +
+    scale_color_discrete(drop = FALSE) +
+    labs(
+      title = "Probability for fossil presence",
+      x = "Time [Myr]",
+      y = "Density probability"
+    )
+  ggsave(filename = paste0(path_niches, "niche_time_", pos, "km.png" ))
+  
+  # all niches in the stratigraphic domain
+  niches_fossils_strat <- do.call(rbind, lapply(seq_along(niche_list), function(j) {
+    x <- p3(rate = 300, from = min(t), to = max(t)) |> 
+      apply_niche(niche_def = niche_list[[j]], gc = gc) |>                    
+      time_to_strat(adm, destructive = TRUE, out_dom_val_h = "default")
+    if (length(x) > 0 && any(!is.na(x))) {
+      data.frame(t = x, niche = as.factor(j))
+    } else {
+      # Insert a row with NA to ensure this niche appears in the plot/legend
+      data.frame(t = NA, niche = as.factor(j))
+    }
+  }))
+  
+  ggplot(niches_fossils_strat, aes(x = t, fill = niche, color = niche)) +
+    geom_density(alpha = 0.12, color = "black") +
+    scale_fill_discrete(drop = FALSE) +
+    scale_color_discrete(drop = FALSE) +
+    labs(
+      title = "Probability for fossil presence 1.5 km from shore",
+      x = "Stratigraphic position [m]",
+      y = "Density probability"
+    )
+  ggsave(filename = paste0(path_niches, "niche_strat_", pos, "km.png" ))
+}
