@@ -54,11 +54,16 @@ ggsave(filename = paste0(path_base_fig, "sl.png"))
 
 for (i in seq_len(n_locations)){
   loc = distances[i]
-  png(filename = paste0(path_base_fig, "wd_", loc, "km.png"))
+  png(filename = paste0(path_base_fig, "wd_time_", loc, "km.png"))
   plot(wd[[i]]$t, wd[[i]]$wd, type = "l")
   dev.off()
   png(filename = paste0(path_base_fig, "adm_", loc, "km.png"))
   plot(adm_list[[i]], lty_destr = 0)
+  dev.off()
+  png(filename = paste0(path_base_fig, "wd_strat_", loc, "km.png"))
+  wd_loc = list(t = wd[[i]]$t, y = wd[[i]]$wd) |>
+    time_to_strat(adm_list[[i]]) |>
+    plot(type = "l")
   dev.off()
 }
 

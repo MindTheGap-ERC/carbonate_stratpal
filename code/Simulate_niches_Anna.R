@@ -13,21 +13,23 @@ n_niches <- 100
 
 #Created using AI sources and the help of dr. Emilia Jarochowska, Niklas Hohmann, and dr. Charlotte Summers 
 tag = "carbonate_stratpal_1"
-Anna_wd <- read.csv(paste0("data/", tag, "_wd.csv")) 
-Anna_adm <- read.csv(paste0("data/", tag, "_adm.csv"))
+wd_data1 <- read.csv(paste0("data/", tag, "_wd.csv")) 
+adm_data1 <- read.csv(paste0("data/", tag, "_adm.csv"))
 
-Anna_wd_2 = Anna_wd[, seq(3, ncol(Anna_wd))]
+wd_data2 = wd_data1[, seq(3, ncol(wd_data1))]
+min_depth = max(min(wd_data2), 0)
+max_depth = max(wd_data2)
 
 #parameters
           # Number of niches
-depth_range <- seq(max(min(Anna_wd_2), 0), max(Anna_wd_2), length.out = 100)  # Water depths from -4.10 to 42.44 meters, min and max across all 4 locations 
+depth_range <- seq(min_depth, max_depth, length.out = 100)  # Water depths from -4.10 to 42.44 meters, min and max across all 4 locations 
 
 # Generate optima more densely toward shallow depth
 # Step 1: Create a uniform sequence between 0 and 1
 uniform_seq <- seq(0, 1, length.out = n_niches)
 # Step 2: Apply a transformation to bias toward 0 (shallow)
 # There are optima at wd 0 since those would represent intertidal species, who are quite important when it comes to marine coastal environments (Andrades et al. 2019) and (Bradley et al. 2020)
-optima <- max(Anna_wd_2) * (uniform_seq)^2  # Quadratic: more values near minimum depth (bias towards 0) # -4.10 + (42.44 + 4.10)
+optima <- max_depth * (uniform_seq)^2  # Quadratic: more values near minimum depth (bias towards 0) # -4.10 + (42.44 + 4.10)
 #for bias toward shallow: 'log1p(uniform_seq) / log1p(1)'
 
 # Define niche width as a function of depth (e.g., linearly increasing)
@@ -83,7 +85,7 @@ for (i in 1:n_niches) {
   }
 }
 
-plot(NA, xlim = c(min(Anna_wd_2), max(Anna_wd_2)), ylim = c(1, n_niches),
+plot(NA, xlim = c(min_depth, max_depth), ylim = c(1, n_niches),
      xlab = "Water depth [m]", ylab = "Niche",
      main = "Depth range of each niche", yaxt = "n")
 axis(2, at = 1:n_niches, labels = 1:n_niches, las = 2, cex.axis = 0.5)
@@ -99,14 +101,11 @@ hist(optima, breaks = 20, col = "blue", border = "white",
      main = "Distribution of Niche Optima Across Depth",
      xlab = "Water Depth (m)", ylab = "Number of Niches")
 
-#adapted from:
-vignette("event_data")
-
 #change numbers to 1, 2, 3, or 4 depending on which location
 #Niche modeling
 #how gradient changes with time (in this case water depth)
-t = Anna_wd$time..Myr.           # time steps of the model
-wd = Anna_wd$wd_4..m.   # water depth ??? offshore at model time steps
+t = wd_data1$time..Myr.           # time steps of the model
+wd = wd_data1$wd_4..m.   # water depth ??? offshore at model time steps
 gc = approxfun(t, wd)         # define function that defines how the gradient changes with time (gc = *G*radient *C*hange)
 
 plot(gc(t), t, 
@@ -116,9 +115,6 @@ plot(gc(t), t,
      main = "Water depth in section 1.5 km from shore")
 
 #niche model in time dimension
-
-set.seed(124)
-
 niches_applied_t <- list()
 for (i in 1:100) {
   niches_applied_t[[i]] <- p3(rate = 300, from = min(t), to = max(t)) |> 
@@ -150,7 +146,7 @@ ggplot(niches_fossils_t, aes(x = t, fill = niche, color = niche)) +
 
 #niche model in terms of stratigraphy 
 
-strat_adm = tp_to_adm(Anna_adm$time..Myr., Anna_adm$adm_4..m.)
+strat_adm = tp_to_adm(adm_data1$time..Myr., adm_data1$adm_4..m.)
 
 set.seed(124)
 
@@ -183,37 +179,6 @@ ggplot(niches_fossils_strat, aes(x = t, fill = niche, color = niche)) +
     x = "Stratigraphic position [m]",
     y = "Density probability"
   )
-
-#water depth as presented by the stratigraphy 
-
-wds <- list("t" = t, "y" = wd) |>    # create list with time - water depth information
-  time_to_strat(strat_adm)    # transform into the strat. domain
-  
-plot(wds, orientation = "du",    # plot water depth information in the stratigraphic domain
-       type = "l",
-       ylab = "Stratigraphic position [m]",
-       xlab = "Water depth [m]",
-       main = "Water depth in section 11.7 km from shore",
-     cex.main = 1.5, cex.lab = 1.4) 
-
-#wds <- list("t" = t, "y" = wd) |> # create list with time - water depth information
-#  time_to_strat(strat_adm) # transform into the strat. domain
-
-#wds <- as.data.frame(wds)
-
-#to be p2
-#ggplot(wds, aes(x = h, y = y)) +
-#  geom_line() +
-#  labs(
-#    x = "Stratigraphic position [m]",
-#    y = "Water depth [m]",
-#    title = "Water depth in section 1.5 km from shore"
-#  ) +
-#  theme_minimal()
-
-#niche model in terms of last occurrences (strat domain)
-
-set.seed(124)
 
 niches_applied_strat_occ <- list()
 for (i in 1:100) {
@@ -277,7 +242,7 @@ ggplot(niches_last_occ, aes(x = min_t, fill = niche_group)) +
     title = "Last occurrences 11.7 km offshore"
   ) +
   theme_minimal(base_size = 15) +
-  coord_flip(xlim = c(min(Anna_adm$adm4..m.), max(Anna_adm$adm4..m.)))
+  coord_flip(xlim = c(min(adm_data1$adm4..m.), max(adm_data1$adm4..m.)))
 
 #together with water depth
 #install.packages("remotes")
