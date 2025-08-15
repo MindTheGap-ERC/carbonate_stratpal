@@ -1,24 +1,33 @@
+#### Libraries ####
 library(StratPal) #bio and ecology
 library(admtools) #stratigraphy
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+#### Constants ####
+set.seed(124)              
+n_niches <- 100    
 
 #task is to create 100 niches described by water depth from CarboKitten model
 
 #Created using AI sources and the help of dr. Emilia Jarochowska, Niklas Hohmann, and dr. Charlotte Summers 
+tag = "carbonate_stratpal_1"
+Anna_wd <- read.csv(paste0("data/", tag, "_wd.csv")) 
+Anna_adm <- read.csv(paste0("data/", tag, "_adm.csv"))
 
-Anna_wd <- read.csv("data/example_Anna_wd.csv") 
-Anna_adm <- read.csv("data/example_Anna_adm.csv")
+Anna_wd_2 = Anna_wd[, seq(3, ncol(Anna_wd))]
 
 #parameters
-set.seed(124)              
-n_niches <- 100              # Number of niches
-depth_range <- seq(min(Anna_wd), max(Anna_wd), length.out = 100)  # Water depths from -4.10 to 42.44 meters, min and max across all 4 locations 
+          # Number of niches
+depth_range <- seq(max(min(Anna_wd_2), 0), max(Anna_wd_2), length.out = 100)  # Water depths from -4.10 to 42.44 meters, min and max across all 4 locations 
 
 # Generate optima more densely toward shallow depth
 # Step 1: Create a uniform sequence between 0 and 1
 uniform_seq <- seq(0, 1, length.out = n_niches)
 # Step 2: Apply a transformation to bias toward 0 (shallow)
 # There are optima at wd 0 since those would represent intertidal species, who are quite important when it comes to marine coastal environments (Andrades et al. 2019) and (Bradley et al. 2020)
-optima <- max(Anna_wd) * (uniform_seq)^2  # Quadratic: more values near minimum depth (bias towards 0) # -4.10 + (42.44 + 4.10)
+optima <- max(Anna_wd_2) * (uniform_seq)^2  # Quadratic: more values near minimum depth (bias towards 0) # -4.10 + (42.44 + 4.10)
 #for bias toward shallow: 'log1p(uniform_seq) / log1p(1)'
 
 # Define niche width as a function of depth (e.g., linearly increasing)
@@ -74,7 +83,7 @@ for (i in 1:n_niches) {
   }
 }
 
-plot(NA, xlim = c(min(Anna_wd), max(Anna_wd)), ylim = c(1, n_niches),
+plot(NA, xlim = c(min(Anna_wd_2), max(Anna_wd_2)), ylim = c(1, n_niches),
      xlab = "Water depth [m]", ylab = "Niche",
      main = "Depth range of each niche", yaxt = "n")
 axis(2, at = 1:n_niches, labels = 1:n_niches, las = 2, cex.axis = 0.5)
@@ -97,13 +106,13 @@ vignette("event_data")
 #Niche modeling
 #how gradient changes with time (in this case water depth)
 t = Anna_wd$time..Myr.           # time steps of the model
-wd = Anna_wd$wd4..m.   # water depth 2 km offshore at model time steps
+wd = Anna_wd$wd_4..m.   # water depth ??? offshore at model time steps
 gc = approxfun(t, wd)         # define function that defines how the gradient changes with time (gc = *G*radient *C*hange)
 
 plot(gc(t), t, 
      type = "o", 
-     xlab = "Time [Myr]",
-     ylab = "Water depth [m]",
+     ylab = "Time [Myr]",
+     xlab = "Water depth [m]",
      main = "Water depth in section 1.5 km from shore")
 
 #niche model in time dimension
@@ -129,8 +138,6 @@ niches_fossils_t <- do.call(rbind, lapply(seq_along(niches_applied_t), function(
 
 #new plot ensuring all niches are represented in the legend so that their numbering is meaningful 
 
-library(ggplot2)
-
 ggplot(niches_fossils_t, aes(x = t, fill = niche, color = niche)) +
   geom_density(alpha = 0.12, color = "black") +
   scale_fill_discrete(drop = FALSE) +
@@ -143,7 +150,7 @@ ggplot(niches_fossils_t, aes(x = t, fill = niche, color = niche)) +
 
 #niche model in terms of stratigraphy 
 
-strat_adm = tp_to_adm(Anna_adm$time..Myr., Anna_adm$adm4..m.)
+strat_adm = tp_to_adm(Anna_adm$time..Myr., Anna_adm$adm_4..m.)
 
 set.seed(124)
 
@@ -166,8 +173,6 @@ niches_fossils_strat <- do.call(rbind, lapply(seq_along(niches_applied_strat), f
 }))
 
 #new plot ensuring all niches are represented in the legend so that their numbering is meaningful 
-
-library(ggplot2)
 
 ggplot(niches_fossils_strat, aes(x = t, fill = niche, color = niche)) +
   geom_density(alpha = 0.12, color = "black") +
@@ -228,7 +233,6 @@ niches_strat_occ <- do.call(rbind, lapply(seq_along(niches_applied_strat_occ), f
 }))
 
 #AI for how to find the min for each grouped niche and how to plot them based on their niche group
-library(dplyr)
 
 niches_strat_occ <- niches_strat_occ |>
   mutate(
@@ -247,8 +251,7 @@ niches_last_occ <- niches_strat_occ |>
 
 #getting all niches in the legend (only required for location 4)
 
-library(dplyr)
-library(tidyr)
+
 
 all_groups <- unique(niches_strat_occ$niche_group)
 
@@ -262,7 +265,6 @@ niches_last_occ_complete$niche_group <- factor(
 
 #plotting strat vs last occ count
 
-library(ggplot2)
 
 #p1 <- 
 ggplot(niches_last_occ, aes(x = min_t, fill = niche_group)) +
@@ -304,6 +306,7 @@ ggplot(niches_last_occ, aes(x = min_t, fill = niche_group)) +
 #  group_by(niche) |>
 #  summarise(min_t = min(t)) |>
 #  pull(min_t)
+
 
 #hist(niches_last_occ,
 #     xlab = "Stratigraphic height [m]",
