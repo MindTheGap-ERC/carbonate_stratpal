@@ -5,8 +5,6 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 
-source("code/utils.R")
-
 tag = "carbonate_stratpal_1"
 
 adm_data = read.csv(paste0("data/", tag, "_adm.csv"))
