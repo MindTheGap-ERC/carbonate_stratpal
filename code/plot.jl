@@ -12,5 +12,3 @@ function plot(path, name)
 end
 
 end
-
-Plot_Profile.plot("data/", "carbonate_stratpal_1.h5")
