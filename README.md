@@ -67,13 +67,16 @@ this will download and precompile all dependencies. It will take a while when yo
 ```{julia}
 include("src/run.jl")
 ```
-to generate the data,
+to generate the data, then load the plotting script
 
 ```{julia}
 include("src/plot.jl")
 ```
 
-to generate the transect plot, and 
+and call it for the file you want to plot
+```julia
+Plot_Profile.plot("data/", "carbonate_stratpal_1.h5")
+```
 
 ```{julia}
 include("src/extract_data.jl")
