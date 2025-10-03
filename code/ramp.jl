@@ -43,7 +43,7 @@ const INPUT = ALCAP.Input(
         Δt=100u"yr",
         steps=10000),
     output=Dict(
-        :profile => OutputSpec(slice=(:, 25), write_interval=10)),
+        :profile => OutputSpec(slice=(:, 25), write_interval=1)),
     ca_interval=1,
     initial_topography=(x, y) -> -x / 300.0,
     sea_level=t -> AMPLITUDE1 * sin(2π * t / PERIOD1) + AMPLITUDE2 * sin(2π * t / PERIOD2),
