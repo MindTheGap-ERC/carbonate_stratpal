@@ -222,3 +222,88 @@ for (i in seq_len(n_locations)){
     )
   ggsave(filename = paste0(path_niches, "niche_strat_", pos, "km.png" ))
 }
+
+
+#### Time content of section ####
+path_time_cont = "figs/time_cont/"
+if(!dir.exists(path_time_cont)){
+  dir.create(path_time_cont, recursive = TRUE)
+}
+
+for (i in 1:n_locations){
+  adm = adm_list[[i]]
+  plot(adm)
+  h_list = get_hiat_list(adm)
+  durs = get_hiat_duration(adm)
+  png(paste0(path_time_cont, "hiat_dur", i, ".png"))
+  plot(NULL, 
+       xlim  = c(0, max(durs)),
+       ylim = c(admtools::min_height(adm), admtools::max_height(adm)),
+       xlab = "Hiatus duration [Myr]",
+       ylab = "Stratigraphic position [m]",
+       main = paste0("Hiatus duration at pos ", i))
+  for (j in seq_along(durs)){
+    points(x = durs[j],
+           y = h_list[[j]]["height"])
+    lines(x = c(0, durs[j]),
+          y = c( rep( h_list[[j]]["height"], 2)))
+  }
+  dev.off()
+}
+
+
+## sed rates ##
+for (i in 1:n_locations){
+  png(paste0(path_time_cont, "condensation", i, ".png"))
+  adm = adm_list[[i]]
+  f = condensation_fun(adm)
+  h = seq(admtools::min_height(adm), admtools::max_height(adm), by = 0.01)
+  plot(x = f(h),
+       y = h,
+       type = "l",
+       xlab = "Condensation [Myr/m]",
+       ylab = "Stratigraphic Height [m]",
+       main = "Condensation")
+  dev.off()
+}
+
+#### range offset ####
+adm = adm_list[[1]]
+times_ext = seq(0, max_time(adm), by = 0.01)
+range_offset_t = rep(NA, length(times_ext))
+range_offset_h = rep(NA, length(times_ext))
+for (i in seq_along(times_ext)){
+  x = range_offset(t_ext = times_ext[i], rate =  10, adm)
+  range_offset_h[i] = x["h"]
+  range_offset_t[i] = x["t"]
+}
+
+plot(times_ext, range_offset_t, type = "l")
+plot(times_ext, range_offset_h, type = "l")
+
+## last occurrences ##
+adm = adm_list[[1]]
+rates = c(2, 5, 10, 30, 100)
+df = data.frame(l_occ_h = NULL, rate = NULL)
+for (j in seq_along(rates)){
+  rate = rates[j]
+  t_ext = p3(1000, from = min_time(adm), to = max_time(adm), n = 1000)
+  l_occ_t = rep(NA, length(t_ext))
+  l_occ_h = rep(NA, length(t_ext))
+  for (i in seq_along(t_ext)){
+    x = last_occ(t_ext = t_ext[i], rate, adm = adm)
+    l_occ_h[i] = x["h"]
+    l_occ_t[i] = x["t"]
+  }
+  df = rbind(df, data.frame(l_occ_h = l_occ_h, rate = rep(rate, length(l_occ_h))))
+}
+df$rate = factor(df$rate)
+
+df |> ggplot(aes(x = l_occ_h, colour = rate, fill = rate)) +
+  geom_histogram(position = "identity", alpha = 0.5) +
+  coord_flip() + 
+  labs(title = "Last occurrences as a function of fossil abundance",
+       x = "Abundance",
+       y = "Stratigraphic position")
+  
+  
