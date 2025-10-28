@@ -18,10 +18,10 @@ const FACIES = [
     ALCAP.Facies(
         viability_range = (4, 10),
         activation_range = (6, 10),
-        maximum_growth_rate=100u"m/Myr",
+        maximum_growth_rate=300u"m/Myr",
         extinction_coefficient=0.1u"m^-1",
         saturation_intensity=60u"W/m^2",
-        diffusion_coefficient=40.0u"m/yr"),
+        diffusion_coefficient=100.0u"m/yr"),
     ALCAP.Facies(
         viability_range = (4, 10),
         activation_range = (6, 10),
@@ -32,26 +32,28 @@ const FACIES = [
 ]
 
 const PERIOD1 = 2.0u"Myr"
-const AMPLITUDE1 = 8.0u"m"
+const AMPLITUDE1 = 20.0u"m"
 const PERIOD2 = 0.2u"Myr"
 const AMPLITUDE2 = 2.0u"m"
 
 const INPUT = ALCAP.Input(
     tag="$TAG",
-    box=Box{Coast}(grid_size=(100, 50), phys_scale=150.0u"m"),
+    box=Box{Coast}(grid_size=(150, 50), phys_scale=150.0u"m"),
     time=TimeProperties(
         Δt=100u"yr",
-        steps=10000),
+        steps=40000),
     output=Dict(
-        :profile => OutputSpec(slice=(:, 25), write_interval=1)),
+        :profile => OutputSpec(slice=(:, 25), write_interval=10),
+        :topography => OutputSpec(slice = (:, :), write_interval = 10)),
     ca_interval=1,
     initial_topography=(x, y) -> -x / 300.0,
     sea_level=t -> AMPLITUDE1 * sin(2π * t / PERIOD1) + AMPLITUDE2 * sin(2π * t / PERIOD2),
-    subsidence_rate=50.0u"m/Myr",
+    subsidence_rate=30.0u"m/Myr",
     disintegration_rate=50.0u"m/Myr",
     insolation=400.0u"W/m^2",
     sediment_buffer_size=50,
     depositional_resolution=500.0u"m",
+    cementation_time = 1u"kyr",
     facies=FACIES)
 
 

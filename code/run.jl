@@ -1,11 +1,13 @@
 module Script
 
+import CarboKitten.Visualization
 using Unitful
 using CarboKitten
+using CarboKitten.Visualization: summary_plot
 
-const PATH = "data"
 
 const TAG = "carbonate_stratpal_1"
+const PATH = "data"
 
 const FACIES = [
     ALCAP.Facies(
@@ -43,11 +45,12 @@ const INPUT = ALCAP.Input(
         Δt=100u"yr",
         steps=40000),
     output=Dict(
-        :profile => OutputSpec(slice=(:, 25), write_interval=10)),
+        :profile => OutputSpec(slice=(:, 25), write_interval=10),
+        :topography => OutputSpec(slice = (:, :), write_interval = 100)),
     ca_interval=1,
     initial_topography=(x, y) -> -x / 300.0,
     sea_level=t -> AMPLITUDE1 * sin(2π * t / PERIOD1) + AMPLITUDE2 * sin(2π * t / PERIOD2),
-    subsidence_rate=50.0u"m/Myr",
+    subsidence_rate=30.0u"m/Myr",
     disintegration_rate=50.0u"m/Myr",
     insolation=400.0u"W/m^2",
     sediment_buffer_size=50,
