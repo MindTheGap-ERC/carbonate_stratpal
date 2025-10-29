@@ -4,10 +4,26 @@ import CarboKitten.Visualization
 using Unitful
 using CarboKitten
 using CarboKitten.Visualization: summary_plot
+using Interpolations
+using DelimitedFiles
+using CarboKitten.Components.TimeIntegration: time_axis
+using CarboKitten.Export: read_slice, data_export, CSV
 
 
 const TAG = "carbonate_stratpal_1"
 const PATH = "data"
+
+path = "data/init_carbonate_stratpal_1.csv"
+function initial_topography1(path)
+    data_matrix, _ = readdlm(path, ',', header=true)
+
+    parsed_matrix = [parse(Float64, strip(replace(s, " m" => ""))) for s in data_matrix]
+
+    return parsed_matrix .* u"m"
+
+end
+
+
 
 const FACIES = [
     ALCAP.Facies(
@@ -48,14 +64,15 @@ const INPUT = ALCAP.Input(
         :profile => OutputSpec(slice=(:, 25), write_interval=10),
         :topography => OutputSpec(slice = (:, :), write_interval = 100)),
     ca_interval=1,
-    initial_topography=(x, y) -> -x / 300.0,
+    initial_topography=initial_topography1(path),#(x, y) -> -x / 300.0,
     sea_level=t -> AMPLITUDE1 * sin(2π * t / PERIOD1) + AMPLITUDE2 * sin(2π * t / PERIOD2),
     subsidence_rate=30.0u"m/Myr",
     disintegration_rate=50.0u"m/Myr",
     insolation=400.0u"W/m^2",
     sediment_buffer_size=50,
     depositional_resolution=500.0u"m",
-    facies=FACIES)
+    facies=FACIES,
+    cementation_time = 1u"kyr")
 
 
 function main()

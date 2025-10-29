@@ -31,7 +31,13 @@ function plot_ramp()
     save("figs/$(TAG2)_summary.png", fig)
 end
 
+
+function plot_prerun()
+    fig = summary_plot("data/init_carbonate_stratpal_1.h5")
+    save("figs/prerun_summary.png", fig)
+end
 end
 
 Plot_Profile.plot_platform()
 Plot_Profile.plot_ramp()
+Plot_Profile.plot_prerun()
