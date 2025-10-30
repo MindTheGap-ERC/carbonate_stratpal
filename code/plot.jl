@@ -6,7 +6,7 @@ using CarboKitten.Visualization: sediment_profile!, summary_plot, coeval_lines!
 using CarboKitten.Export: read_slice
 using Unitful
 
-TAG1 = "carbonate_stratpal_1"
+TAG1 = "platform"
 TAG2 = "ramp"
 
 function plot_platform()
@@ -32,12 +32,14 @@ function plot_ramp()
 end
 
 
-function plot_prerun()
-    fig = summary_plot("data/init_carbonate_stratpal_1.h5")
-    save("figs/prerun_summary.png", fig)
+function plot_preruns()
+    fig = summary_plot("data/$(TAG1)_prerun.h5")
+    save("figs/$(TAG1)_prerun_summary.png", fig)
+     fig = summary_plot("data/$(TAG2)_prerun.h5")
+    save("figs/$(TAG2)_prerun_summary.png", fig)   
 end
 end
 
 Plot_Profile.plot_platform()
 Plot_Profile.plot_ramp()
-Plot_Profile.plot_prerun()
+Plot_Profile.plot_preruns()
