@@ -4,17 +4,20 @@ library(configr)
 library(ggplot2)
 library(dplyr)
 library(tidyr)
+library(tomledit)
+tag1 = "platform"
+tag2 = "ramp"
 
-tag = "carbonate_stratpal_1"
-
-adm_data = read.csv(paste0("data/", tag, "_adm.csv"))
-wd_data = read.csv(paste0("data/", tag, "_wd.csv"))
-t = adm_data$time..Myr.
-t_steps = adm_data$timestep...
+adm_data_pl = read.csv(paste0("data/", tag1, "_adm.csv"))
+wd_data_pl = read.csv(paste0("data/", tag1, "_wd.csv"))
+adm_data_ra = read.csv(paste0("data/", tag2, "_adm.csv"))
+wd_data_ra = read.csv(paste0("data/", tag2, "_wd.csv"))
+t = adm_data_pl$time..Myr.
+t_steps = adm_data_pl$timestep...
 
 #### Metadata ####
-meta_data = tomledit::read_toml(paste0("data/", tag, ".toml"))
-l = tomledit::from_toml(meta_data)
+meta_data_pl = tomledit::read_toml(paste0("data/", tag1, ".toml"))
+l = tomledit::from_toml(meta_data_pl)
 n_locations = length(l$locations)
 loc_list = list()
 distances = c()
@@ -25,17 +28,24 @@ for (loc in seq_len(n_locations)){ # convert to km
 }
 
 #### Age-depth models ####
-adm_list = list()
-for (i in 1:(length(adm_data)-2)){
-  adm_list[[i]] = tp_to_adm(t = adm_data$time..Myr.,
-                            h = adm_data[, paste0("adm_", i, "..m.")])
+adm_list_pl = list()
+adm_list_ra = list()
+for (i in 1:(length(adm_data_pl)-2)){
+  adm_list_pl[[i]] = tp_to_adm(t = adm_data_pl$time..Myr.,
+                            h = adm_data_pl[, paste0("adm_", i, "..m.")])
+  
+  adm_list_ra[[i]] = tp_to_adm(t = adm_data_ra$time..Myr.,
+                               h = adm_data_ra[, paste0("adm_", i, "..m.")])
 }
 
 #### Water depth ####
-wd = list()
-for (i in 1:(length(wd_data)-2)){
-  wd[[i]] = list(t = wd_data$time..Myr.,
-                 wd = wd_data[, paste0("wd_", i, "..m.")])
+wd_pl = list()
+wd_ra = list()
+for (i in 1:(length(wd_data_pl)-2)){
+  wd_pl[[i]] = list(t = wd_data_pl$time..Myr.,
+                 wd = pmax(wd_data_pl[, paste0("wd_", i, "..m.")], 0))
+  wd_ra[[i]] = list(t = wd_data_ra$time..Myr.,
+                    wd = pmax(wd_data_ra[, paste0("wd_", i, "..m.")], 0))
 }
 
 #### sea level ####
@@ -54,20 +64,101 @@ df |> ggplot(aes(x = t, y = sl)) +
   geom_line()
 ggsave(filename = paste0(path_base_fig, "sl.png"))
 
+wd_comb = list(ra = wd_ra, pl = wd_pl)
+adm_comb = list(ra = adm_list_ra, pl = adm_list_pl)
+cases = c("ra", "pl")
 for (i in seq_len(n_locations)){
+  for (case in cases){
+  print(case)
+  wd = wd_comb[[case]][[i]]
+  adm = adm_comb[[case]][[i]]
   loc = distances[i]
-  png(filename = paste0(path_base_fig, "wd_time_", loc, "km.png"))
-  plot(wd[[i]]$t, wd[[i]]$wd, type = "l")
+  png(filename = paste0(path_base_fig, "wd_time_", loc, "km_", case,  ".png"))
+  plot(wd$t, wd$wd, type = "l")
+  title(main = paste0(case, " ", loc, "km"))
   dev.off()
-  png(filename = paste0(path_base_fig, "adm_", loc, "km.png"))
-  plot(adm_list[[i]], lty_destr = 0)
+  png(filename = paste0(path_base_fig, "adm_", loc, "km" , case, ".png"))
+  plot(adm, lty_destr = 0)
+  title(main = paste0(case, " ", loc, "km"))
   dev.off()
-  png(filename = paste0(path_base_fig, "wd_strat_", loc, "km.png"))
-  wd_loc = list(t = wd[[i]]$t, y = wd[[i]]$wd) |>
-    time_to_strat(adm_list[[i]]) |>
+  png(filename = paste0(path_base_fig, "wd_strat_", loc, "km_", case,  ".png"))
+  wd_loc = list(t = wd$t, y = wd$wd) |>
+    time_to_strat(adm) |>
     plot(type = "l")
+  title(main = paste0(case, " ", loc, "km"))
   dev.off()
+  }
 }
+
+col_names = c("wd", "t", "dist", "tag")
+df_wd = data.frame(matrix(ncol = 4, nrow = 0))
+names(df_wd) = col_names
+for (case in cases){
+  for (i in seq_len(n_locations)){
+    wd = wd_comb[[case]][[i]]
+    df_temp = data.frame(wd = wd$wd,
+                         t = wd$t,
+                         dist = rep(distances[i], length(wd$t)),
+                         tag = rep(case, length(wd$t)))
+    df_wd = rbind(df_wd, df_temp)
+  }
+}
+
+df_wd$dist = factor(df_wd$dist, levels = distances)
+
+df_wd |>
+  filter(tag == "ra") |>
+ggplot( aes(x = t, y = wd, color = dist)) + 
+  geom_line()
+
+ggsave(paste0(path_base_fig, "sl_ramps_comp.png"))
+
+df_wd |>
+  filter(tag == "pl") |>
+  ggplot( aes(x = t, y = wd, color = dist)) + 
+  geom_line()
+
+ggsave(paste0(path_base_fig, "sl_platform_comp.png"))
+
+
+## water depth in the stratigraphic domain
+col_names = c("wd_strat", "h", "dist", "tag")
+df_wdstr = data.frame(matrix(ncol = 4, nrow = 0))
+names(df_wdstr) = col_names
+
+for (case in cases){
+  for (i in seq_len(n_locations)){
+    wd = wd_comb[[case]][[i]]
+    adm = adm_comb[[case]][[i]]
+    wd_loc = list(t = wd$t, y = wd$wd) |>
+      time_to_strat(adm)
+    h = wd_loc$h - min(wd_loc$h, na.rm = TRUE)
+    h = h/max(h, na.rm = TRUE)
+    df_temp = data.frame(wd_strat = wd_loc$y,
+                         h = h,
+                         dist = rep(distances[i], length(wd$t)),
+                         tag = rep(case, length(wd$t)))
+    df_wdstr = rbind(df_wdstr, df_temp)
+  }
+}
+
+df_wdstr$dist = factor(df_wdstr$dist, levels = distances)  
+
+df_wdstr |>
+  filter(tag == "ra") |>
+  ggplot( aes(x = h, y = wd_strat, color = dist)) + 
+  geom_line()
+
+ggsave(paste0(path_base_fig, "sl_strat_ramps_comp.png"))
+
+
+df_wdstr |>
+  filter(tag == "pl") |>
+  ggplot( aes(x = h, y = wd_strat, color = dist)) + 
+  geom_line()
+
+ggsave(paste0(path_base_fig, "sl_strat_pl_comp.png"))
+
 
 #### Plot extinction scenarios ####
 LST_rate = approxfun(x = c(1.25, 1.5, 1.75), y = c(1, 25,1), rule = 2)
@@ -90,9 +181,11 @@ path_ex_fig = "figs/extinctions/"
 if (!dir.exists(path_ex_fig)) dir.create(path_ex_fig, recursive = TRUE)
 binwidth = 3 # width of sampling bins
 n_LO = 1000 # no of last occ
+sed_cases = c("ra", "pl")
 cases = c("const", "HST", "TST", "RST", "LST")
 for (i in seq_len(n_locations)){
-  adm = adm_list[[i]]
+  for (sed_case in sed_cases){
+  adm = adm_comb[[sed_case]][[i]]
   pos = distances[i]
   plot(adm)
   for (case in cases){
@@ -104,9 +197,9 @@ for (i in seq_len(n_locations)){
       ylab("Height [m]") +
       xlab("# LO") +
       coord_flip() +
-      ggtitle(paste0("# LO ", pos, " km from shore"))
-    ggsave(filename = paste0(path_ex_fig, case, "_", pos, "km.png"))
-    
+      ggtitle(paste0("# LO ", pos, " km from shore ", sed_case ))
+    ggsave(filename = paste0(path_ex_fig, case, "_", pos, "km", sed_case, ".png"))
+  }
   }
 }
 
