@@ -13,7 +13,7 @@ const FACIES_PLATFORM = [
         viability_range = (4, 10),
         activation_range = (6, 10),
         maximum_growth_rate=500u"m/Myr",
-        extinction_coefficient=0.8u"m^-1",
+        extinction_coefficient=0.6u"m^-1",
         saturation_intensity=60u"W/m^2",
         diffusion_coefficient=50.0u"m/yr"),
     ALCAP.Facies(
@@ -26,10 +26,10 @@ const FACIES_PLATFORM = [
     ALCAP.Facies(
         viability_range = (4, 10),
         activation_range = (6, 10),
-        maximum_growth_rate=100u"m/Myr",
+        maximum_growth_rate=50u"m/Myr",
         extinction_coefficient=0.005u"m^-1",
         saturation_intensity=60u"W/m^2",
-        diffusion_coefficient=12.5u"m/yr")
+        diffusion_coefficient=30u"m/yr")
 ]
 
 include("constants.jl")

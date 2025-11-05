@@ -13,7 +13,7 @@ const FACIES_RAMP = [
         maximum_growth_rate=200u"m/Myr",
         extinction_coefficient=0.6u"m^-1",
         saturation_intensity=60u"W/m^2",
-        diffusion_coefficient=80.0u"m/yr"),
+        diffusion_coefficient=50.0u"m/yr"),
     ALCAP.Facies(
         viability_range = (4, 10),
         activation_range = (6, 10),
