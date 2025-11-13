@@ -5,6 +5,7 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 library(tomledit)
+library(ggpubr)
 tag1 = "platform"
 tag2 = "ramp"
 
@@ -398,5 +399,129 @@ df |> ggplot(aes(x = l_occ_h, colour = rate, fill = rate)) +
   labs(title = "Last occurrences as a function of fossil abundance",
        x = "Abundance",
        y = "Stratigraphic position")
-  
-  
+
+
+#### condensation ratio plot ####
+df = data.frame(matrix(nrow = 0, ncol = 4))
+names = c("cond_ratio", "proportion_height", "distance", "system")
+names(df) = names
+
+bin_width_m = 2
+
+for (i in seq_along(distances)){
+  adm = adm_list_ra[[i]]
+  h = seq(admtools::min_height(adm), admtools::max_height(adm), by = bin_width_m)  
+  adm_2 = tp_to_adm(t = c(admtools::min_time(adm), admtools::max_time(adm)),
+                    h = c(admtools::min_height(adm), admtools::max_height(adm)))
+  t1 = strat_to_time(h, adm) |> diff()
+  t2 = strat_to_time(h, adm_2) |> diff()
+  cond_ratio = t1/t2
+  proportion_height = ((h[1:(length(h)-1)] +  h[2:length(h)])/2) - admtools::min_height(adm)
+  proportion_height = proportion_height/(admtools::max_height(adm)- admtools::min_height(adm))
+  df2 = data.frame(cond_ratio = cond_ratio,
+                   proportion_height = proportion_height,
+                   distance = rep(distances[i], length(cond_ratio)),
+                   system = rep("ramp", length(cond_ratio)))
+  df = rbind(df, df2)
+  adm = adm_list_pl[[i]]
+  h = seq(admtools::min_height(adm), admtools::max_height(adm), by = bin_width_m)  
+  adm_2 = tp_to_adm(t = c(admtools::min_time(adm), admtools::max_time(adm)),
+                    h = c(admtools::min_height(adm), admtools::max_height(adm)))
+  t1 = strat_to_time(h, adm) |> diff()
+  t2 = strat_to_time(h, adm_2) |> diff()
+  cond_ratio = t1/t2
+  proportion_height = ((h[1:(length(h)-1)] +  h[2:length(h)])/2) - admtools::min_height(adm)
+  proportion_height = proportion_height/(admtools::max_height(adm)- admtools::min_height(adm))
+  df2 = data.frame(cond_ratio = cond_ratio,
+                   proportion_height = proportion_height,
+                   distance = rep(distances[i], length(cond_ratio)),
+                   system = rep("platform", length(cond_ratio)))
+  df = rbind(df, df2)
+}
+
+df$distance = factor(df$distance, levels = distances)
+df$system = factor(df$system)
+
+pos_interest = c(3,6,9, 12, 15, 18, 21)
+y_lim = range(df$cond_ratio)
+y_lim[1] = 0.9 * y_lim[1]
+y_lim[2] = 1.1 * y_lim[2]
+p1 = df |> 
+  filter(system == "ramp" &
+           distance %in% pos_interest) |>
+  ggplot(aes(x = proportion_height, y = cond_ratio, color = distance)) +
+  geom_line() +
+  ylim(y_lim) +
+  coord_flip() +
+  scale_y_log10() +
+  labs(y = "Inflation of rates",
+       x = "Relative height",
+       title = "Inflation of rates on Ramp")
+p1
+
+p2 = df |> 
+  filter(system == "platform" &
+           distance %in% pos_interest) |>
+  ggplot(aes(x = proportion_height, y = cond_ratio, color = distance)) +
+  geom_line() +
+  ylim(y_lim) +
+  coord_flip() +
+  scale_y_log10() +
+  labs(y = "Inflation of rates",
+       x = "Relative height",
+       title = "Inflation of rates on Platform")
+p2
+
+p3 = ggpubr::ggarrange(p1, p2, nrow = 1, ncol = 2)
+p3
+ggsave("figs/inflation_of_rates.png", plot = p3)
+
+#### AGe-depth model plots ####
+df = data.frame(matrix(nrow = 0, ncol = 4))
+names = c("time", "height", "distance", "system")
+names(df) = names
+
+
+for (i in seq_along(distances)){
+  adm = adm_list_ra[[i]]
+  t = get_T_tp(adm)
+  h = time_to_strat(t, adm, destructive = TRUE)
+  df2 = data.frame(time = t,
+                   height = h,
+                   distance = rep(distances[i], length(time)),
+                   system = rep("ramp", length(time)))
+  df = rbind(df, df2)
+  adm = adm_list_pl[[i]]
+  t = get_T_tp(adm)
+  h = time_to_strat(t, adm, destructive = TRUE)
+  df2 = data.frame(time = t,
+                   height = h,
+                   distance = rep(distances[i], length(time)),
+                   system = rep("platform", length(time)))
+
+  df = rbind(df, df2)
+}
+
+df$distance = factor(df$distance, levels = distances)
+df$system = factor(df$system)
+
+pos_interest = c(3,6,9, 12, 15, 18, 21)
+
+p1 = df |>
+  filter(system == "ramp" &
+           distance %in% pos_interest) |>
+  ggplot(aes(x = time, y = height, color = distance)) +
+  geom_line() +
+  labs(title = "ramp")
+p1
+p2 = df |>
+  filter(system == "platform" &
+           distance %in% pos_interest) |>
+  ggplot(aes(x = time, y = height, color = distance)) +
+  geom_line() +
+  labs(title = "platform")
+p2
+p3 = ggpubr::ggarrange(p1, p2, nrow = 1, ncol = 2, common.legend = TRUE)
+p3
+
+ggsave("figs/age_depth_overview.png", p3)
