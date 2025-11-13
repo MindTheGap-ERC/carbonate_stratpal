@@ -2,6 +2,9 @@ using Unitful
 using CarboKitten
 using CarboKitten.Export: read_slice, data_export, read_volume
 using CarboKitten.Utility: in_units_of
+using Random
+
+Random.seed!(255827)
 
 const PATH = "data"
 const TAG = "ramp"
