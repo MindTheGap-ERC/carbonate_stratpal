@@ -208,23 +208,109 @@ for (i in seq_len(n_locations)){
 #### Sed Stats ####
 path_sed_stats = "figs/sed_stats/"
 if (!dir.exists(path_sed_stats)) dir.create(path_sed_stats, recursive = TRUE)
-comp = c()
-for(i in seq_along(adm_list)){
-  comp = c(comp, adm_list[[i]] |> get_completeness())
-}
-df = data.frame(dist = distances,
-                comp = comp)
 
-df |> ggplot(aes(x = dist, y = comp)) +
-  geom_line() +
-  ylim(c(0,1))
+inc = c()
+height = c()
+no_hiat = c()
+median_hiat = c()
+min_hiat = c()
+max_hiat = c()
+case = c()
+for (sed_case in sed_cases){
+  adm_list = adm_comb[[sed_case]]
+  for (i in seq_along(adm_list)){
+    inc = c(inc, adm_list[[i]] |> get_incompleteness())
+    height = c(height, adm_list[[i]] |> admtools::max_height())
+    no_hiat = c(no_hiat, adm_list[[i]] |> get_hiat_no())
+    median_hiat = c(median_hiat, adm_list[[i]] |> get_hiat_duration() |> median())
+    min_hiat = c(min_hiat, adm_list[[i]] |> get_hiat_duration() |> min())
+    max_hiat = c(max_hiat, adm_list[[i]] |> get_hiat_duration() |> max())
+    case = c(case, sed_case)
+  }
+}
+dist = rep(distances, 2)
+median_hiat[is.na(median_hiat)] = 0
+min_hiat[is.infinite(min_hiat)] = 0
+max_hiat[is.infinite(max_hiat)] = 0
+case = factor(case, levels = sed_cases)
+#dist = factor(dist, levels = distances)
+
+df_sed = data.frame(case = case, dist = dist, inc = inc, height = height, no_hiat = no_hiat,
+                    median_hiat = median_hiat, min_hiat = min_hiat, max_hiat = max_hiat)
+
+ggplot(df_sed, aes(x = dist, y = inc, color = case)) +
+  geom_line()  +
+  ylim(c(0,1)) + 
+  ggtitle(label = "Incompleteness")
 ggsave(filename = paste0(path_sed_stats, "completeness.png"))
 
-## other parameters to track:
-# 1. maximum/minimum/median/mean hiatus duration
-# 2. thickness
-# 3. sed rates?
-# -> same parameters per systems tract
+
+df_sed |> ggplot(aes(x = dist, y = height, color = case)) +
+  geom_line() +
+  ggtitle("Accumulated sediment")
+ggsave(filename = paste0(path_sed_stats, "height.png"))
+
+df_sed |> ggplot(aes(x = dist, y = no_hiat, group = case, color = case)) +
+  geom_line() +
+  ggtitle("Number of hiatuses")
+ggsave(filename = paste0(path_sed_stats, "no_hiatuses.png") )
+
+df_sed |> ggplot(aes(x = dist, y = max_hiat, group = case, color = case)) +
+  geom_line() +
+  ggtitle("Max hiat duration")
+ggsave(filename = paste0(path_sed_stats, "max_hiat.png") )
+
+df_sed |> ggplot(aes(x = dist, y = min_hiat, group = case, color = case)) +
+  geom_line() +
+  ggtitle("Min hiat duration")
+ggsave(filename = paste0(path_sed_stats, "min_hiat.png") )
+  
+
+df_sed |> ggplot(aes(x = dist, y = median_hiat, group = case, color = case)) +
+  geom_line() +
+  ggtitle("Median hiat duration")
+ggsave(filename = paste0(path_sed_stats, "median_hiat.png") )
+
+
+## ridgeline plots
+names = c("distance", "system", "hiat_duration")
+df = data.frame( matrix(ncol = 0, nrow = length(names)))
+names(df) = df
+for (i in seq_along(distances)){
+  hiat_dur = adm_list_pl[[i]] |> get_hiat_duration()
+  df_t = data.frame(distance = rep(distances[i], length(hiat_dur)),
+                    system = rep("platform", length(hiat_dur)),
+                    hiat_duration = hiat_dur)
+  df = rbind(df, df_t)
+  hiat_dur = adm_list_ra[[i]] |> get_hiat_duration()
+  df_t = data.frame(distance = rep(distances[i], length(hiat_dur)),
+                    system = rep("ramp", length(hiat_dur)),
+                    hiat_duration = hiat_dur)
+  df = rbind(df, df_t)
+}
+df$distance = factor(df$distance, levels = distances)
+
+pos_interest = c(3,6,9, 12, 15, 18, 21)
+
+p1 = df |> filter(system == "platform" & distance %in% pos_interest) |>
+  ggplot(aes(x = hiat_duration, y = distance, fill = distance)) +
+  geom_density_ridges() +
+  theme_ridges() +
+  scale_x_log10() +
+  ggtitle("Platform")
+
+p2 = df |> filter(system == "ramp" & distance %in% pos_interest) |>
+  ggplot(aes(x = hiat_duration, y = distance, fill = distance)) +
+  geom_density_ridges() +
+  theme_ridges() +
+  scale_x_log10() +
+  ggtitle("Ramp")
+
+p3 = ggpubr::ggarrange(p1, p2, nrow = 1, ncol = 2, common.legend = TRUE)
+p3
+
+ggsave("figs/hiatus_duration_comp.png", p3)
+
 
 #### Niches ####
 path_niches = "figs/niches/"
@@ -477,10 +563,9 @@ p3
 ggsave("figs/inflation_of_rates.png", plot = p3)
 
 #### AGe-depth model plots ####
-df = data.frame(matrix(nrow = 0, ncol = 4))
 names = c("time", "height", "distance", "system")
+df = data.frame(matrix(nrow = 0, ncol = length(names)))
 names(df) = names
-
 
 for (i in seq_along(distances)){
   adm = adm_list_ra[[i]]
@@ -498,7 +583,6 @@ for (i in seq_along(distances)){
                    height = h,
                    distance = rep(distances[i], length(time)),
                    system = rep("platform", length(time)))
-
   df = rbind(df, df2)
 }
 

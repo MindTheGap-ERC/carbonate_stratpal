@@ -31,7 +31,7 @@ ORCID: [0000-0002-3851-116X](https://orcid.org/0000-0002-3851-116X)
 
 ## Requirements
 
-Base R (version >= 4.0) and the RStudio IDE, Julia >= 1.10
+Base R (version >= 4.2) and the RStudio IDE, Julia >= 1.10
 
 
 
