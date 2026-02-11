@@ -731,3 +731,34 @@ p3 = ggpubr::ggarrange(p1, p2, ncol = 2, nrow = 1, labels = LETTERS[1:2], common
 p3
 ggsave("figs/last_occ.png", p3)
 
+#### ADM conv plot ####
+
+adm = adm_comb[["pl"]][[1]]
+plot(adm)
+
+r = diff(get_L_tp(adm))/diff(get_T_tp(amd)) 
+r = r |> sort() |> cumsum()
+plot(NULL, xlim = c(0,1), ylim = c(0,1),
+     xlab = "Proportion of time",
+     ylab = "Proportion of height",
+     main = "Time distribution on the ramp")
+for (i in seq_along(adm_list_ra)){
+  adm = adm_list_ra[[i]]
+  r = diff(get_L_tp(adm))/diff(get_T_tp(amd)) 
+  r = r |> sort() |> cumsum()
+  lines(seq_along(r)/length(r), r / max(r), lwd = i/2)
+}
+
+plot(NULL, xlim = c(0,1), ylim = c(0,1),
+     xlab = "Proportion of time",
+     ylab = "Proportion of height",
+     main = "Time distribution on the platform")
+for (i in seq_along(adm_list_pl)){
+  adm = adm_list_pl[[i]]
+  r = diff(get_L_tp(adm))/diff(get_T_tp(amd)) 
+  r = r |> sort() |> cumsum()
+  lines(seq_along(r)/length(r), r / max(r), lwd = i/2)
+}
+
+
+plot(seq_along(r)/length(r), r / max(r)   ,type = "l")
