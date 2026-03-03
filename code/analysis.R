@@ -6,6 +6,8 @@ library(dplyr)
 library(tidyr)
 library(tomledit)
 library(ggpubr)
+library(ggridges)
+
 tag1 = "platform"
 tag2 = "ramp"
 
@@ -432,213 +434,122 @@ for (i in seq_along(times_ext)){
 plot(times_ext, range_offset_t, type = "l")
 plot(times_ext, range_offset_h, type = "l")
 
-
-#### condensation ratio plot ####
-df = data.frame(matrix(nrow = 0, ncol = 4))
-names = c("cond_ratio", "proportion_height", "distance", "system")
-names(df) = names
-
-bin_width_m = 2
-distances_km  = paste(distances, "km")
-
-for (i in seq_along(distances_km)){
-  adm = adm_list_ra[[i]]
-  h = seq(admtools::min_height(adm), admtools::max_height(adm), by = bin_width_m)  
-  adm_2 = tp_to_adm(t = c(admtools::min_time(adm), admtools::max_time(adm)),
-                    h = c(admtools::min_height(adm), admtools::max_height(adm)))
-  t1 = strat_to_time(h, adm) |> diff()
-  t2 = strat_to_time(h, adm_2) |> diff()
-  cond_ratio = t1/t2
-  proportion_height = ((h[1:(length(h)-1)] +  h[2:length(h)])/2) - admtools::min_height(adm)
-  proportion_height = proportion_height/(admtools::max_height(adm)- admtools::min_height(adm))
-  df2 = data.frame(cond_ratio = cond_ratio,
-                   proportion_height = proportion_height,
-                   distance = rep(distances_km[i], length(cond_ratio)),
-                   system = rep("ramp", length(cond_ratio)))
-  df = rbind(df, df2)
-  adm = adm_list_pl[[i]]
-  h = seq(admtools::min_height(adm), admtools::max_height(adm), by = bin_width_m)  
-  adm_2 = tp_to_adm(t = c(admtools::min_time(adm), admtools::max_time(adm)),
-                    h = c(admtools::min_height(adm), admtools::max_height(adm)))
-  t1 = strat_to_time(h, adm) |> diff()
-  t2 = strat_to_time(h, adm_2) |> diff()
-  cond_ratio = t1/t2
-  proportion_height = ((h[1:(length(h)-1)] +  h[2:length(h)])/2) - admtools::min_height(adm)
-  proportion_height = proportion_height/(admtools::max_height(adm)- admtools::min_height(adm))
-  df2 = data.frame(cond_ratio = cond_ratio,
-                   proportion_height = proportion_height,
-                   distance = rep(distances_km[i], length(cond_ratio)),
-                   system = rep("platform", length(cond_ratio)))
-  df = rbind(df, df2)
-}
-
-df$distance = factor(df$distance, levels = distances_km)
-df$system = factor(df$system)
-
-pos_interest = paste(c(3,6,9, 12, 15, 18, 21), "km")
-y_lim = range(df$cond_ratio)
-y_lim[1] = 0.95 * y_lim[1]
-y_lim[2] = 1.1 * y_lim[2]
-title_ramp = "Ramp Geometry"
-title_platform = "Platform Geometry"
-y_label = "Inflation of Rates [-]"
-x_label = "Relative Height [-]"
-legend_label = "Distance from Shore"
-p1 = df |> 
-  filter(system == "ramp" &
-           distance %in% pos_interest) |>
-  ggplot(aes(x = proportion_height, y = cond_ratio, color = distance)) +
-  geom_line()  +
-  coord_flip() +
-  scale_y_log10(limits = y_lim) +
-  labs(y = y_label,
-       x = x_label,
-       title = title_ramp,
-       color = legend_label)
-p1
-
-p2 = df |> 
-  filter(system == "platform" &
-           distance %in% pos_interest) |>
-  ggplot(aes(x = proportion_height, y = cond_ratio, color = distance)) +
-  geom_line() +
-  coord_flip() +
-  scale_y_log10(limits = y_lim) +
-  labs(y = y_label,
-       x = x_label,
-       title = title_platform,
-       color = legend_label)
-p2
-
-p3 = ggpubr::ggarrange(p2, p1,  nrow = 1, ncol = 2, common.legend = TRUE, legend = "bottom", labels = LETTERS[1:2])
-p3
-ggsave("figs/inflation_of_rates.png", plot = p3)
-
-#### AGe-depth model plots ####
-names = c("time", "height", "distance", "system")
-df = data.frame(matrix(nrow = 0, ncol = length(names)))
-names(df) = names
-
-title_platform = "Platform Geometry"
-title_ramp = "Ramp Geometry"
-x_lab_title = "Elapsed Model Time [Myr]"
-y_lab_title = "Height [m]"
-legend_label = "Distance from Shore"
-
-distances_km = paste(distances, "km")
-
-for (i in seq_along(distances_km)){
-  adm = adm_list_ra[[i]]
-  t = get_T_tp(adm)
-  h = time_to_strat(t, adm, destructive = TRUE)
-  df2 = data.frame(time = t,
-                   height = h,
-                   distance = rep(distances_km[i], length(time)),
-                   system = rep("ramp", length(time)))
-  df = rbind(df, df2)
-  adm = adm_list_pl[[i]]
-  t = get_T_tp(adm)
-  h = time_to_strat(t, adm, destructive = TRUE)
-  df2 = data.frame(time = t,
-                   height = h,
-                   distance = rep(distances_km[i], length(time)),
-                   system = rep("platform", length(time)))
-  df = rbind(df, df2)
-}
-
-df$distance = factor(df$distance, levels = distances_km)
-df$system = factor(df$system)
-
-pos_interest = paste(c(3,6,9, 12, 15, 18, 21), "km")
-
-p1 = df |>
-  filter(system == "ramp" &
-           distance %in% pos_interest) |>
-  ggplot(aes(x = time, y = height, color = distance)) +
-  geom_line() +
-  labs(title = title_ramp,
-       x = x_lab_title,
-       y = y_lab_title,
-       col = legend_label)
-p1
-p2 = df |>
-  filter(system == "platform" &
-           distance %in% pos_interest) |>
-  ggplot(aes(x = time, y = height, color = distance)) +
-  geom_line() +
-  labs(title = title_platform,
-       x = x_lab_title,
-       y = y_lab_title,
-       col = legend_label)
-p2
-p3 = ggpubr::ggarrange(p1, p2, nrow = 1, ncol = 2,
-                       common.legend = TRUE,
-                       legend = "bottom",
-                       labels = LETTERS[1:2])
-p3
-
-ggsave("figs/age_depth_overview.png", p3)
-
-#### Water depth overview ####
-## time domain ##
-title_platform = "Platform Geometry"
-title_ramp = "Ramp Geometry"
-x_lab_title = "Elapsed Model Time [Myr]"
-y_lab_title = "Water Depth [m]"
-legend_label = "Distance from Shore"
-
-col_names = c("wd", "t", "dist", "tag")
-df_wd = data.frame(matrix(ncol = length(col_names), nrow = 0))
-names(df_wd) = col_names
-for (case in cases){
-  for (i in seq_len(n_locations)){
-    wd = wd_comb[[case]][[i]]
-    df_temp = data.frame(wd = wd$wd,
-                         t = wd$t,
-                         dist = rep(distances_km[i], length(wd$t)),
-                         tag = rep(case, length(wd$t)))
-    df_wd = rbind(df_wd, df_temp)
+#### Plot: Age-depth models ####
+plot_age_depth_models = function(){
+  names = c("time", "height", "distance", "system")
+  df = data.frame(matrix(nrow = 0, ncol = length(names)))
+  names(df) = names
+  
+  title_platform = "Platform"
+  title_ramp = "Ramp"
+  x_lab_title = "Elapsed Model Time [Myr]"
+  y_lab_title = "Height [m]"
+  legend_label = "Distance from Shore"
+  distances_km = paste(distances, "km")
+  
+  for (case in cases){
+    for (i in seq_along(distances_km)){
+      adm = adm_comb[[case]][[i]]
+      t = get_T_tp(adm)
+      h = time_to_strat(t, adm, destructive = TRUE)
+      df2 = data.frame(time = t,
+                       height = h,
+                       distance = rep(distances_km[i], length(time)),
+                       system = rep(case, length(time)))
+      df = rbind(df, df2)
+    }
   }
+  df$distance = factor(df$distance, levels = distances_km)
+  df$system = factor(df$system)
+  
+  pos_interest = paste(c(3,6,9, 12, 15, 18, 21), "km")
+  
+  p1 = df |>
+    filter(system == "ra" &
+             distance %in% pos_interest) |>
+    ggplot(aes(x = time, y = height, color = distance)) +
+    geom_line() +
+    labs(title = title_ramp,
+         x = x_lab_title,
+         y = y_lab_title,
+         col = legend_label)
+  p2 = df |>
+    filter(system == "pl" &
+             distance %in% pos_interest) |>
+    ggplot(aes(x = time, y = height, color = distance)) +
+    geom_line() +
+    labs(title = title_platform,
+         x = x_lab_title,
+         y = y_lab_title,
+         col = legend_label)
+  p3 = ggpubr::ggarrange(p1, p2, nrow = 1, ncol = 2,
+                         common.legend = TRUE,
+                         legend = "bottom",
+                         labels = LETTERS[1:2])
+  return(p3)
 }
-
-df_wd$dist = factor(df_wd$dist, levels = distances_km)
-
-p1 = df_wd |>
-  filter(tag == "ra" & dist %in% pos_interest) |>
-  ggplot( aes(x = t, y = wd, color = dist)) + 
-  geom_line() +
-  labs(title = title_ramp,
-       x = x_lab_title,
-       y = y_lab_title,
-       col = legend_label)
-p1
-
-p2 = df_wd |>
-  filter(tag == "pl" & dist %in% pos_interest) |>
-  ggplot( aes(x = t, y = wd, color = dist)) + 
-  geom_line() +
-  labs(title = title_platform,
-       x = x_lab_title,
-       y = y_lab_title,
-       col = legend_label)
-p2
-
-p3 = ggpubr::ggarrange(p2, p1, ncol = 2, nrow = 1, labels = LETTERS[1:2], legend = "bottom", common.legend = TRUE)
-p3
-
-ggsave("figs/water_depth_comparison_time_domain.png")
+p = plot_age_depth_models()
+p
+ggsave("figs/age_depth_overview.png", p)
 
 
-## stratigraphic domain
-names = c("wd", "proportion_height", "distance", "system")
-df = data.frame(matrix(nrow = 0, ncol = length(names)))
-names(df) = names
+#### Plot: Water depths in time domain ####
+plot_wd_time_domain = function(){
+  title_platform = "Platform Geometry"
+  title_ramp = "Ramp Geometry"
+  x_lab_title = "Elapsed Model Time [Myr]"
+  y_lab_title = "Water Depth [m]"
+  legend_label = "Distance from Shore"
+  pos_interest = paste(c(3,6,9, 12, 15, 18, 21), "km")
+  
+  col_names = c("wd", "t", "dist", "tag")
+  df_wd = data.frame(matrix(ncol = length(col_names), nrow = 0))
+  names(df_wd) = col_names
+  for (case in cases){
+    for (i in seq_len(n_locations)){
+      wd = wd_comb[[case]][[i]]
+      df_temp = data.frame(wd = wd$wd,
+                           t = wd$t,
+                           dist = rep(distances_km[i], length(wd$t)),
+                           tag = rep(case, length(wd$t)))
+      df_wd = rbind(df_wd, df_temp)
+    }
+  }
+  df_wd$dist = factor(df_wd$dist, levels = distances_km)
+  p1 = df_wd |>
+    filter(tag == "ra" & dist %in% pos_interest) |>
+    ggplot( aes(x = t, y = wd, color = dist)) + 
+    geom_line() +
+    labs(title = title_ramp,
+         x = x_lab_title,
+         y = y_lab_title,
+         col = legend_label)
+  p2 = df_wd |>
+    filter(tag == "pl" & dist %in% pos_interest) |>
+    ggplot( aes(x = t, y = wd, color = dist)) + 
+    geom_line() +
+    labs(title = title_platform,
+         x = x_lab_title,
+         y = y_lab_title,
+         col = legend_label)
+  p3 = ggpubr::ggarrange(p2, p1, ncol = 2, nrow = 1, labels = LETTERS[1:2], legend = "bottom", common.legend = TRUE)
+  return(p3)
+}
+p = plot_wd_time_domain()
+p
+ggsave("figs/water_depth_comparison_time_domain.png", p)
 
-distances_km  = paste(distances, "km")
-sampling_distance_m = 1 # m
-for (case in names(wd_comb)){
-  wd_case = wd_comb[[case]]
-  adm_case = adm_comb[[case]]
+#### Plot: Water depth in the stratigraphic domain ####
+plot_wd_strat_domain = function(){
+  names = c("wd", "proportion_height", "distance", "system")
+  df = data.frame(matrix(nrow = 0, ncol = length(names)))
+  names(df) = names
+  
+  distances_km  = paste(distances, "km")
+  sampling_distance_m = 1 # m
+  for (case in names(wd_comb)){
+    wd_case = wd_comb[[case]]
+    adm_case = adm_comb[[case]]
     for (i in seq_along(distances_km)){
       adm = adm_case[[i]]
       wd = wd_case[[i]]
@@ -650,115 +561,232 @@ for (case in names(wd_comb)){
       h_prop = h/(max_height - min_height)
       df2 = data.frame(wd = wds, proportion_height = h_prop, distance = rep(distances_km[i], length(h_prop)), system = rep(case, length(h_prop)))
       df = rbind(df, df2)
-  }
-}
-
-df$distance = factor(df$distance, levels = distances_km)
-res_distances = c(3,6,9, 12, 15, 18) |> paste("km")
-title_ramp = "Ramp Geometry"
-title_platform = "Platform Geometry"
-wd_label = "Water Depth [m]"
-height_label = "Relative Height [m]"
-legend_title = "Distance from Shore"
-
-p1 = df |>
-  filter(system == "pl" & distance %in% res_distances) |>
-  ggplot(aes(y = wd, x = proportion_height, col = distance)) +
-  geom_line() +
-  coord_flip() +
-  labs(title = title_platform,
-       y = wd_label,
-       x = height_label,
-       col = legend_title)
-p1
-
-p2 = df |>
-  filter(system == "ra" & distance %in% res_distances) |>
-  ggplot(aes(y = wd, x = proportion_height, col = distance)) +
-  geom_line() +
-  coord_flip() +
-  labs(title = title_platform,
-       y = wd_label,
-       x = height_label,
-       col = legend_title)
-p2
-
-p3 = ggpubr::ggarrange(p1, p2, ncol = 2, nrow = 1, labels = LETTERS[1:2], legend = "bottom", common.legend = TRUE)
-p3
-ggsave("figs/water_depth_strat_domain.png", p3)
-
-
-#### Last occurrences ####
-library(ggridges)
-case = "pl"
-adm_used = list("top" = adm_comb[[case]][[1]],
-                "slope" = adm_comb[[case]][[10]])
-rates = c(2, 5, 10, 30, 100, 1000)
-df = data.frame(l_occ_h = NULL, rate = NULL, loc = NULL)
-for (loc in names(adm_used)){
-  adm = adm_used[[loc]]
-  for (j in seq_along(rates)){
-    rate = rates[j]
-    t_ext = p3(1000, from = min_time(adm), to = max_time(adm), n = 1000)
-    l_occ_t = rep(NA, length(t_ext))
-    l_occ_h = rep(NA, length(t_ext))
-    for (i in seq_along(t_ext)){
-      x = last_occ(t_ext = t_ext[i], rate, adm = adm)
-      l_occ_h[i] = x["h"]
-      l_occ_t[i] = x["t"]
     }
-    df = rbind(df, data.frame(l_occ_h = l_occ_h, rate = rep(rate, length(l_occ_h)), loc = rep(loc, length(l_occ_h))))
   }
+  
+  df$distance = factor(df$distance, levels = distances_km)
+  res_distances = c(3,6,9, 12, 15, 18) |> paste("km")
+  title_ramp = "Ramp Geometry"
+  title_platform = "Platform Geometry"
+  wd_label = "Water Depth [m]"
+  height_label = "Relative Height [m]"
+  legend_title = "Distance from Shore"
+  
+  p1 = df |>
+    filter(system == "pl" & distance %in% res_distances) |>
+    ggplot(aes(y = wd, x = proportion_height, col = distance)) +
+    geom_line() +
+    coord_flip() +
+    labs(title = title_platform,
+         y = wd_label,
+         x = height_label,
+         col = legend_title)
+  p2 = df |>
+    filter(system == "ra" & distance %in% res_distances) |>
+    ggplot(aes(y = wd, x = proportion_height, col = distance)) +
+    geom_line() +
+    coord_flip() +
+    labs(title = title_ramp,
+         y = wd_label,
+         x = height_label,
+         col = legend_title)
+  p3 = ggpubr::ggarrange(p1, p2, ncol = 2, nrow = 1, labels = LETTERS[1:2], legend = "bottom", common.legend = TRUE)
+  return(p3)
 }
 
-df$rate = factor(df$rate, levels = rates)
-df$loc = factor(df$loc, levels = c("top", "slope"))
-p1 = df |>
-  filter(loc == "top") |>
-  ggplot(aes(x = l_occ_h, y = rate, fill = rate)) +
-  geom_density_ridges(stat = "binline") +
-  labs(title = "LOs platform top")
-p1
+p = plot_wd_strat_domain()
+p
+ggsave("figs/water_depth_strat_domain.png", p)
 
-p2 = df |> 
-  filter(loc == "slope") |>
-  ggplot(aes(x = l_occ_h, y = rate, fill = rate)) +
-  geom_density_ridges(stat = "binline") +
-  labs(title = "LOs platform slope")
-p2
+#### Plot: condensation ratio ####
 
-p3 = ggpubr::ggarrange(p1, p2, ncol = 2, nrow = 1, labels = LETTERS[1:2], common.legend = TRUE, legend = "bottom") 
-p3
-ggsave("figs/last_occ.png", p3)
-
-#### ADM conv plot ####
-
-adm = adm_comb[["pl"]][[1]]
-plot(adm)
-
-r = diff(get_L_tp(adm))/diff(get_T_tp(amd)) 
-r = r |> sort() |> cumsum()
-plot(NULL, xlim = c(0,1), ylim = c(0,1),
-     xlab = "Proportion of time",
-     ylab = "Proportion of height",
-     main = "Time distribution on the ramp")
-for (i in seq_along(adm_list_ra)){
-  adm = adm_list_ra[[i]]
-  r = diff(get_L_tp(adm))/diff(get_T_tp(amd)) 
-  r = r |> sort() |> cumsum()
-  lines(seq_along(r)/length(r), r / max(r), lwd = i/2)
+plot_condensation_ratio = function(){
+  df = data.frame(matrix(nrow = 0, ncol = 4))
+  names = c("cond_ratio", "proportion_height", "distance", "system")
+  names(df) = names
+  bin_width_m = 4
+  distances_km  = paste(distances, "km")
+  for (case in names(adm_comb)){
+    for (i in seq_along(distances_km)){
+      adm = adm_comb[[case]][[i]]
+      h = seq(admtools::min_height(adm), admtools::max_height(adm), by = bin_width_m)  
+      adm_2 = tp_to_adm(t = c(admtools::min_time(adm), admtools::max_time(adm)),
+                        h = c(admtools::min_height(adm), admtools::max_height(adm)))
+      t1 = strat_to_time(h, adm) |> diff()
+      t2 = strat_to_time(h, adm_2) |> diff()
+      cond_ratio = t1/t2
+      proportion_height = ((h[1:(length(h)-1)] +  h[2:length(h)])/2) - admtools::min_height(adm)
+      proportion_height = proportion_height/(admtools::max_height(adm)- admtools::min_height(adm))
+      df2 = data.frame(cond_ratio = cond_ratio,
+                       proportion_height = proportion_height,
+                       distance = rep(distances_km[i], length(cond_ratio)),
+                       system = rep(case, length(cond_ratio)))
+      df = rbind(df, df2)
+    }
+  }
+  df$distance = factor(df$distance, levels = distances_km)
+  df$system = factor(df$system)
+  
+  pos_interest = paste(c(3,6,9,12,15,18,21), "km")
+  y_lim = range(df$cond_ratio)
+  y_lim[1] = 0.95 * y_lim[1]
+  y_lim[2] = 1.1 * y_lim[2]
+  title_ramp = "Ramp"
+  title_platform = "Platform"
+  y_label = "Condensation Ratio [-]"
+  x_label = "Relative Height [-]"
+  legend_label = "Distance from Shore"
+  p1 = df |> 
+    filter(system == "ra" &
+             distance %in% pos_interest) |>
+    ggplot(aes(x = proportion_height, y = cond_ratio, color = distance)) +
+    geom_line() +
+    geom_hline(yintercept = 1, linetype = "dashed") +
+    coord_flip() +
+    scale_y_log10(limits = y_lim) +
+    labs(y = y_label,
+         x = x_label,
+         title = title_ramp,
+         color = legend_label)
+  p2 = df |> 
+    filter(system == "pl" &
+             distance %in% pos_interest) |>
+    ggplot(aes(x = proportion_height, y = cond_ratio, color = distance)) +
+    geom_line() +
+    geom_hline(yintercept = 1, linetype = "dashed") +
+    coord_flip() +
+    scale_y_log10(limits = y_lim) +
+    labs(y = y_label,
+         x = x_label,
+         title = title_platform,
+         color = legend_label)
+  p3 = ggpubr::ggarrange(p2, p1,  nrow = 1, ncol = 2, common.legend = TRUE, legend = "bottom", labels = LETTERS[1:2])
+  return(p3)
 }
 
-plot(NULL, xlim = c(0,1), ylim = c(0,1),
-     xlab = "Proportion of time",
-     ylab = "Proportion of height",
-     main = "Time distribution on the platform")
-for (i in seq_along(adm_list_pl)){
-  adm = adm_list_pl[[i]]
-  r = diff(get_L_tp(adm))/diff(get_T_tp(amd)) 
-  r = r |> sort() |> cumsum()
-  lines(seq_along(r)/length(r), r / max(r), lwd = i/2)
+p = plot_condensation_ratio()
+p
+ggsave("figs/condensation_ratio.png", plot = p)
+
+#### Plot: Cumulative distribution of time vs height ####
+plot_prop_time_vs_height = function(){
+  names = c("prop_time", "prop_height", "dist", "case")
+  df = data.frame(matrix(nrow = 0, ncol = length(names)))
+  names(df) = names
+  
+  x_label = "Proportion time [-]"
+  y_label = "Proportion height [-]"
+  title_platform = "Platform"
+  title_ramp = "Ramp"
+  legend_label = "Distance from shore"
+  
+  for (case in names(adm_comb)){
+    for (i in seq_along(distances_km)){
+      adm = adm_comb[[case]][[i]]
+      r = diff(get_L_tp(adm))/diff(get_T_tp(adm)) 
+      r = r |> sort() |> cumsum()
+      t_rel = seq_along(r)/length(r)
+      df2 = data.frame(prop_time = t_rel,
+                       prop_height = r/max(r),
+                       dist = rep(distances_km[i], length(t_rel)),
+                       system = rep(case, length(t_rel)))
+      df = rbind(df, df2)
+    }
+  }
+  df$dist = factor(df$dist, levels = distances_km)
+  df$system = factor(df$system)
+  pos_interest = paste(c(3,6,9,12,15,18,21), "km")
+  
+  p1 = df |>
+    filter(system == "pl" & dist %in% pos_interest) |>
+    ggplot(aes(x = prop_time, y = prop_height, color = dist)) +
+    geom_line() +
+    labs(y = y_label,
+         x = x_label,
+         title = title_platform,
+         color = legend_label) + 
+    geom_segment(x = 0,
+                 y = 0,
+                 xend = 1,
+                 yend = 1,
+                 color = "black",
+                 linetype = "dashed")
+  p2 = df |>
+    filter(system == "ra" & dist %in% pos_interest) |>
+    ggplot(aes(x = prop_time, y = prop_height, color = dist)) +
+    geom_line() +
+    labs(y = y_label,
+         x = x_label,
+         title = title_ramp,
+         color = legend_label) + 
+    geom_segment(x = 0,
+                 y = 0,
+                 xend = 1,
+                 yend = 1,
+                 color = "black",
+                 linetype = "dashed")
+  p3 = ggpubr::ggarrange(p1, p2,  nrow = 1, ncol = 2, common.legend = TRUE, legend = "bottom", labels = LETTERS[1:2])
 }
+p = plot_prop_time_vs_height()
+p
+ggsave("figs/prop_time_vs_height.png", plot = p)
 
+#### Plot: Abundance bias on last occurrences ####
+plot_lo_comparison = function(){
+  case = "pl"
+  adm_used = list("top" = adm_comb[[case]][[1]],
+                  "slope" = adm_comb[[case]][[10]])
+  rates = c(2, 5, 10, 30, 100, 1000)
+  names = c("l_occ_h","rate", "loc")
+  df = data.frame(matrix(nrow = 0, ncol = length(names)))
+  names(df) = names
+  
+  title_top = "Platform top"
+  title_slope = "Platform slope"
+  y_axis_label = "Stratigraphic height [m]"
+  legend_title = "Fossil abundance [#/Myr]"
+  x_axis_label = "Last occurrences"
+  for (loc in names(adm_used)){
+    adm = adm_used[[loc]]
+    for (j in seq_along(rates)){
+      rate = rates[j]
+      t_ext = p3(1000, from = min_time(adm), to = max_time(adm), n = 1000)
+      l_occ_t = rep(NA, length(t_ext))
+      l_occ_h = rep(NA, length(t_ext))
+      for (i in seq_along(t_ext)){
+        x = last_occ(t_ext = t_ext[i], rate, adm = adm)
+        l_occ_h[i] = x["h"]
+      }
+      df = rbind(df, data.frame(l_occ_h = l_occ_h,
+                                rate = rep(rate, length(l_occ_h)), 
+                                loc = rep(loc, length(l_occ_h))))
+    }
+  }
+  
+  df$rate = factor(df$rate, levels = rates)
+  df$loc = factor(df$loc, levels = c("top", "slope"))
+  p1 = df |>
+    filter(loc == "top" & is.finite(l_occ_h)) |>
+    ggplot(aes(x = l_occ_h, y = rate, fill = rate)) +
+    geom_density_ridges(stat = "binline", bins = 30) +
+    labs(title = title_top,
+         x = y_axis_label,
+         y = x_axis_label,
+         fill = legend_title) +
+    coord_flip()
+  p2 = df |>
+    filter(loc == "slope" & is.finite(l_occ_h)) |>
+    ggplot(aes(x = l_occ_h, y = rate, fill = rate)) +
+    geom_density_ridges(stat = "binline", bins = 30) +
+    labs(title = title_slope,
+         x = y_axis_label,
+         y = x_axis_label,
+         fill = legend_title) +
+    coord_flip()
+  p3 = ggpubr::ggarrange(p1, p2, ncol = 2, nrow = 1, labels = LETTERS[1:2], common.legend = TRUE, legend = "bottom") 
+  return(p3)  
+}
+p = plot_lo_comparison()
+p
+ggsave("figs/last_occ.png", p)
 
-plot(seq_along(r)/length(r), r / max(r)   ,type = "l")
