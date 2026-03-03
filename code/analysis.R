@@ -842,6 +842,7 @@ p1 = df |>
   labs(x = "Distance from shore",
        y = "Value [Myr]",
        title = "Ramp")
+p1
 
 p2 = df |> 
   select(-comp) |>
@@ -855,5 +856,7 @@ p2 = df |>
        y = "Value [Myr]",
        title = "Platform")
 p2
-p3 = ggpubr::ggarrange(p1, p2, ncol = 2, nrow = 1, lables = LETTERS[1:2],common.legend = TRUE, legend = "bottom")
+p3 = ggpubr::ggarrange(p1, p2, ncol = 2, nrow = 1, labels = LETTERS[1:2],common.legend = TRUE, legend = "bottom")
 p3
+ggsave(filename = "figs/hiatus_measures.png",
+       plot = p3)
