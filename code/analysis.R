@@ -270,14 +270,14 @@ p1 = df |> filter(system == "platform" & distance %in% pos_interest) |>
   geom_density_ridges() +
   theme_ridges() +
   scale_x_log10() +
-  ggtitle("Platform")
+  ggtitle("Platform") + theme_classic()
 
 p2 = df |> filter(system == "ramp" & distance %in% pos_interest) |>
   ggplot(aes(x = hiat_duration, y = distance, fill = distance)) +
   geom_density_ridges() +
   theme_ridges() +
   scale_x_log10() +
-  ggtitle("Ramp")
+  ggtitle("Ramp") + theme_classic()
 
 p3 = ggpubr::ggarrange(p1, p2, nrow = 1, ncol = 2, common.legend = TRUE)
 p3
@@ -790,3 +790,70 @@ p = plot_lo_comparison()
 p
 ggsave("figs/last_occ.png", p)
 
+
+#### Plot draft: Incompleteness and gap duration
+
+names = c("comp", "max", "quant_1", "quant_3", "median", "dist", "case")
+df = data.frame(matrix(nrow = 0, ncol = length(names)))
+names(df) = names
+for (case in names(adm_comb)){
+  for (i in seq_along(distances_km)){
+    adm = adm_comb[[case]][[i]]
+    comp = get_completeness(adm)
+    hiat = get_hiat_duration(adm)
+    df2 = data.frame(
+      comp = comp,
+      max = max(hiat),
+      quant_1 = quantile(hiat, probs = 0.25, names = FALSE),
+      quant_3 = quantile(hiat, probs = 0.75, names = FALSE),
+      median = median(hiat),
+      dist = distances[i],
+      case  = case
+    )
+    df = rbind(df, df2)
+  }
+}
+df$max[is.infinite(df$max)] = 0
+df$quant_1[is.na(df$quant_1)] = 0
+df$quant_3[is.na(df$quant_3)] = 0
+df$median[is.na(df$median)] = 0
+#df$dist = factor(df$dist, levels = distances_km)
+df$case = factor(df$case)
+
+p= df |>
+  ggplot(aes(x = dist, y = comp, color = case)) + 
+  geom_line(linewidth = 3) +
+  labs(x = "distance from shore",
+       y = "completeness",
+       color = "geometry") +
+  ylim(c(0,1))
+p
+ggsave(filename = "figs/completeness.png",
+       plot = p)
+
+p1 = df |> 
+  select(-comp) |>
+  pivot_longer(cols = c("max", "quant_1", "quant_3", "median"),
+               names_to = "measure",
+               values_to = "value") |>
+  filter(case == "ra") |>
+  ggplot(aes(x = dist, y = value, color = measure)) +
+  geom_line(linewidth = 3) +
+  labs(x = "Distance from shore",
+       y = "Value [Myr]",
+       title = "Ramp")
+
+p2 = df |> 
+  select(-comp) |>
+  pivot_longer(cols = c("max", "quant_1", "quant_3", "median"),
+               names_to = "measure",
+               values_to = "value") |>
+  filter(case == "pl") |>
+  ggplot(aes(x = dist, y = value, color = measure)) +
+  geom_line(linewidth = 3) +
+  labs(x = "Distance from shore",
+       y = "Value [Myr]",
+       title = "Platform")
+p2
+p3 = ggpubr::ggarrange(p1, p2, ncol = 2, nrow = 1, lables = LETTERS[1:2],common.legend = TRUE, legend = "bottom")
+p3
