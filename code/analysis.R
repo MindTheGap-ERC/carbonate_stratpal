@@ -59,6 +59,12 @@ amplitude2 = 2.5 # m
 sl = list(t = t,
           sl = amplitude1 * sin(2 * pi * t/ period1) + amplitude2 * sin(2 * pi * t / period2))
 
+wd_comb = list(ra = wd_ra, pl = wd_pl)
+adm_comb = list(ra = adm_list_ra, pl = adm_list_pl)
+cases = c("ra", "pl")
+
+distances_km = paste(distances, "km")
+
 #### Base plots: SL, adms, wd ####
 path_base_fig = "figs/base/"
 if (!dir.exists(path_base_fig)) dir.create(path_base_fig, recursive = TRUE)
@@ -67,9 +73,7 @@ df |> ggplot(aes(x = t, y = sl)) +
   geom_line()
 ggsave(filename = paste0(path_base_fig, "sl.png"))
 
-wd_comb = list(ra = wd_ra, pl = wd_pl)
-adm_comb = list(ra = adm_list_ra, pl = adm_list_pl)
-cases = c("ra", "pl")
+
 for (i in seq_len(n_locations)){
   for (case in cases){
   print(case)
@@ -176,113 +180,6 @@ for (i in seq_len(n_locations)){
   }
   }
 }
-
-
-#### Sed Stats ####
-path_sed_stats = "figs/sed_stats/"
-if (!dir.exists(path_sed_stats)) dir.create(path_sed_stats, recursive = TRUE)
-
-inc = c()
-height = c()
-no_hiat = c()
-median_hiat = c()
-min_hiat = c()
-max_hiat = c()
-case = c()
-for (sed_case in sed_cases){
-  adm_list = adm_comb[[sed_case]]
-  for (i in seq_along(adm_list)){
-    inc = c(inc, adm_list[[i]] |> get_incompleteness())
-    height = c(height, adm_list[[i]] |> admtools::max_height())
-    no_hiat = c(no_hiat, adm_list[[i]] |> get_hiat_no())
-    median_hiat = c(median_hiat, adm_list[[i]] |> get_hiat_duration() |> median())
-    min_hiat = c(min_hiat, adm_list[[i]] |> get_hiat_duration() |> min())
-    max_hiat = c(max_hiat, adm_list[[i]] |> get_hiat_duration() |> max())
-    case = c(case, sed_case)
-  }
-}
-dist = rep(distances, 2)
-median_hiat[is.na(median_hiat)] = 0
-min_hiat[is.infinite(min_hiat)] = 0
-max_hiat[is.infinite(max_hiat)] = 0
-case = factor(case, levels = sed_cases)
-#dist = factor(dist, levels = distances)
-
-df_sed = data.frame(case = case, dist = dist, inc = inc, height = height, no_hiat = no_hiat,
-                    median_hiat = median_hiat, min_hiat = min_hiat, max_hiat = max_hiat)
-
-ggplot(df_sed, aes(x = dist, y = inc, color = case)) +
-  geom_line()  +
-  ylim(c(0,1)) + 
-  ggtitle(label = "Incompleteness")
-ggsave(filename = paste0(path_sed_stats, "completeness.png"))
-
-
-df_sed |> ggplot(aes(x = dist, y = height, color = case)) +
-  geom_line() +
-  ggtitle("Accumulated sediment")
-ggsave(filename = paste0(path_sed_stats, "height.png"))
-
-df_sed |> ggplot(aes(x = dist, y = no_hiat, group = case, color = case)) +
-  geom_line() +
-  ggtitle("Number of hiatuses")
-ggsave(filename = paste0(path_sed_stats, "no_hiatuses.png") )
-
-df_sed |> ggplot(aes(x = dist, y = max_hiat, group = case, color = case)) +
-  geom_line() +
-  ggtitle("Max hiat duration")
-ggsave(filename = paste0(path_sed_stats, "max_hiat.png") )
-
-df_sed |> ggplot(aes(x = dist, y = min_hiat, group = case, color = case)) +
-  geom_line() +
-  ggtitle("Min hiat duration")
-ggsave(filename = paste0(path_sed_stats, "min_hiat.png") )
-  
-
-df_sed |> ggplot(aes(x = dist, y = median_hiat, group = case, color = case)) +
-  geom_line() +
-  ggtitle("Median hiat duration")
-ggsave(filename = paste0(path_sed_stats, "median_hiat.png") )
-
-
-## ridgeline plots
-names = c("distance", "system", "hiat_duration")
-df = data.frame( matrix(ncol = 0, nrow = length(names)))
-names(df) = df
-for (i in seq_along(distances)){
-  hiat_dur = adm_list_pl[[i]] |> get_hiat_duration()
-  df_t = data.frame(distance = rep(distances[i], length(hiat_dur)),
-                    system = rep("platform", length(hiat_dur)),
-                    hiat_duration = hiat_dur)
-  df = rbind(df, df_t)
-  hiat_dur = adm_list_ra[[i]] |> get_hiat_duration()
-  df_t = data.frame(distance = rep(distances[i], length(hiat_dur)),
-                    system = rep("ramp", length(hiat_dur)),
-                    hiat_duration = hiat_dur)
-  df = rbind(df, df_t)
-}
-df$distance = factor(df$distance, levels = distances)
-
-pos_interest = c(3,6,9, 12, 15, 18, 21)
-
-p1 = df |> filter(system == "platform" & distance %in% pos_interest) |>
-  ggplot(aes(x = hiat_duration, y = distance, fill = distance)) +
-  geom_density_ridges() +
-  theme_ridges() +
-  scale_x_log10() +
-  ggtitle("Platform") + theme_classic()
-
-p2 = df |> filter(system == "ramp" & distance %in% pos_interest) |>
-  ggplot(aes(x = hiat_duration, y = distance, fill = distance)) +
-  geom_density_ridges() +
-  theme_ridges() +
-  scale_x_log10() +
-  ggtitle("Ramp") + theme_classic()
-
-p3 = ggpubr::ggarrange(p1, p2, nrow = 1, ncol = 2, common.legend = TRUE)
-p3
-
-ggsave("figs/hiatus_duration_comp.png", p3)
 
 
 #### Niches ####
@@ -791,16 +688,23 @@ p
 ggsave("figs/last_occ.png", p)
 
 
-#### Plot draft: Incompleteness and gap duration
-
+#### Plots: Incompleteness, gap statistics, and gap distribution ####
 names = c("comp", "max", "quant_1", "quant_3", "median", "dist", "case")
 df = data.frame(matrix(nrow = 0, ncol = length(names)))
 names(df) = names
+
+names = c("dist", "case", "hiat_duration")
+df1 = data.frame( matrix(nrow = 0, ncol = length(names)))
+names(df1) = names
+
 for (case in names(adm_comb)){
   for (i in seq_along(distances_km)){
     adm = adm_comb[[case]][[i]]
     comp = get_completeness(adm)
     hiat = get_hiat_duration(adm)
+    df3 = data.frame(dist = rep(distances[i], length(hiat)),
+                     case = rep(case, length(hiat)),
+                     hiat_duration = hiat)
     df2 = data.frame(
       comp = comp,
       max = max(hiat),
@@ -811,52 +715,108 @@ for (case in names(adm_comb)){
       case  = case
     )
     df = rbind(df, df2)
+    df1 = rbind(df1, df3)
   }
 }
 df$max[is.infinite(df$max)] = 0
 df$quant_1[is.na(df$quant_1)] = 0
 df$quant_3[is.na(df$quant_3)] = 0
 df$median[is.na(df$median)] = 0
-#df$dist = factor(df$dist, levels = distances_km)
-df$case = factor(df$case)
 
-p= df |>
+df$case = factor(df$case)
+df1$case = factor(df1$case)
+df1$dist = factor(df1$dist)
+
+plot_completeness = function(){
+  p = df |>
   ggplot(aes(x = dist, y = comp, color = case)) + 
   geom_line(linewidth = 3) +
   labs(x = "distance from shore",
        y = "completeness",
        color = "geometry") +
-  ylim(c(0,1))
+  ylim(c(0,1)) +
+    labs(x = "Distance from shore [km]",
+         y = "Completeness [-]",
+         title = "Stratigraphic Completeness",
+         color = "Geometry") +
+    scale_color_discrete(labels = c("Platform", "Ramp")) +
+    theme(legend.position = c(0.1, 0.9))
+return(p)
+}
+p = plot_completeness()
 p
 ggsave(filename = "figs/completeness.png",
        plot = p)
 
-p1 = df |> 
-  select(-comp) |>
-  pivot_longer(cols = c("max", "quant_1", "quant_3", "median"),
-               names_to = "measure",
-               values_to = "value") |>
-  filter(case == "ra") |>
-  ggplot(aes(x = dist, y = value, color = measure)) +
-  geom_line(linewidth = 3) +
-  labs(x = "Distance from shore",
-       y = "Value [Myr]",
-       title = "Ramp")
-p1
+plot_gap_statistics = function(){
+  p1 = df |> 
+    select(-comp) |>
+    pivot_longer(cols = c("max", "quant_1", "quant_3", "median"),
+                 names_to = "measure",
+                 values_to = "value") |>
+    filter(case == "ra") |>
+    ggplot(aes(x = dist, y = value, color = measure)) +
+    geom_line(linewidth = 3) +
+    labs(x = "Distance from shore [km]",
+         y = "Value [Myr]",
+         title = "Ramp",
+         color = "Statistic") +
+    scale_color_discrete(labels = c("maximum", "median", "1st quantile", "3rd quantile")) +
+    theme(legend.position = c(0.9, 0.8))
+  p2 = df |> 
+    select(-comp) |>
+    pivot_longer(cols = c("max", "quant_1", "quant_3", "median"),
+                 names_to = "measure",
+                 values_to = "value") |>
+    filter(case == "pl") |>
+    ggplot(aes(x = dist, y = value, color = measure)) +
+    geom_line(linewidth = 3)  +
+    labs(x = "Distance from shore [km]",
+         y = "Value [Myr]",
+         title = "Platform",
+         color = "Statistic") +
+    scale_color_discrete(labels = c("maximum", "median", "1st quantile", "3rd quantile")) +
+    theme(legend.position = c(0.9, 0.8))
+  p3 = ggpubr::ggarrange(p1, p2, ncol = 2, nrow = 1, labels = LETTERS[1:2],common.legend = TRUE, legend = "bottom")
+  return(p3)
+}
+p = plot_gap_statistics()
+p
+ggsave(filename = "figs/gap_statistics.png",
+       plot = p)
 
-p2 = df |> 
-  select(-comp) |>
-  pivot_longer(cols = c("max", "quant_1", "quant_3", "median"),
-               names_to = "measure",
-               values_to = "value") |>
-  filter(case == "pl") |>
-  ggplot(aes(x = dist, y = value, color = measure)) +
-  geom_line(linewidth = 3) +
-  labs(x = "Distance from shore",
-       y = "Value [Myr]",
-       title = "Platform")
-p2
-p3 = ggpubr::ggarrange(p1, p2, ncol = 2, nrow = 1, labels = LETTERS[1:2],common.legend = TRUE, legend = "bottom")
-p3
-ggsave(filename = "figs/hiatus_measures.png",
-       plot = p3)
+plot_hiat_duration = function(){
+  pos_interest = c(3,6,9, 12, 15)
+  
+  p1 = df1 |> 
+    filter(case == "pl" & dist %in% pos_interest) |>
+    ggplot(aes(x = hiat_duration, y = dist, fill = dist)) +
+    geom_density_ridges(bandwidth = 0.1) +
+    theme_ridges() +
+    scale_x_log10() +
+    ggtitle("Platform") + 
+    theme_classic()+
+    labs(x = "Hiatus duration [Myr]",
+         y = "Frequency",
+         fill = "Distance from shore") +
+    scale_fill_discrete(labels = c("3 km", "6 km", "9 km", "12 km", "15 km"))
+  p1
+  
+  p2 = df1 |> filter(case == "ra" & dist %in% pos_interest) |>
+    ggplot(aes(x = hiat_duration, y = dist, fill = dist)) +
+    geom_density_ridges(bandwidth = 0.1) +
+    theme_ridges() +
+    scale_x_log10() +
+    theme_classic() +
+    ggtitle("Ramp") +
+    labs(x = "Hiatus duration [Myr]",
+         y = "Frequency",
+         fill = "Distance from shore") +
+    scale_fill_discrete(labels = c("3 km", "6 km", "9 km", "12 km", "15 km"))
+  p2
+  p3 = ggpubr::ggarrange(p1, p2, nrow = 1, ncol = 2, common.legend = TRUE, legend = "bottom", labels = LETTERS[1:2])
+  return(p3)
+}
+p = plot_hiat_duration()
+p
+ggsave("figs/hiatus_duration_comp.png", p)
