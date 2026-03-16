@@ -211,7 +211,7 @@ plot(times_ext, range_offset_h, type = "l")
 
 #### Plot: Age-depth models ####
 plot_age_depth_models = function(){
-  st_sep_time = seq(0.25, 3.75, by = 0.5)
+  st_sep_time = c(-0.2,seq(0.25, 3.75, by = 0.5), 4.2)
   names = c("time", "height", "distance", "system")
   df = data.frame(matrix(nrow = 0, ncol = length(names)))
   names(df) = names
@@ -240,9 +240,11 @@ plot_age_depth_models = function(){
   
   pos_interest = paste(c(3,6,9, 12, 15, 18, 21), "km")
   
+  max_height = df |> filter(system == "ra") 
+  max_height = max_height$height[!is.na(max_height$height)] |> max()
   df_text = data.frame(time = 0.5* (head(st_sep_time, -1) + tail(st_sep_time, -1)),
-                      height = rep(125, length(st_sep_time)-1),
-                      label = c("HST", "RST","LST","TST","HST", "RST", "LST"))
+                      height = rep(max_height, length(st_sep_time)-1),
+                      label = c("TST","HST", "RST","LST","TST","HST", "RST", "LST", "TST"))
   p1 = df |>
     filter(system == "ra" &
              distance %in% pos_interest) |>
@@ -252,10 +254,18 @@ plot_age_depth_models = function(){
          x = x_lab_title,
          y = y_lab_title,
          col = legend_label) +
-    geom_vline(xintercept = st_sep_time,
+    geom_vline(xintercept = head(tail(st_sep_time, -1), -1),
           linetype = "dashed",
-          color = "black") +
+          color = "black",
+          lwd = 0.5) +
     geom_text(data = df_text, aes(x = time,y = height,label = label),inherit.aes = FALSE)
+  
+  max_height = df |> filter(system == "pl") 
+  max_height = max_height$height[!is.na(max_height$height)] |> max()
+  df_text = data.frame(time = 0.5* (head(st_sep_time, -1) + tail(st_sep_time, -1)),
+                       height = rep(max_height, length(st_sep_time)-1),
+                       label = c("TST","HST", "RST","LST","TST","HST", "RST", "LST", "TST"))
+  
   p2 = df |>
     filter(system == "pl" &
              distance %in% pos_interest) |>
@@ -265,11 +275,12 @@ plot_age_depth_models = function(){
          x = x_lab_title,
          y = y_lab_title,
          col = legend_label)  +
-    geom_vline(xintercept = st_sep_time,
+    geom_vline(xintercept = head(tail(st_sep_time, -1), -1),
                linetype = "dashed",
-               color = "black") +
+               color = "black",
+               lwd = 0.5) +
     geom_text(data = df_text, aes(x = time,y = height,label = label),inherit.aes = FALSE)
-  p3 = ggpubr::ggarrange(p1, p2, nrow = 1, ncol = 2,
+  p3 = ggpubr::ggarrange(p2, p1, nrow = 1, ncol = 2,
                          common.legend = TRUE,
                          legend = "bottom",
                          labels = LETTERS[1:2])
@@ -282,9 +293,9 @@ ggsave("figs/age_depth_overview.png", p)
 
 #### Plot: Water depths in time domain ####
 plot_wd_time_domain = function(){
-  st_sep_time = seq(0.25, 3.75, by = 0.5)
-  title_platform = "Platform Geometry"
-  title_ramp = "Ramp Geometry"
+  st_sep_time = c(-0.2,seq(0.25, 3.75, by = 0.5), 4.2)
+  title_platform = "Platform"
+  title_ramp = "Ramp"
   x_lab_title = "Elapsed Model Time [Myr]"
   y_lab_title = "Water Depth [m]"
   legend_label = "Distance from Shore"
@@ -306,7 +317,7 @@ plot_wd_time_domain = function(){
   df_wd$dist = factor(df_wd$dist, levels = distances_km)
   df_text = data.frame(time = 0.5* (head(st_sep_time, -1) + tail(st_sep_time, -1)),
                        height = rep(125, length(st_sep_time)-1),
-                       label = c("HST", "RST","LST","TST","HST", "RST", "LST"))
+                       label = c("TST", "HST", "RST","LST","TST","HST", "RST", "LST", "TST"))
   
   p1 = df_wd |>
     filter(tag == "ra" & dist %in% pos_interest) |>
@@ -316,9 +327,10 @@ plot_wd_time_domain = function(){
          x = x_lab_title,
          y = y_lab_title,
          col = legend_label)  +
-    geom_vline(xintercept = st_sep_time,
+    geom_vline(xintercept = head(tail(st_sep_time, -1),-1),
                linetype = "dashed",
-               color = "black") +
+               color = "black",
+               lwd = 0.5) +
     geom_text(data = df_text,
               aes(x = time,
                   y = height,
@@ -332,9 +344,10 @@ plot_wd_time_domain = function(){
          x = x_lab_title,
          y = y_lab_title,
          col = legend_label) +
-    geom_vline(xintercept = st_sep_time,
+    geom_vline(xintercept = head(tail(st_sep_time, -1),-1),
                linetype = "dashed",
-               color = "black") +
+               color = "black",
+               lwd = 0.5) +
     geom_text(data = df_text,
               aes(x = time,
                   y = height,
@@ -373,9 +386,9 @@ plot_wd_strat_domain = function(){
   }
   
   df$distance = factor(df$distance, levels = distances_km)
-  res_distances = c(3,6,9, 12, 15, 18) |> paste("km")
-  title_ramp = "Ramp Geometry"
-  title_platform = "Platform Geometry"
+  res_distances = c(3,6,9, 12, 15, 18, 21) |> paste("km")
+  title_ramp = "Ramp"
+  title_platform = "Platform"
   wd_label = "Water Depth [m]"
   height_label = "Relative Height [m]"
   legend_title = "Distance from Shore"
@@ -482,8 +495,8 @@ plot_prop_time_vs_height = function(){
   df = data.frame(matrix(nrow = 0, ncol = length(names)))
   names(df) = names
   
-  x_label = "Proportion time [-]"
-  y_label = "Proportion height [-]"
+  x_label = "Proportion cumulative time [-]"
+  y_label = "Proportion cumulative height [-]"
   title_platform = "Platform"
   title_ramp = "Ramp"
   legend_label = "Distance from shore"
@@ -540,17 +553,22 @@ p
 ggsave("figs/prop_time_vs_height.png", plot = p)
 
 #### Plot: Abundance bias on last occurrences ####
-plot_lo_comparison = function(){
-  case = "pl"
+plot_lo_comparison = function(case = "pl"){
   adm_used = list("top" = adm_comb[[case]][[1]],
                   "slope" = adm_comb[[case]][[10]])
-  rates = c(2, 5, 10, 30, 100, 1000)
+  rates = c(2, 5, 10, 30, 100, 300)
   names = c("l_occ_h","rate", "loc")
   df = data.frame(matrix(nrow = 0, ncol = length(names)))
   names(df) = names
-  
-  title_top = "Platform top"
-  title_slope = "Platform slope"
+  if (case == "pl"){
+    title_top = "Platform top"
+    title_slope = "Platform slope"
+  }
+  if (case == "ra"){
+    title_top = "Ramp top"
+    title_slope = "Ramp slope"
+  }
+
   y_axis_label = "Stratigraphic height [m]"
   legend_title = "Fossil abundance [#/Myr]"
   x_axis_label = "Last occurrences"
@@ -573,25 +591,24 @@ plot_lo_comparison = function(){
   
   df$rate = factor(df$rate, levels = rates)
   df$loc = factor(df$loc, levels = c("top", "slope"))
-  st_sep_time = seq(0.25, 3.75, by = 0.5)
-  adm = adm_used[[1]]
-  st_sep_strat = time_to_strat(st_sep_time, adm, destructive = FALSE)
+  st_sep_time = c(0,seq(0.25, 3.75, by = 0.5), 4)
+  st_sep_strat = time_to_strat(st_sep_time, adm_used[["top"]], destructive = FALSE)
   st_pres = !(diff(st_sep_strat) == 0)
-  st_names = c("HST", "RST","LST","TST","HST", "RST", "LST")
+  st_names = c("TST", "HST", "RST","LST","TST","HST", "RST", "LST", "TST")
   st_names_used = st_names[st_pres]
   st_sep_strat_used = st_sep_strat[st_pres]
   df_text = data.frame(time = 0.5* (head(st_sep_strat_used, -1) + tail(st_sep_strat_used, -1)),
-                       height = rep(3, length(st_sep_strat_used)-1),
+                       height = rep(2.5, length(st_sep_strat_used)-1),
                        label = st_names_used)
   p1 = df |>
     filter(loc == "top" & is.finite(l_occ_h)) |>
     ggplot(aes(x = l_occ_h, y = rate, fill = rate)) +
-    geom_density_ridges(stat = "binline", bins = 30) +
+    geom_density_ridges(stat = "binline", bins = 30, scale = 1) +
     labs(title = title_top,
          x = y_axis_label,
          y = x_axis_label,
          fill = legend_title) +
-    geom_vline(xintercept = st_sep_strat_used,
+    geom_vline(xintercept = st_sep_strat_used[2:(length(st_sep_strat_used)-1)],
                linetype = "dashed",
                color = "black") +
     geom_text(data = df_text,
@@ -600,24 +617,25 @@ plot_lo_comparison = function(){
                   label = label),
               inherit.aes = FALSE) +
     coord_flip()
-  adm = adm_used[[2]]
-  st_sep_strat = time_to_strat(st_sep_time, adm, destructive = FALSE)
+  
+  st_sep_time = c(0,seq(0.25, 3.75, by = 0.5), 4)
+  st_sep_strat = time_to_strat(st_sep_time, adm_used[["slope"]], destructive = FALSE)
   st_pres = !(diff(st_sep_strat) == 0)
-  st_names = c("HST", "RST","LST","TST","HST", "RST", "LST")
+  st_names = c("TST", "HST", "RST","LST","TST","HST", "RST", "LST", "TST")
   st_names_used = st_names[st_pres]
   st_sep_strat_used = st_sep_strat[st_pres]
   df_text = data.frame(time = 0.5* (head(st_sep_strat_used, -1) + tail(st_sep_strat_used, -1)),
-                       height = rep(3, length(st_sep_strat_used)-1),
+                       height = rep(2.5, length(st_sep_strat_used)-1),
                        label = st_names_used)
   p2 = df |>
     filter(loc == "slope" & is.finite(l_occ_h)) |>
     ggplot(aes(x = l_occ_h, y = rate, fill = rate)) +
-    geom_density_ridges(stat = "binline", bins = 30) +
+    geom_density_ridges(stat = "binline", bins = 30, scale = 1) +
     labs(title = title_slope,
          x = y_axis_label,
          y = x_axis_label,
          fill = legend_title) +
-    geom_vline(xintercept = st_sep_strat_used,
+    geom_vline(xintercept = st_sep_strat_used[2:(length(st_sep_strat_used)-1)],
                linetype = "dashed",
                color = "black") +
     geom_text(data = df_text,
@@ -631,8 +649,10 @@ plot_lo_comparison = function(){
 }
 p = plot_lo_comparison()
 p
-ggsave("figs/last_occ.png", p)
-
+ggsave("figs/last_occ_pl.png", p)
+p = plot_lo_comparison(case = "ra")
+p
+ggsave("figs/last_occ_ra.png", p)
 
 #### Plots: Incompleteness, gap statistics, and gap distribution ####
 names = c("comp", "max", "quant_1", "quant_3", "median", "dist", "case")
@@ -885,10 +905,99 @@ p3
 ggsave(filename = "figs/lo_comp_different_ext_scenarios.png",
        plot = p3)
 
+plot_ext_scen_by_rate = function(rate){
+  p1 = plot_ext_scenario_comparison(rate = rate, dist = 15, case = "pl", title = "Platform proximal slope")
+  p2 = plot_ext_scenario_comparison(rate = rate, dist = 3, case = "pl", title = "Platform top")
+  p3 = ggpubr::ggarrange(p2,p1, ncol = 2, nrow =1, common.legend = TRUE, legend = "bottom", labels = LETTERS[1:2])
+  name = paste0("figs/lo_comp_different_ext_scenarios_rate_", rate, ".png")
+  ggsave(filename = name,
+         plot = p3)
+}
+for (rate in c(1,3,10,30,100,300,1000,3000)){
+  plot_ext_scen_by_rate(rate = rate)
+}
+
+#### Spatioal correlation of extinction scenarios ####
+
+rate = 10
+sel_loc = seq(1.5, 15, by = 1.5)
+ext_s = ext_scen[["HST"]]
+case = "ra"
+stopifnot(dist %in% distances)
+stopifnot(case %in% cases)
+names = c("case", "dist", "l_occ_h")
+df = data.frame(matrix(nrow = 0, ncol = length(names)))
+names(df) = names
+rate = rate
+n_locc = 1000
+for (dist in sel_loc){
+  f = ext_s
+  adm = adm_comb[[case]][[which(distances == dist)]]
+  t_ext = p3_var_rate(x = f,
+                      from = admtools::min_time(adm),
+                      to = admtools::max_time(adm),
+                      n = n_locc,
+                      f_max = 25)
+  l_occ_h = rep(NA, length(t_ext))
+  for (j in 1:length(t_ext)){
+    l_occ = last_occ(t_ext = t_ext[j],
+                     rate = rate,
+                     adm = adm)
+    l_occ_h[j] = l_occ["h"]
+  }
+  df2 = data.frame(case = rep(case, length(l_occ_h)),
+                   dist = rep(dist, length(l_occ_h)),
+                   l_occ_h = l_occ_h)
+  df = rbind(df, df2)
+}
+df$case = factor(df$case)
+df$dist = factor(df$dist)
+
+p  = df |>
+  filter(dist %in% c(3, 12)) |>
+  ggplot(aes(x = l_occ_h, y = dist, fill = dist)) +
+  geom_density_ridges(stat = "binline") +
+  geom_line(data = df2,
+            aes(x = l_occ_h, y = dist, group = 1))
+p
+
+df2 = data.frame(l_occ_h = c(30, 100),
+                 dist = factor(c(3, 12)))
+st_sep_time = c(0,seq(0.25, 3.75, by = 0.5), 4)
+st_sep_strat = time_to_strat(st_sep_time, adm, destructive = FALSE)
+st_pres = !(diff(st_sep_strat) == 0)
+st_names = c("TST", "HST", "RST","LST","TST","HST", "RST", "LST", "TST")
+st_names_used = st_names[st_pres]
+st_sep_strat_used = st_sep_strat[st_pres]
+df_text = data.frame(time = 0.5* (head(st_sep_strat_used, -1) + tail(st_sep_strat_used, -1)),
+                     height = rep(2.5, length(st_sep_strat_used)-1),
+                     label = st_names_used)
+
+p = df |>
+  ggplot(aes(x = l_occ_h, y = ext_scen, fill = ext_scen)) +
+  geom_density_ridges(stat = "binline",
+                      breaks = seq(0,admtools::max_height(adm), length.out = 30),
+                      scale = 0.9)+
+  geom_vline(xintercept = tail(head(st_sep_strat_used, -1),-1),
+             linetype = "dashed",
+             color = "black") +
+  geom_text(data = df_text,
+            aes(x = time,
+                y = height,
+                label = label),
+            inherit.aes = FALSE) +
+  coord_flip() +
+  labs(title = title,
+       y = "Extinction scenario",
+       x = "Stratigraphic height [m]",
+       fill = "Extinction scenario")
+return(p)
+
+
 
 #### Plot range offset ####
 min_depth = 0
-max_depth = max(unlist(wd))
+max_depth = max(unlist(wd_comb))
 min_width = 3
 max_width = 50
 n_subdiv  = 15
@@ -908,7 +1017,7 @@ for (i in 1:n_subdiv){
 }
 rate_range = min_rate + (max_rate - min_rate) * seq(0,1, length.out = n_rates)^2
 rate_range
-names = c("case", "distance", "opt", "width", "t_ext", "r_offset_h", "r_offset_t","rate")
+names = c("case", "distance", "opt", "width", "t_ext", "r_offset_h", "r_offset_t","h_ext", "rate")
 df = data.frame(matrix(nrow = 0, ncol = length(names)))
 names(df) = names
 
@@ -929,14 +1038,26 @@ get_range_offset = function(){
                                          tol = ni[[1]]$width,
                                          cutoff_val = 0))
     }
-    df2 = data.frame(case = case, distance = dist, opt = ni[[1]]$opt, width = ni[[1]]$width, t_ext = t_ext,
+    df2 = data.frame(case = case, 
+                     distance = dist,
+                     opt = ni[[1]]$opt,
+                     width = ni[[1]]$width, 
+                     t_ext = t_ext,
                      r_offset_h = x["h"],
                      r_offset_t = x["t"],
+                     h_ext = time_to_strat(t_ext, adm),
+                     rate = rate
                      )
     df = rbind(df, df2)
-    print(i)
   }
+  return(df)
 }
+hh = get_range_offset()
+plot(hh$h_ext, hh$r_offset_t)
+plot(hh$h_ext, hh$r_offset_h)
+plot(hh$t_ext, hh$r_offset_t)
+plot(hh$t_ext, hh$r_offset_h)
+plot(hh$width, hh$r_offset_t)
 
 opt = 1
 width = 3
