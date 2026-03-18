@@ -211,6 +211,7 @@ plot(times_ext, range_offset_h, type = "l")
 
 #### Plot: Age-depth models ####
 plot_age_depth_models = function(){
+  pos_interest = paste(c(3,6,9, 12, 15, 18, 21), "km")
   st_sep_time = c(-0.2,seq(0.25, 3.75, by = 0.5), 4.2)
   names = c("time", "height", "distance", "system")
   df = data.frame(matrix(nrow = 0, ncol = length(names)))
@@ -238,7 +239,7 @@ plot_age_depth_models = function(){
   df$distance = factor(df$distance, levels = distances_km)
   df$system = factor(df$system)
   
-  pos_interest = paste(c(3,6,9, 12, 15, 18, 21), "km")
+
   
   max_height = df |> filter(system == "ra") 
   max_height = max_height$height[!is.na(max_height$height)] |> max()
@@ -390,7 +391,7 @@ plot_wd_strat_domain = function(){
   title_ramp = "Ramp"
   title_platform = "Platform"
   wd_label = "Water Depth [m]"
-  height_label = "Relative Height [m]"
+  height_label = "Relative Height [-]"
   legend_title = "Distance from Shore"
   
   p1 = df |>
@@ -760,20 +761,24 @@ plot_hiat_duration = function(){
     filter(case == "pl" & dist %in% pos_interest) |>
     ggplot(aes(x = hiat_duration, y = dist, fill = dist)) +
     geom_density_ridges(bandwidth = 0.1) +
-    theme_ridges() +
+    theme_ridges()+
+    geom_vline(xintercept = c(0.001, 0.1, 1),
+               linetype = "dashed") +
     scale_x_log10() +
     ggtitle("Platform") + 
     theme_classic()+
     labs(x = "Hiatus duration [Myr]",
          y = "Frequency",
          fill = "Distance from shore") +
-    scale_fill_discrete(labels = c("3 km", "6 km", "9 km", "12 km", "15 km"))
+    scale_fill_discrete(labels = c("3 km", "6 km", "9 km", "12 km", "15 km")) 
   p1
   
   p2 = df1 |> filter(case == "ra" & dist %in% pos_interest) |>
     ggplot(aes(x = hiat_duration, y = dist, fill = dist)) +
     geom_density_ridges(bandwidth = 0.1) +
     theme_ridges() +
+    geom_vline(xintercept = c(0.001, 0.1, 1),
+               linetype = "dashed") +
     scale_x_log10() +
     theme_classic() +
     ggtitle("Ramp") +
@@ -919,10 +924,10 @@ for (rate in c(1,3,10,30,100,300,1000,3000)){
 
 #### Spatioal correlation of extinction scenarios ####
 
-rate = 10
-sel_loc = seq(1.5, 15, by = 1.5)
-ext_s = ext_scen[["HST"]]
-case = "ra"
+plot_spat_corr_ext = function(rate, case, ext_sce){
+sel_loc = seq(3, 15, by = 3)
+ext_s = ext_scen[[ext_sce]]
+case = case
 stopifnot(dist %in% distances)
 stopifnot(case %in% cases)
 names = c("case", "dist", "l_occ_h")
@@ -951,18 +956,71 @@ for (dist in sel_loc){
   df = rbind(df, df2)
 }
 df$case = factor(df$case)
-df$dist = factor(df$dist)
+df$dist = factor(df$dist, levels = sel_loc, ordered = TRUE)
 
-p  = df |>
-  filter(dist %in% c(3, 12)) |>
-  ggplot(aes(x = l_occ_h, y = dist, fill = dist)) +
-  geom_density_ridges(stat = "binline") +
-  geom_line(data = df2,
-            aes(x = l_occ_h, y = dist, group = 1))
+# correlation lines
+st_sep_time = c(0,seq(0.25, 3.75, by = 0.5),4)
+names = c("h", "dist", "trans")
+df3 = data.frame(matrix(nrow = 0, ncol = length(names)))
+names(df3) = names
+for (dist in sel_loc){
+  adm = adm_comb[[case]][[which(distances == dist)]]
+  df4 = data.frame(h = time_to_strat(st_sep_time, adm, destructive = FALSE),
+                   dist = rep(dist, length(st_sep_time)),
+                   trans = letters[1:(length(st_sep_time))])
+  df3 = rbind(df3, df4)
+}
+df3  = df3|> arrange(dist, h)
+df3$dist = factor(df3$dist, levels = sel_loc, ordered = TRUE)
+df3$trans = factor(df3$trans, ordered = TRUE)
+
+names = c("pos", "labs", "name")
+df_text = data.frame(matrix(nrow = 0, ncol = length(names)))
+names(df_text) = names
+st_sep = c(0,seq(0.25, 3.75, by = 0.5), 4)
+labs = c("TST", "HST", "RST","LST","TST","HST", "RST", "LST", "TST")
+for (plot_pos in sel_loc){
+  pos1 = time_to_strat(st_sep, adm_comb[[case]][[which(distances == plot_pos)]], destructive = FALSE)
+  is_pres = diff(pos1) != 0
+  height =  0.5* (head(pos1, -1) + tail(pos1, -1))
+  df_text1 = data.frame(pos = height[is_pres],
+                       labs = labs[is_pres],
+                       dist = factor(rep(plot_pos, sum(is_pres))))
+  df_text = rbind(df_text, df_text1)
+}
+
+
+
+p = df   |>
+  filter(!is.na(l_occ_h))|>
+  ggplot(aes(x = l_occ_h, y = dist, group = dist, fill = dist)) +
+  geom_density_ridges(stat = "binline",
+                      bins = 40,
+                      scale = 1)+
+  geom_path(data = df3 ,
+                aes(x = h, y = dist, group = trans)) +
+  geom_text(data = df_text |> filter(dist %in% c(3, 15)),
+            aes(x = pos, y = dist, label = labs),
+            position = position_nudge(y = 0.2)) +
+  coord_flip() +
+  labs(y = "Distance",
+       x = "Stratigraphic height [m]",
+       fill = "Distance")
+return(p)
+
+}
+for (case in c("ra", "pl")){
+  for (ext_scenario in c("HST", "TST", "RST", "LST", "constant")){
+    print(case)
+
+    p = plot_spat_corr_ext(rate = 10, case = case, ext_sce = ext_scenario)
+    p
+    ggsave(filename = paste0("figs/ext_comp",case, ext_scenario,".png"))
+  }
+}
+
+
 p
-
-df2 = data.frame(l_occ_h = c(30, 100),
-                 dist = factor(c(3, 12)))
 st_sep_time = c(0,seq(0.25, 3.75, by = 0.5), 4)
 st_sep_strat = time_to_strat(st_sep_time, adm, destructive = FALSE)
 st_pres = !(diff(st_sep_strat) == 0)
@@ -1080,3 +1138,48 @@ h_ext = time_to_strat(t_ext, adm, destructive = FALSE)
 t_last_occ = strat_to_time(highest_occ, adm)
 offset_range_t = t_ext - t_last_occ
 offset_range_h = h_ext - highest_occ
+
+#### Some evol blobs ####
+t = wd_comb$ra[[1]]$t
+st = StratPal::random_walk(t = t, mu = 3)
+plot(st)
+
+names = c("h", "val", "offset", "group")
+df = data.frame(matrix(nrow = 0, ncol = length(names)))
+names(df) = names
+
+sel_loc = seq(3, 21, by = 3)
+case = "pl"
+for (i in seq_along(sel_loc)){
+  dist = sel_loc[i]
+  adm = adm_comb[[case]][[which(dist == sel_loc)]]
+  plot(adm)
+  t_trans = time_to_strat(st, adm)
+  t_trans$y = t_trans$y/max(t_trans$y, na.rm = TRUE) * 0.95
+  df2 = data.frame(h = t_trans$h,
+                   val = t_trans$y + i-1,
+                   group = as.character(dist))  
+  df = rbind(df, df2)
+}
+df$group = factor(df$group, ordered = TRUE)
+
+st_sep_time = c(0,seq(0.25, 3.75, by = 0.5),4)
+names = c("h", "dist", "trans")
+df3 = data.frame(matrix(nrow = 0, ncol = length(names)))
+names(df3) = names
+for (i in seq_along(sel_loc)){
+  dist = sel_loc[i]
+  adm = adm_comb[[case]][[which(dist == sel_loc)]]
+  df4 = data.frame(h = time_to_strat(st_sep_time, adm, destructive = FALSE),
+                   dist = rep(i-1, length(st_sep_time)),
+                   trans = letters[1:(length(st_sep_time))])
+  df3 = rbind(df3, df4)
+}
+df3  = df3|> arrange(dist, h)
+df3$trans = factor(df3$trans, ordered = TRUE)
+
+df |> ggplot(aes(x = h, y = val, group = group, color = group)) +
+  geom_line() +
+  geom_hline(yintercept = 0:7) +
+  geom_path(data = df3, aes(x = h, y = dist, group = trans), inherit.aes = FALSE) +
+  coord_flip()
