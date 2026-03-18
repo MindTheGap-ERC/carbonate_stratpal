@@ -14,14 +14,14 @@ const FACIES_PLATFORM = [
     ALCAP.Facies(
         viability_range = (4, 10),
         activation_range = (6, 10),
-        maximum_growth_rate=500u"m/Myr",
-        extinction_coefficient=0.6u"m^-1",
+        maximum_growth_rate=600u"m/Myr",
+        extinction_coefficient=0.4u"m^-1",
         saturation_intensity=60u"W/m^2",
-        diffusion_coefficient=50.0u"m/yr"),
+        diffusion_coefficient=25.0u"m/yr"),
     ALCAP.Facies(
         viability_range = (4, 10),
         activation_range = (6, 10),
-        maximum_growth_rate=400u"m/Myr",
+        maximum_growth_rate=300u"m/Myr",
         extinction_coefficient=0.1u"m^-1",
         saturation_intensity=60u"W/m^2",
         diffusion_coefficient=25.0u"m/yr"),
@@ -54,9 +54,9 @@ const INPUT_INIT_RUN = ALCAP.Input(
     sediment_buffer_size=SEDIMENT_BUFFER_SIZE,
     depositional_resolution=DEPOSITIONAL_RESOLUTION,
     facies=FACIES_PLATFORM,
-    cementation_time = CEMENTATION_TIME)
+    cementation_time = CEMENTATION_TIME_PLATFORM)
 
-println("Running initial model")
+println("Running platform pre-run")
 run_model(Model{ALCAP}, INPUT_INIT_RUN, "$(PATH)/$(TAG)_prerun.h5")
 
 header, volume = read_volume("$(PATH)/$(TAG)_prerun.h5", :topography)
@@ -80,8 +80,8 @@ const INPUT_MAIN_RUN = ALCAP.Input(
     sediment_buffer_size=SEDIMENT_BUFFER_SIZE,
     depositional_resolution=DEPOSITIONAL_RESOLUTION,
     facies=FACIES_PLATFORM,
-    cementation_time = CEMENTATION_TIME)
+    cementation_time = CEMENTATION_TIME_PLATFORM)
 
-println("Running main model")
+println("Running platform main run")
 run_model(Model{ALCAP}, INPUT_MAIN_RUN, "$(PATH)/$(TAG).h5")
 
