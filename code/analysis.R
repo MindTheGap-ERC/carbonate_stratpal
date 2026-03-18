@@ -8,94 +8,8 @@ library(tomledit)
 library(ggpubr)
 library(ggridges)
 
-tag1 = "platform"
-tag2 = "ramp"
-
-adm_data_pl = read.csv(paste0("data/", tag1, "_adm.csv"))
-wd_data_pl = read.csv(paste0("data/", tag1, "_wd.csv"))
-adm_data_ra = read.csv(paste0("data/", tag2, "_adm.csv"))
-wd_data_ra = read.csv(paste0("data/", tag2, "_wd.csv"))
-t = adm_data_pl$time..Myr.
-t_steps = adm_data_pl$timestep...
-
-#### Metadata ####
-meta_data_pl = tomledit::read_toml(paste0("data/", tag1, ".toml"))
-l = tomledit::from_toml(meta_data_pl)
-n_locations = length(l$locations)
-loc_list = list()
-distances = c()
-for (loc in seq_len(n_locations)){ # convert to km
-  loc_list[[loc]] = list(x = l$locations[[loc]]$x[[1]]/ 1000,
-                         y = l$locations[[loc]]$y[[1]] / 1000)
-  distances =  c(distances, l$locations[[loc]]$x[[1]]/ 1000)
-}
-
-#### Age-depth models ####
-adm_list_pl = list()
-adm_list_ra = list()
-for (i in 1:(length(adm_data_pl)-2)){
-  adm_list_pl[[i]] = tp_to_adm(t = adm_data_pl$time..Myr.,
-                            h = adm_data_pl[, paste0("adm_", i, "..m.")])
-  
-  adm_list_ra[[i]] = tp_to_adm(t = adm_data_ra$time..Myr.,
-                               h = adm_data_ra[, paste0("adm_", i, "..m.")])
-}
-
-#### Water depth ####
-wd_pl = list()
-wd_ra = list()
-for (i in 1:(length(wd_data_pl)-2)){
-  wd_pl[[i]] = list(t = wd_data_pl$time..Myr.,
-                 wd = pmax(wd_data_pl[, paste0("wd_", i, "..m.")], 0))
-  wd_ra[[i]] = list(t = wd_data_ra$time..Myr.,
-                    wd = pmax(wd_data_ra[, paste0("wd_", i, "..m.")], 0))
-}
-
-#### sea level ####
-period1 = 2.0 # Myr
-amplitude1 = 15.0 # m
-period2 = 0.2 # Myr
-amplitude2 = 2.5 # m
-sl = list(t = t,
-          sl = amplitude1 * sin(2 * pi * t/ period1) + amplitude2 * sin(2 * pi * t / period2))
-
-wd_comb = list(ra = wd_ra, pl = wd_pl)
-adm_comb = list(ra = adm_list_ra, pl = adm_list_pl)
-cases = c("ra", "pl")
-
-distances_km = paste(distances, "km")
-
-#### Base plots: SL, adms, wd ####
-path_base_fig = "figs/base/"
-if (!dir.exists(path_base_fig)) dir.create(path_base_fig, recursive = TRUE)
-df = data.frame(t = sl$t, sl = sl$sl)
-df |> ggplot(aes(x = t, y = sl)) +
-  geom_line()
-ggsave(filename = paste0(path_base_fig, "sl.png"))
-
-
-for (i in seq_len(n_locations)){
-  for (case in cases){
-  print(case)
-  wd = wd_comb[[case]][[i]]
-  adm = adm_comb[[case]][[i]]
-  loc = distances[i]
-  png(filename = paste0(path_base_fig, "wd_time_", loc, "km_", case,  ".png"))
-  plot(wd$t, wd$wd, type = "l")
-  title(main = paste0(case, " ", loc, "km"))
-  dev.off()
-  png(filename = paste0(path_base_fig, "adm_", loc, "km" , case, ".png"))
-  plot(adm, lty_destr = 0)
-  title(main = paste0(case, " ", loc, "km"))
-  dev.off()
-  png(filename = paste0(path_base_fig, "wd_strat_", loc, "km_", case,  ".png"))
-  wd_loc = list(t = wd$t, y = wd$wd) |>
-    time_to_strat(adm) |>
-    plot(type = "l")
-  title(main = paste0(case, " ", loc, "km"))
-  dev.off()
-  }
-}
+#### Load data ####
+source("code/load_data.R")
 
 #### Niches ####
 
@@ -210,8 +124,9 @@ plot(times_ext, range_offset_t, type = "l")
 plot(times_ext, range_offset_h, type = "l")
 
 #### Plot: Age-depth models ####
-plot_age_depth_models = function(){
-  pos_interest = paste(c(3,6,9, 12, 15, 18, 21), "km")
+plot_age_depth_models = function(pos = seq(3, 21, by = 3), plot_st = TRUE){
+  stopifnot(any( pos %in% distances))
+  pos_interest = paste(pos, "km")
   st_sep_time = c(-0.2,seq(0.25, 3.75, by = 0.5), 4.2)
   names = c("time", "height", "distance", "system")
   df = data.frame(matrix(nrow = 0, ncol = length(names)))
@@ -239,13 +154,6 @@ plot_age_depth_models = function(){
   df$distance = factor(df$distance, levels = distances_km)
   df$system = factor(df$system)
   
-
-  
-  max_height = df |> filter(system == "ra") 
-  max_height = max_height$height[!is.na(max_height$height)] |> max()
-  df_text = data.frame(time = 0.5* (head(st_sep_time, -1) + tail(st_sep_time, -1)),
-                      height = rep(max_height, length(st_sep_time)-1),
-                      label = c("TST","HST", "RST","LST","TST","HST", "RST", "LST", "TST"))
   p1 = df |>
     filter(system == "ra" &
              distance %in% pos_interest) |>
@@ -254,19 +162,23 @@ plot_age_depth_models = function(){
     labs(title = title_ramp,
          x = x_lab_title,
          y = y_lab_title,
-         col = legend_label) +
-    geom_vline(xintercept = head(tail(st_sep_time, -1), -1),
-          linetype = "dashed",
-          color = "black",
-          lwd = 0.5) +
-    geom_text(data = df_text, aes(x = time,y = height,label = label),inherit.aes = FALSE)
-  
-  max_height = df |> filter(system == "pl") 
-  max_height = max_height$height[!is.na(max_height$height)] |> max()
-  df_text = data.frame(time = 0.5* (head(st_sep_time, -1) + tail(st_sep_time, -1)),
-                       height = rep(max_height, length(st_sep_time)-1),
-                       label = c("TST","HST", "RST","LST","TST","HST", "RST", "LST", "TST"))
-  
+         col = legend_label)
+  if (plot_st){
+    
+    max_height = df |> filter(system == "ra") 
+    max_height = max_height$height[!is.na(max_height$height)] |> max()
+    df_text = data.frame(time = 0.5* (head(st_sep_time, -1) + tail(st_sep_time, -1)),
+                         height = rep(max_height, length(st_sep_time)-1),
+                         label = c("TST","HST", "RST","LST","TST","HST", "RST", "LST", "TST"))
+    
+    p1 = p1 +  geom_vline(xintercept = head(tail(st_sep_time, -1), -1),
+                          linetype = "dashed",
+                          color = "black",
+                          lwd = 0.5) +
+      geom_text(data = df_text, aes(x = time,y = height,label = label),inherit.aes = FALSE)
+    
+  }
+    
   p2 = df |>
     filter(system == "pl" &
              distance %in% pos_interest) |>
@@ -275,32 +187,43 @@ plot_age_depth_models = function(){
     labs(title = title_platform,
          x = x_lab_title,
          y = y_lab_title,
-         col = legend_label)  +
-    geom_vline(xintercept = head(tail(st_sep_time, -1), -1),
-               linetype = "dashed",
-               color = "black",
-               lwd = 0.5) +
-    geom_text(data = df_text, aes(x = time,y = height,label = label),inherit.aes = FALSE)
-  p3 = ggpubr::ggarrange(p2, p1, nrow = 1, ncol = 2,
-                         common.legend = TRUE,
-                         legend = "bottom",
-                         labels = LETTERS[1:2])
+         col = legend_label)
+  if (plot_st){
+    
+    max_height = df |> filter(system == "pl") 
+    max_height = max_height$height[!is.na(max_height$height)] |> max()
+    df_text = data.frame(time = 0.5* (head(st_sep_time, -1) + tail(st_sep_time, -1)),
+                         height = rep(max_height, length(st_sep_time)-1),
+                         label = c("TST","HST", "RST","LST","TST","HST", "RST", "LST", "TST"))
+    
+    p2 = p2 +  geom_vline(xintercept = head(tail(st_sep_time, -1), -1),
+                          linetype = "dashed",
+                          color = "black",
+                          lwd = 0.5) +
+      geom_text(data = df_text, aes(x = time,y = height,label = label),inherit.aes = FALSE)
+    
+  }
+   p3 = ggpubr::ggarrange(p2, p1, nrow = 1, ncol = 2,
+                       common.legend = TRUE,
+                       legend = "bottom",
+                       labels = LETTERS[1:2])
   return(p3)
 }
-p = plot_age_depth_models()
+p = plot_age_depth_models(pos = seq(3, 21, by = 3), plot_st = TRUE)
 p
-ggsave("figs/age_depth_overview.png", p)
+ggsave("figs/ms/fig2.png", p)
 
 
 #### Plot: Water depths in time domain ####
-plot_wd_time_domain = function(){
-  st_sep_time = c(-0.2,seq(0.25, 3.75, by = 0.5), 4.2)
+plot_wd_time_domain = function(pos = seq(3, 21, by = 3), plot_st = TRUE){
+  stopifnot(any( pos %in% distances))
+  st_sep_time_mod = c(-0.2,st_sep_time, 4.2)
   title_platform = "Platform"
   title_ramp = "Ramp"
   x_lab_title = "Elapsed Model Time [Myr]"
   y_lab_title = "Water Depth [m]"
   legend_label = "Distance from Shore"
-  pos_interest = paste(c(3,6,9, 12, 15, 18, 21), "km")
+  pos_interest = paste(pos, "km")
   
   col_names = c("wd", "t", "dist", "tag")
   df_wd = data.frame(matrix(ncol = length(col_names), nrow = 0))
@@ -316,9 +239,6 @@ plot_wd_time_domain = function(){
     }
   }
   df_wd$dist = factor(df_wd$dist, levels = distances_km)
-  df_text = data.frame(time = 0.5* (head(st_sep_time, -1) + tail(st_sep_time, -1)),
-                       height = rep(125, length(st_sep_time)-1),
-                       label = c("TST", "HST", "RST","LST","TST","HST", "RST", "LST", "TST"))
   
   p1 = df_wd |>
     filter(tag == "ra" & dist %in% pos_interest) |>
@@ -327,16 +247,24 @@ plot_wd_time_domain = function(){
     labs(title = title_ramp,
          x = x_lab_title,
          y = y_lab_title,
-         col = legend_label)  +
-    geom_vline(xintercept = head(tail(st_sep_time, -1),-1),
-               linetype = "dashed",
-               color = "black",
-               lwd = 0.5) +
-    geom_text(data = df_text,
-              aes(x = time,
-                  y = height,
-                  label = label),
-              inherit.aes = FALSE)
+         col = legend_label) 
+  if (plot_st){
+    max_wd = df_wd |> filter(tag == "ra") |> summarise(m = max(wd)) |> as.numeric()
+    df_text = data.frame(time = 0.5* (head(st_sep_time_mod, -1) + tail(st_sep_time_mod, -1)),
+                         height = rep(0.8 * max_wd, length(st_sep_time_mod)-1),
+                         label = st_labels)
+    p1 = p1 +
+      geom_vline(xintercept = head(tail(st_sep_time_mod, -1),-1),
+                 linetype = "dashed",
+                 color = "black",
+                 lwd = 0.5) +
+      geom_text(data = df_text,
+                aes(x = time,
+                    y = height,
+                    label = label),
+                inherit.aes = FALSE)
+  }
+ 
   p2 = df_wd |>
     filter(tag == "pl" & dist %in% pos_interest) |>
     ggplot( aes(x = t, y = wd, color = dist)) + 
@@ -344,8 +272,16 @@ plot_wd_time_domain = function(){
     labs(title = title_platform,
          x = x_lab_title,
          y = y_lab_title,
-         col = legend_label) +
-    geom_vline(xintercept = head(tail(st_sep_time, -1),-1),
+         col = legend_label) 
+  if (plot_st){
+    max_wd = df_wd |> filter(tag == "pl") |> summarise(m = max(wd)) |> as.numeric()
+    
+    df_text = data.frame(time = 0.5* (head(st_sep_time_mod, -1) + tail(st_sep_time_mod, -1)),
+                         height = rep(0.8 * max_wd, length(st_sep_time_mod)-1),
+                         label = st_labels)
+    
+    p2 = p2 +
+    geom_vline(xintercept = head(tail(st_sep_time_mod, -1),-1),
                linetype = "dashed",
                color = "black",
                lwd = 0.5) +
@@ -354,15 +290,17 @@ plot_wd_time_domain = function(){
                   y = height,
                   label = label),
               inherit.aes = FALSE)
+  }
   p3 = ggpubr::ggarrange(p2, p1, ncol = 2, nrow = 1, labels = LETTERS[1:2], legend = "bottom", common.legend = TRUE)
   return(p3)
 }
 p = plot_wd_time_domain()
 p
-ggsave("figs/water_depth_comparison_time_domain.png", p)
+ggsave("figs/sm/sfig1.png", p)
 
 #### Plot: Water depth in the stratigraphic domain ####
-plot_wd_strat_domain = function(){
+plot_wd_strat_domain = function(pos = seq(3, 21, by = 3)){
+  stopifnot(all(pos %in% distances))
   names = c("wd", "proportion_height", "distance", "system")
   df = data.frame(matrix(nrow = 0, ncol = length(names)))
   names(df) = names
@@ -387,7 +325,7 @@ plot_wd_strat_domain = function(){
   }
   
   df$distance = factor(df$distance, levels = distances_km)
-  res_distances = c(3,6,9, 12, 15, 18, 21) |> paste("km")
+  res_distances = pos |> paste("km")
   title_ramp = "Ramp"
   title_platform = "Platform"
   wd_label = "Water Depth [m]"
@@ -418,16 +356,17 @@ plot_wd_strat_domain = function(){
 
 p = plot_wd_strat_domain()
 p
-ggsave("figs/water_depth_strat_domain.png", p)
+ggsave("figs/ms/fig3.png", p)
 
 #### Plot: condensation ratio ####
 
-plot_condensation_ratio = function(){
-  df = data.frame(matrix(nrow = 0, ncol = 4))
-  names = c("cond_ratio", "proportion_height", "distance", "system")
-  names(df) = names
+plot_condensation_ratio = function(pos = seq(3, 21, by = 3)){
+  stopifnot(all(pos %in% distances))
   bin_width_m = 4
-  distances_km  = paste(distances, "km")
+  names = c("cond_ratio", "proportion_height", "distance", "system")
+  df = data.frame(matrix(nrow = 0, ncol = length(names)))
+  names(df) = names
+  distances_km  = paste(pos, "km")
   for (case in names(adm_comb)){
     for (i in seq_along(distances_km)){
       adm = adm_comb[[case]][[i]]
@@ -449,7 +388,6 @@ plot_condensation_ratio = function(){
   df$distance = factor(df$distance, levels = distances_km)
   df$system = factor(df$system)
   
-  pos_interest = paste(c(3,6,9,12,15,18,21), "km")
   y_lim = range(df$cond_ratio)
   y_lim[1] = 0.95 * y_lim[1]
   y_lim[2] = 1.1 * y_lim[2]
@@ -458,69 +396,61 @@ plot_condensation_ratio = function(){
   y_label = "Condensation Ratio [-]"
   x_label = "Relative Height [-]"
   legend_label = "Distance from Shore"
-  p1 = df |> 
-    filter(system == "ra" &
-             distance %in% pos_interest) |>
-    ggplot(aes(x = proportion_height, y = cond_ratio, color = distance)) +
-    geom_line() +
-    geom_hline(yintercept = 1, linetype = "dashed") +
-    coord_flip() +
-    scale_y_log10(limits = y_lim) +
-    labs(y = y_label,
-         x = x_label,
-         title = title_ramp,
-         color = legend_label)
-  p2 = df |> 
-    filter(system == "pl" &
-             distance %in% pos_interest) |>
-    ggplot(aes(x = proportion_height, y = cond_ratio, color = distance)) +
-    geom_line() +
-    geom_hline(yintercept = 1, linetype = "dashed") +
-    coord_flip() +
-    scale_y_log10(limits = y_lim) +
-    labs(y = y_label,
-         x = x_label,
-         title = title_platform,
-         color = legend_label)
-  p3 = ggpubr::ggarrange(p2, p1,  nrow = 1, ncol = 2, common.legend = TRUE, legend = "bottom", labels = LETTERS[1:2])
+  f = function(sys){
+    p1 = df |> 
+      filter(system == sys) |>
+      ggplot(aes(x = proportion_height, y = cond_ratio, color = distance)) +
+      geom_line() +
+      geom_hline(yintercept = 1, linetype = "dashed") +
+      coord_flip() +
+      scale_y_log10(limits = y_lim) +
+      labs(y = y_label,
+           x = x_label,
+           title = title_ramp,
+           color = legend_label)
+    return(p1)
+  }
+  p3 = ggpubr::ggarrange(f("pl"),f("ra"),  nrow = 1, ncol = 2, common.legend = TRUE, legend = "bottom", labels = LETTERS[1:2])
   return(p3)
 }
 
 p = plot_condensation_ratio()
 p
-ggsave("figs/condensation_ratio.png", plot = p)
+ggsave("figs/ms/fig4.png", plot = p)
 
 #### Plot: Cumulative distribution of time vs height ####
-plot_prop_time_vs_height = function(){
-  names = c("prop_time", "prop_height", "dist", "case")
-  df = data.frame(matrix(nrow = 0, ncol = length(names)))
-  names(df) = names
+plot_prop_time_vs_height = function(pos = seq(3, 21, by = 3)){
+  stopifnot(all(pos %in% distances))
   
   x_label = "Proportion cumulative time [-]"
   y_label = "Proportion cumulative height [-]"
   title_platform = "Platform"
   title_ramp = "Ramp"
-  legend_label = "Distance from shore"
+  legend_label = "Distance"
+  
+  names = c("prop_time", "prop_height", "dist", "case")
+  df = data.frame(matrix(nrow = 0, ncol = length(names)))
+  names(df) = names
   
   for (case in names(adm_comb)){
-    for (i in seq_along(distances_km)){
+    for (i in seq_along(pos)){
       adm = adm_comb[[case]][[i]]
       r = diff(get_L_tp(adm))/diff(get_T_tp(adm)) 
       r = r |> sort() |> cumsum()
       t_rel = seq_along(r)/length(r)
       df2 = data.frame(prop_time = t_rel,
                        prop_height = r/max(r),
-                       dist = rep(distances_km[i], length(t_rel)),
+                       dist = rep(paste(pos[i], "km"), length(t_rel)),
                        system = rep(case, length(t_rel)))
       df = rbind(df, df2)
     }
   }
-  df$dist = factor(df$dist, levels = distances_km)
+  
+  df$dist = factor(df$dist)
   df$system = factor(df$system)
-  pos_interest = paste(c(3,6,9,12,15,18,21), "km")
   
   p1 = df |>
-    filter(system == "pl" & dist %in% pos_interest) |>
+    filter(system == "pl") |>
     ggplot(aes(x = prop_time, y = prop_height, color = dist)) +
     geom_line() +
     labs(y = y_label,
@@ -551,109 +481,96 @@ plot_prop_time_vs_height = function(){
 }
 p = plot_prop_time_vs_height()
 p
-ggsave("figs/prop_time_vs_height.png", plot = p)
+ggsave("figs/sm/prop_time_vs_height.png", plot = p)
 
 #### Plot: Abundance bias on last occurrences ####
-plot_lo_comparison = function(case = "pl"){
-  adm_used = list("top" = adm_comb[[case]][[1]],
-                  "slope" = adm_comb[[case]][[10]])
-  rates = c(2, 5, 10, 30, 100, 300)
-  names = c("l_occ_h","rate", "loc")
-  df = data.frame(matrix(nrow = 0, ncol = length(names)))
-  names(df) = names
-  if (case == "pl"){
-    title_top = "Platform top"
-    title_slope = "Platform slope"
-  }
-  if (case == "ra"){
-    title_top = "Ramp top"
-    title_slope = "Ramp slope"
-  }
-
+plot_lo_by_rate = function(case, pos, rates, title, plot_st = TRUE){
+  stopifnot(case %in% cases)
+  stopifnot(pos %in% distances)
+  
+  n_locc = 1000
   y_axis_label = "Stratigraphic height [m]"
   legend_title = "Fossil abundance [#/Myr]"
   x_axis_label = "Last occurrences"
-  for (loc in names(adm_used)){
-    adm = adm_used[[loc]]
-    for (j in seq_along(rates)){
-      rate = rates[j]
-      t_ext = p3(1000, from = min_time(adm), to = max_time(adm), n = 1000)
-      l_occ_t = rep(NA, length(t_ext))
-      l_occ_h = rep(NA, length(t_ext))
-      for (i in seq_along(t_ext)){
-        x = last_occ(t_ext = t_ext[i], rate, adm = adm)
-        l_occ_h[i] = x["h"]
-      }
-      df = rbind(df, data.frame(l_occ_h = l_occ_h,
-                                rate = rep(rate, length(l_occ_h)), 
-                                loc = rep(loc, length(l_occ_h))))
+  title = title
+  
+  names = c("l_occ_h","rate")
+  df = data.frame(matrix(nrow = 0, ncol = length(names)))
+  names(df) = names
+  
+  adm = adm_comb[[case]][[which(pos == distances)]]
+  
+  for (j in seq_along(rates)){
+    rate = rates[j]
+    t_ext = p3(1000, from = min_time(adm), to = max_time(adm), n = 1000)
+    l_occ_t = rep(NA, length(t_ext))
+    l_occ_h = rep(NA, length(t_ext))
+    for (i in seq_along(t_ext)){
+      x = last_occ(t_ext = t_ext[i], rate, adm = adm)
+      l_occ_h[i] = x["h"]
     }
+    df = rbind(df,
+               data.frame(l_occ_h = l_occ_h,
+                          rate = rep(rate, length(l_occ_h))))
   }
-  
   df$rate = factor(df$rate, levels = rates)
-  df$loc = factor(df$loc, levels = c("top", "slope"))
-  st_sep_time = c(0,seq(0.25, 3.75, by = 0.5), 4)
-  st_sep_strat = time_to_strat(st_sep_time, adm_used[["top"]], destructive = FALSE)
-  st_pres = !(diff(st_sep_strat) == 0)
-  st_names = c("TST", "HST", "RST","LST","TST","HST", "RST", "LST", "TST")
-  st_names_used = st_names[st_pres]
-  st_sep_strat_used = st_sep_strat[st_pres]
-  df_text = data.frame(time = 0.5* (head(st_sep_strat_used, -1) + tail(st_sep_strat_used, -1)),
-                       height = rep(2.5, length(st_sep_strat_used)-1),
-                       label = st_names_used)
-  p1 = df |>
-    filter(loc == "top" & is.finite(l_occ_h)) |>
-    ggplot(aes(x = l_occ_h, y = rate, fill = rate)) +
-    geom_density_ridges(stat = "binline", bins = 30, scale = 1) +
-    labs(title = title_top,
-         x = y_axis_label,
-         y = x_axis_label,
-         fill = legend_title) +
-    geom_vline(xintercept = st_sep_strat_used[2:(length(st_sep_strat_used)-1)],
-               linetype = "dashed",
-               color = "black") +
-    geom_text(data = df_text,
-              aes(x = time,
-                  y = height,
-                  label = label),
-              inherit.aes = FALSE) +
-    coord_flip()
   
-  st_sep_time = c(0,seq(0.25, 3.75, by = 0.5), 4)
-  st_sep_strat = time_to_strat(st_sep_time, adm_used[["slope"]], destructive = FALSE)
-  st_pres = !(diff(st_sep_strat) == 0)
-  st_names = c("TST", "HST", "RST","LST","TST","HST", "RST", "LST", "TST")
-  st_names_used = st_names[st_pres]
-  st_sep_strat_used = st_sep_strat[st_pres]
-  df_text = data.frame(time = 0.5* (head(st_sep_strat_used, -1) + tail(st_sep_strat_used, -1)),
-                       height = rep(2.5, length(st_sep_strat_used)-1),
-                       label = st_names_used)
-  p2 = df |>
-    filter(loc == "slope" & is.finite(l_occ_h)) |>
+  p1 = df |>
+    filter( is.finite(l_occ_h)) |>
     ggplot(aes(x = l_occ_h, y = rate, fill = rate)) +
-    geom_density_ridges(stat = "binline", bins = 30, scale = 1) +
-    labs(title = title_slope,
+    geom_density_ridges(stat = "binline", bins = 30, scale = 1) 
+  
+  if (plot_st){
+    st_sep_time_mod = c(0,st_sep_time, 4)
+    st_sep_strat = time_to_strat(st_sep_time_mod, adm, destructive = FALSE)
+    st_pres = !(diff(st_sep_strat) == 0)
+    st_names_used = st_labels[st_pres]
+    st_sep_strat_used = st_sep_strat[st_pres]
+    df_text = data.frame(time = 0.5* (head(st_sep_strat_used, -1) + tail(st_sep_strat_used, -1)),
+                         height = rep(2.5, length(st_sep_strat_used)-1),
+                         label = st_names_used)
+    
+    p1 = p1 +
+      geom_vline(xintercept = st_sep_strat_used[2:(length(st_sep_strat_used)-1)],
+                 linetype = "dashed",
+                 color = "black") +
+      geom_text(data = df_text,
+                aes(x = time,
+                    y = height,
+                    label = label),
+                inherit.aes = FALSE)
+  }
+  p1 = p1 +
+    labs(title = title,
          x = y_axis_label,
          y = x_axis_label,
          fill = legend_title) +
-    geom_vline(xintercept = st_sep_strat_used[2:(length(st_sep_strat_used)-1)],
-               linetype = "dashed",
-               color = "black") +
-    geom_text(data = df_text,
-              aes(x = time,
-                  y = height,
-                  label = label),
-              inherit.aes = FALSE) +
     coord_flip()
-  p3 = ggpubr::ggarrange(p1, p2, ncol = 2, nrow = 1, labels = LETTERS[1:2], common.legend = TRUE, legend = "bottom") 
-  return(p3)  
+  return(p1)
 }
+
+p1 = plot_lo_by_rate(case = "ra",
+                     pos = 12, 
+                     rates = c(3,10,30,100),
+                     title = 'Platform top')
+
+plot_lo_comparison = function(){
+  rates = c(3,10,30,100)
+  p1 = plot_lo_by_rate(case = "pl",
+                       pos = 3, 
+                       rates = rates,
+                       title = 'Platform top')
+  p2 = plot_lo_by_rate(case = "pl",
+                       pos = 12, 
+                       rates = rates,
+                       title = 'Platform ramp')
+  p3 = ggpubr::ggarrange(p1, p2, ncol = 2, nrow = 1, labels = LETTERS[1:2], common.legend = TRUE, legend = "bottom") 
+  return(p3)
+}
+
 p = plot_lo_comparison()
 p
-ggsave("figs/last_occ_pl.png", p)
-p = plot_lo_comparison(case = "ra")
-p
-ggsave("figs/last_occ_ra.png", p)
+ggsave("figs/ms_unknown_fig_no.png", p)
 
 #### Plots: Incompleteness, gap statistics, and gap distribution ####
 names = c("comp", "max", "quant_1", "quant_3", "median", "dist", "case")
@@ -826,28 +743,19 @@ p = plot_accumulated_sediment()
 p
 ggsave("figs/section_thickness.png", p)
 
-#### Extinction patterns ####
-ext_scen = list()
-ext_scen[["HST"]] = approxfun(x = c(0.25,0.5, 0.75,2.25, 2.5, 2.75), y = c(1, 25,1, 1, 25, 1), rule = 2)
-ext_scen[["RST"]] = approxfun(x = c(0.75, 1, 1.25, 2.75, 3, 3.25), y = c(1, 25,1, 1, 25, 1), rule = 2)
-ext_scen[["LST"]] = approxfun(x = c(1.25, 1.5, 1.75, 3.25, 3.5, 3.75), y = c(1, 25,1, 1,25,1), rule = 2)
-ext_scen[["TST"]] = approxfun(x = c(0, 0.25,1.75, 2, 2.25, 3.75,4), y = c(25,1,1, 25,1,1,25), rule = 2)
-ext_scen[["constant"]] = approxfun(x = c(0, 4), y = c(1,1), rule = 2)
-# for (scen in names(ext_scen)){
-#   f = ext_scen[[scen]]
-#   t = seq(0,4, by = 0.001)
-#   plot(t, f(t), main = scen, ylim = c(0, 25))
-#   lines(sl$t, 10 *sl$sl/max(sl$sl) + 10)
-# }
+#### Extinctions by systems tract ####
 
 plot_ext_scenario_comparison = function(rate, dist, case, title){
   stopifnot(dist %in% distances)
   stopifnot(case %in% cases)
+  
+  n_locc = 1000
+  
   names = c("ext_scen", "case", "dist", "l_occ_h")
   df = data.frame(matrix(nrow = 0, ncol = length(names)))
   names(df) = names
   rate = rate
-  n_locc = 1000
+
   for (scen in names(ext_scen)){
         f = ext_scen[[scen]]
         adm = adm_comb[[case]][[which(distances == dist)]]
@@ -870,12 +778,13 @@ plot_ext_scenario_comparison = function(rate, dist, case, title){
         df = rbind(df, df2)
   }
   df$case = factor(df$case)
-  df$ext_scen = factor(df$ext_scen)
+  df$ext_scen = factor(df$ext_scen, levels = c("constant", "HST", "RST", "LST", "TST"),
+                       ordered = TRUE)
   
-  st_sep_time = c(0,seq(0.25, 3.75, by = 0.5), 4)
-  st_sep_strat = time_to_strat(st_sep_time, adm, destructive = FALSE)
+  st_sep_time_mod = c(0,st_sep_time, 4)
+  st_sep_strat = time_to_strat(st_sep_time_mod, adm, destructive = FALSE)
   st_pres = !(diff(st_sep_strat) == 0)
-  st_names = c("TST", "HST", "RST","LST","TST","HST", "RST", "LST", "TST")
+  st_names = st_labels
   st_names_used = st_names[st_pres]
   st_sep_strat_used = st_sep_strat[st_pres]
   df_text = data.frame(time = 0.5* (head(st_sep_strat_used, -1) + tail(st_sep_strat_used, -1)),
@@ -883,6 +792,7 @@ plot_ext_scenario_comparison = function(rate, dist, case, title){
                        label = st_names_used)
   
   p = df |>
+    filter(!is.na(l_occ_h)) |>
     ggplot(aes(x = l_occ_h, y = ext_scen, fill = ext_scen)) +
     geom_density_ridges(stat = "binline",
                         breaks = seq(0,admtools::max_height(adm), length.out = 30),
@@ -922,20 +832,26 @@ for (rate in c(1,3,10,30,100,300,1000,3000)){
   plot_ext_scen_by_rate(rate = rate)
 }
 
-#### Spatioal correlation of extinction scenarios ####
+#### Spatial correlation of extinction scenarios ####
 
-plot_spat_corr_ext = function(rate, case, ext_sce){
-sel_loc = seq(3, 15, by = 3)
-ext_s = ext_scen[[ext_sce]]
-case = case
-stopifnot(dist %in% distances)
+plot_spat_corr_ext = function(rate, 
+                              case, 
+                              ext_sce,
+                              pos = seq(3, 21, by = 3),
+                              plot_st = TRUE,
+                              plot_txt = TRUE){
+stopifnot(all(pos %in% distances))
 stopifnot(case %in% cases)
-names = c("case", "dist", "l_occ_h")
+stopifnot(ext_sce %in% names(ext_scen))
+ext_s = ext_scen[[ext_sce]]
+
+n_locc = 1000
+
+names = c("dist", "l_occ_h")
 df = data.frame(matrix(nrow = 0, ncol = length(names)))
 names(df) = names
-rate = rate
-n_locc = 1000
-for (dist in sel_loc){
+
+for (dist in pos){
   f = ext_s
   adm = adm_comb[[case]][[which(distances == dist)]]
   t_ext = p3_var_rate(x = f,
@@ -950,67 +866,66 @@ for (dist in sel_loc){
                      adm = adm)
     l_occ_h[j] = l_occ["h"]
   }
-  df2 = data.frame(case = rep(case, length(l_occ_h)),
-                   dist = rep(dist, length(l_occ_h)),
+  df2 = data.frame(dist = rep(dist, length(l_occ_h)),
                    l_occ_h = l_occ_h)
   df = rbind(df, df2)
 }
-df$case = factor(df$case)
-df$dist = factor(df$dist, levels = sel_loc, ordered = TRUE)
-
-# correlation lines
-st_sep_time = c(0,seq(0.25, 3.75, by = 0.5),4)
-names = c("h", "dist", "trans")
-df3 = data.frame(matrix(nrow = 0, ncol = length(names)))
-names(df3) = names
-for (dist in sel_loc){
-  adm = adm_comb[[case]][[which(distances == dist)]]
-  df4 = data.frame(h = time_to_strat(st_sep_time, adm, destructive = FALSE),
-                   dist = rep(dist, length(st_sep_time)),
-                   trans = letters[1:(length(st_sep_time))])
-  df3 = rbind(df3, df4)
-}
-df3  = df3|> arrange(dist, h)
-df3$dist = factor(df3$dist, levels = sel_loc, ordered = TRUE)
-df3$trans = factor(df3$trans, ordered = TRUE)
-
-names = c("pos", "labs", "name")
-df_text = data.frame(matrix(nrow = 0, ncol = length(names)))
-names(df_text) = names
-st_sep = c(0,seq(0.25, 3.75, by = 0.5), 4)
-labs = c("TST", "HST", "RST","LST","TST","HST", "RST", "LST", "TST")
-for (plot_pos in sel_loc){
-  pos1 = time_to_strat(st_sep, adm_comb[[case]][[which(distances == plot_pos)]], destructive = FALSE)
-  is_pres = diff(pos1) != 0
-  height =  0.5* (head(pos1, -1) + tail(pos1, -1))
-  df_text1 = data.frame(pos = height[is_pres],
-                       labs = labs[is_pres],
-                       dist = factor(rep(plot_pos, sum(is_pres))))
-  df_text = rbind(df_text, df_text1)
-}
-
-
+df$dist = factor(df$dist, levels = pos, ordered = TRUE)
 
 p = df   |>
   filter(!is.na(l_occ_h))|>
   ggplot(aes(x = l_occ_h, y = dist, group = dist, fill = dist)) +
   geom_density_ridges(stat = "binline",
                       bins = 40,
-                      scale = 1)+
-  geom_path(data = df3 ,
-                aes(x = h, y = dist, group = trans)) +
-  geom_text(data = df_text |> filter(dist %in% c(3, 15)),
-            aes(x = pos, y = dist, label = labs),
-            position = position_nudge(y = 0.2)) +
-  coord_flip() +
-  labs(y = "Distance",
-       x = "Stratigraphic height [m]",
-       fill = "Distance")
+                      scale = 1)
+if (plot_st){
+  # correlation lines
+  st_sep_time_mod = c(0,st_sep_time,4)
+  names = c("h", "dist", "trans")
+  df3 = data.frame(matrix(nrow = 0, ncol = length(names)))
+  names(df3) = names
+  for (dist in pos){
+    adm = adm_comb[[case]][[which(distances == dist)]]
+    df4 = data.frame(h = time_to_strat(st_sep_time_mod, adm, destructive = FALSE),
+                     dist = rep(dist, length(st_sep_time_mod)),
+                     trans = letters[1:(length(st_sep_time_mod))])
+    df3 = rbind(df3, df4)
+  }
+  df3$dist = factor(df3$dist, levels = pos, ordered = TRUE)
+  p = p + geom_path(data = df3 ,
+                aes(x = h, y = dist, group = trans))
+}
+if (plot_txt){
+  names = c("pos", "labs", "name")
+  df_text = data.frame(matrix(nrow = 0, ncol = length(names)))
+  names(df_text) = names
+  st_sep = c(0,st_sep_time, 4)
+  labs = st_labels
+  for (plot_pos in pos){
+    pos1 = time_to_strat(st_sep, adm_comb[[case]][[which(distances == plot_pos)]], destructive = FALSE)
+    is_pres = diff(pos1) != 0
+    height =  0.5* (head(pos1, -1) + tail(pos1, -1))
+    df_text1 = data.frame(pos = height[is_pres],
+                          labs = labs[is_pres],
+                          dist = factor(rep(plot_pos, sum(is_pres))))
+    df_text = rbind(df_text, df_text1)
+    p = p + geom_text(data = df_text |> filter(dist %in% c(3, 15)),
+                      aes(x = pos, y = dist, label = labs),
+                      position = position_nudge(y = 0.2))
+  }
+  p = p + coord_flip() +
+    labs(y = "Distance",
+         x = "Stratigraphic height [m]",
+         fill = "Distance")
+}
 return(p)
 
 }
-for (case in c("ra", "pl")){
-  for (ext_scenario in c("HST", "TST", "RST", "LST", "constant")){
+
+p = plot_spat_corr_ext(10, "ra", "HST")
+p
+for (case in cases){
+  for (ext_scenario in names(ext_scen)){
     print(case)
 
     p = plot_spat_corr_ext(rate = 10, case = case, ext_sce = ext_scenario)
@@ -1019,37 +934,6 @@ for (case in c("ra", "pl")){
   }
 }
 
-
-p
-st_sep_time = c(0,seq(0.25, 3.75, by = 0.5), 4)
-st_sep_strat = time_to_strat(st_sep_time, adm, destructive = FALSE)
-st_pres = !(diff(st_sep_strat) == 0)
-st_names = c("TST", "HST", "RST","LST","TST","HST", "RST", "LST", "TST")
-st_names_used = st_names[st_pres]
-st_sep_strat_used = st_sep_strat[st_pres]
-df_text = data.frame(time = 0.5* (head(st_sep_strat_used, -1) + tail(st_sep_strat_used, -1)),
-                     height = rep(2.5, length(st_sep_strat_used)-1),
-                     label = st_names_used)
-
-p = df |>
-  ggplot(aes(x = l_occ_h, y = ext_scen, fill = ext_scen)) +
-  geom_density_ridges(stat = "binline",
-                      breaks = seq(0,admtools::max_height(adm), length.out = 30),
-                      scale = 0.9)+
-  geom_vline(xintercept = tail(head(st_sep_strat_used, -1),-1),
-             linetype = "dashed",
-             color = "black") +
-  geom_text(data = df_text,
-            aes(x = time,
-                y = height,
-                label = label),
-            inherit.aes = FALSE) +
-  coord_flip() +
-  labs(title = title,
-       y = "Extinction scenario",
-       x = "Stratigraphic height [m]",
-       fill = "Extinction scenario")
-return(p)
 
 
 
