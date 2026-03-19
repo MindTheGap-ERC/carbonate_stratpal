@@ -9,13 +9,13 @@ const PHYS_SCALE = 150u"m"
 const GRID_SIZE_Y = 20
 const GRID_SIZE_X = 150
 const BOX = Box{Coast}(grid_size=(GRID_SIZE_X, GRID_SIZE_Y), phys_scale=PHYS_SCALE)
-const SUBSIDENCE_RATE = 30u"m/Myr"
+const SUBSIDENCE_RATE = 20u"m/Myr"
 const DISINTGRATION_RATE = 50.0u"m/Myr"
 const INSOLATION = 400.0u"W/m^2"
 const SEDIMENT_BUFFER_SIZE = 50
 const DEPOSITIONAL_RESOLUTION = 500.0u"m"
 const LITHIFICATION_TIME_PLATFORM = 100u"yr"
-const LITHIFICATION_TIME_RAMP = 1u"kyr"
+const LITHIFICATION_TIME_RAMP = 2u"kyr"
 const INIT_SL = t -> 0u"m"
 const MAIN_SL = t -> AMPLITUDE1 * sin(2π * t / PERIOD1) + AMPLITUDE2 * sin(2π * t / PERIOD2)
 

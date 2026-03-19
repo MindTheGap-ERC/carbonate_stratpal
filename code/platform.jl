@@ -109,5 +109,5 @@ const INPUT_MAIN_RUN = WDn.Input(
     denudation = DENUDATION_EMP)
 
 println("Running platform main run")
-#run_model(Model{WDn}, INPUT_MAIN_RUN, "$(PATH)/$(TAG).h5")
+run_model(Model{WDn}, INPUT_MAIN_RUN, "$(PATH)/$(TAG).h5")
 

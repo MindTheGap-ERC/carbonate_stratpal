@@ -22,7 +22,7 @@ const FACIES_RAMP = [
             extinction_coefficient=0.4u"m^-1",
             saturation_intensity=60u"W/m^2"
         ),
-        transport_coefficient=60.0u"m/yr",
+        transport_coefficient=40.0u"m/yr",
         reactive_surface=10u"m^2/m^3",
         mass_density=2730u"kg/m^3",
         infiltration_coefficient=0.5,
@@ -32,11 +32,11 @@ const FACIES_RAMP = [
         viability_range = (4, 10),
         activation_range = (6, 10),
         production = BenthicProduction(
-            maximum_growth_rate=400u"m/Myr",
+            maximum_growth_rate=300u"m/Myr",
             extinction_coefficient=0.1u"m^-1",
             saturation_intensity=60u"W/m^2"
         ),
-        transport_coefficient=60.0u"m/yr",
+        transport_coefficient=40.0u"m/yr",
         reactive_surface=10u"m^2/m^3",
         mass_density=2730u"kg/m^3",
         infiltration_coefficient=0.5,
