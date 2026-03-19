@@ -4,7 +4,7 @@ using CarboKitten.Export: read_header, read_volume, read_slice, group_datasets
 using CarboKitten.Utility: in_units_of
 using HDF5
 using Unitful
-using CairoMakie
+#using CairoMakie
 using CarboKitten.BoundaryTrait
 using CarboKitten.Stencil: convolution
 
@@ -61,12 +61,12 @@ TAG2 = "ramp"
 header, data = read_slice("data/$(TAG1).h5", :profile)
 ax = Axis(fig[1:2, 1:2])
 sediment_profile!(ax, header, data, show_unconformities = true, show_coeval_lines = false)
-coeval_lines!(ax, header, data, [0.25:0.5:3.75;]u"Myr", linewidth = 3, color = :black, linestyle = :solid)
+#coeval_lines!(ax, header, data, [0.25:0.5:3.75;]u"Myr", linewidth = 3, color = :black, linestyle = :solid)
 
 header, data = read_slice("data/$(TAG2).h5", :profile)
 ax = Axis(fig[1:2, 4:5])
 sediment_profile!(ax, header, data, show_unconformities = true, show_coeval_lines = false)
-coeval_lines!(ax, header, data, [0.25:0.5:3.75;]u"Myr", linewidth = 3, color = :black, linestyle = :solid)
+#coeval_lines!(ax, header, data, [0.25:0.5:3.75;]u"Myr", linewidth = 3, color = :black, linestyle = :solid)
 
 ax = Axis(fig[1, 3])
 max_depth = minimum(header.initial_topography)
