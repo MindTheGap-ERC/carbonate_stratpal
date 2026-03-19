@@ -1,0 +1,67 @@
+tag1 = "platform"
+tag2 = "ramp"
+
+adm_data_pl = read.csv(paste0("data/", tag1, "_adm.csv"))
+wd_data_pl = read.csv(paste0("data/", tag1, "_wd.csv"))
+adm_data_ra = read.csv(paste0("data/", tag2, "_adm.csv"))
+wd_data_ra = read.csv(paste0("data/", tag2, "_wd.csv"))
+t = adm_data_pl$time..Myr.
+t_steps = adm_data_pl$timestep...
+
+#### Metadata ####
+meta_data_pl = tomledit::read_toml(paste0("data/", tag1, ".toml"))
+l = tomledit::from_toml(meta_data_pl)
+n_locations = length(l$locations)
+loc_list = list()
+distances = c()
+for (loc in seq_len(n_locations)){ # convert to km
+  loc_list[[loc]] = list(x = l$locations[[loc]]$x[[1]]/ 1000,
+                         y = l$locations[[loc]]$y[[1]] / 1000)
+  distances =  c(distances, l$locations[[loc]]$x[[1]]/ 1000)
+}
+
+#### Age-depth models ####
+adm_list_pl = list()
+adm_list_ra = list()
+for (i in 1:(length(adm_data_pl)-2)){
+  adm_list_pl[[i]] = admtools::tp_to_adm(t = adm_data_pl$time..Myr.,
+                               h = adm_data_pl[, paste0("adm_", i, "..m.")])
+  
+  adm_list_ra[[i]] = admtools::tp_to_adm(t = adm_data_ra$time..Myr.,
+                               h = adm_data_ra[, paste0("adm_", i, "..m.")])
+}
+
+#### Water depth ####
+wd_pl = list()
+wd_ra = list()
+for (i in 1:(length(wd_data_pl)-2)){
+  wd_pl[[i]] = list(t = wd_data_pl$time..Myr.,
+                    wd = pmax(wd_data_pl[, paste0("wd_", i, "..m.")], 0))
+  wd_ra[[i]] = list(t = wd_data_ra$time..Myr.,
+                    wd = pmax(wd_data_ra[, paste0("wd_", i, "..m.")], 0))
+}
+
+#### sea level ####
+period1 = 2.0 # Myr
+amplitude1 = 15.0 # m
+period2 = 0.2 # Myr
+amplitude2 = 2.5 # m
+sl = list(t = t,
+          sl = amplitude1 * sin(2 * pi * t/ period1) + amplitude2 * sin(2 * pi * t / period2))
+
+wd_comb = list(ra = wd_ra, pl = wd_pl)
+adm_comb = list(ra = adm_list_ra, pl = adm_list_pl)
+cases = c("ra", "pl")
+
+distances_km = paste(distances, "km")
+
+st_sep_time = seq(0.25, 3.75, by = 0.5)
+st_labels = c("TST", "HST", "RST","LST","TST","HST", "RST", "LST", "TST")
+
+ext_scen = list()
+ext_scen[["HST"]] = approxfun(x = c(0.25,0.5, 0.75,2.25, 2.5, 2.75), y = c(1, 25,1, 1, 25, 1), rule = 2)
+ext_scen[["RST"]] = approxfun(x = c(0.75, 1, 1.25, 2.75, 3, 3.25), y = c(1, 25,1, 1, 25, 1), rule = 2)
+ext_scen[["LST"]] = approxfun(x = c(1.25, 1.5, 1.75, 3.25, 3.5, 3.75), y = c(1, 25,1, 1,25,1), rule = 2)
+ext_scen[["TST"]] = approxfun(x = c(0, 0.25,1.75, 2, 2.25, 3.75,4), y = c(25,1,1, 25,1,1,25), rule = 2)
+ext_scen[["constant"]] = approxfun(x = c(0, 4), y = c(1,1), rule = 2)
+

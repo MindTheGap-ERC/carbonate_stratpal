@@ -707,7 +707,7 @@ for (loc in names(adm_used)){
       l_occ_h[i] = x["h"]
       l_occ_t[i] = x["t"]
     }
-<<<<<<< Updated upstream
+
     df = rbind(df, data.frame(l_occ_h = l_occ_h, rate = rep(rate, length(l_occ_h)), loc = rep(loc, length(l_occ_h))))
   }
 }
@@ -729,7 +729,7 @@ p2 = df |>
 p2
 
 p3 = ggpubr::ggarrange(p1, p2, ncol = 2, nrow = 1, labels = LETTERS[1:2], common.legend = TRUE, legend = "bottom") 
-=======
+
     df = rbind(df,
                data.frame(l_occ_h = l_occ_h,
                           rate = rep(rate, length(l_occ_h))))
@@ -1095,7 +1095,7 @@ plot_ext_scenario_comparison = function(rate, dist, case, title){
 p1 = plot_ext_scenario_comparison(rate = 10, dist = 15, case = "pl", title = "Platform proximal slope")
 p2 = plot_ext_scenario_comparison(rate = 10, dist = 3, case = "pl", title = "Platform top")
 p3 = ggpubr::ggarrange(p2,p1, ncol = 2, nrow =1, common.legend = TRUE, legend = "bottom", labels = LETTERS[1:2])
->>>>>>> Stashed changes
+
 p3
 ggsave("figs/last_occ.png", p3)
 
