@@ -707,6 +707,7 @@ for (loc in names(adm_used)){
       l_occ_h[i] = x["h"]
       l_occ_t[i] = x["t"]
     }
+<<<<<<< Updated upstream
     df = rbind(df, data.frame(l_occ_h = l_occ_h, rate = rep(rate, length(l_occ_h)), loc = rep(loc, length(l_occ_h))))
   }
 }
@@ -728,6 +729,373 @@ p2 = df |>
 p2
 
 p3 = ggpubr::ggarrange(p1, p2, ncol = 2, nrow = 1, labels = LETTERS[1:2], common.legend = TRUE, legend = "bottom") 
+=======
+    df = rbind(df,
+               data.frame(l_occ_h = l_occ_h,
+                          rate = rep(rate, length(l_occ_h))))
+  }
+  df$rate = factor(df$rate, levels = rates)
+  
+  p1 = df |>
+    filter( is.finite(l_occ_h)) |>
+    ggplot(aes(x = l_occ_h, y = rate, fill = rate)) +
+    geom_density_ridges(stat = "binline", bins = 30, scale = 1) 
+  
+  if (plot_st){
+    st_sep_time_mod = c(0,st_sep_time, 4)
+    st_sep_strat = time_to_strat(st_sep_time_mod, adm, destructive = FALSE)
+    st_pres = !(diff(st_sep_strat) == 0)
+    st_names_used = st_labels[st_pres]
+    st_sep_strat_used = st_sep_strat[st_pres]
+    df_text = data.frame(time = 0.5* (head(st_sep_strat_used, -1) + tail(st_sep_strat_used, -1)),
+                         height = rep(2.5, length(st_sep_strat_used)-1),
+                         label = st_names_used)
+    
+    p1 = p1 +
+      geom_vline(xintercept = st_sep_strat_used[2:(length(st_sep_strat_used)-1)],
+                 linetype = "dashed",
+                 color = "black") +
+      geom_text(data = df_text,
+                aes(x = time,
+                    y = height,
+                    label = label),
+                inherit.aes = FALSE)
+  }
+  p1 = p1 +
+    labs(title = title,
+         x = y_axis_label,
+         y = x_axis_label,
+         fill = legend_title) +
+    coord_flip()
+  return(p1)
+}
+
+p1 = plot_lo_by_rate(case = "ra",
+                     pos = 12, 
+                     rates = c(3,10,30,100),
+                     title = 'Platform top')
+
+plot_lo_comparison = function(){
+  rates = c(3,10,30,100)
+  p1 = plot_lo_by_rate(case = "pl",
+                       pos = 3, 
+                       rates = rates,
+                       title = 'Platform top')
+  p2 = plot_lo_by_rate(case = "pl",
+                       pos = 12, 
+                       rates = rates,
+                       title = 'Platform ramp')
+  p3 = ggpubr::ggarrange(p1, p2, ncol = 2, nrow = 1, labels = LETTERS[1:2], common.legend = TRUE, legend = "bottom") 
+  return(p3)
+}
+
+p = plot_lo_comparison()
+p
+ggsave("figs/ms_unknown_fig_no.png", p)
+
+#### Plots: Incompleteness, gap statistics, and gap distribution ####
+
+plot_completeness = function(pos = seq(1.5, 21, by = 1.5)){
+  stopifnot(all(pos %in% distances))
+  
+  names = c("dist", "case", "com")
+  df = data.frame( matrix(nrow = 0, ncol = length(names)))
+  names(df) = names
+  
+  for (case in names(adm_comb)){
+    for (i in seq_along(pos)){
+      adm = adm_comb[[case]][[i]]
+      com = admtools::get_completeness(adm)
+      df3 = data.frame(dist = rep(pos[i], length(com)),
+                       case = rep(case, length(com)),
+                       com = com)
+      df = rbind(df, df3)
+    }
+  }
+  
+  p = df |>
+  ggplot(aes(x = dist, y = com, color = case)) + 
+  geom_line(linewidth = 3) +
+  labs(x = "distance from shore",
+       y = "completeness",
+       color = "geometry") +
+  ylim(c(0,1)) +
+    labs(x = "Distance from shore [km]",
+         y = "Completeness [-]",
+         title = "Stratigraphic Completeness",
+         color = "Geometry") +
+    scale_color_discrete(labels = c("Platform", "Ramp")) +
+    theme(legend.position = c(0.1, 0.9))
+return(p)
+}
+p = plot_completeness()
+p
+ggsave(filename = "figs/completeness.png",
+       plot = p)
+
+plot_gap_statistics = function(pos = seq(1.5, 21, by = 1.5)){
+  stopifnot(all(pos %in% distances))
+  names = c("max", "quant_1", "quant_3", "median", "dist", "case")
+  df = data.frame(matrix(nrow = 0, ncol = length(names)))
+  names(df) = names
+  
+  for (case in names(adm_comb)){
+    for (i in seq_along(distances_km)){
+      adm = adm_comb[[case]][[i]]
+      hiat = get_hiat_duration(adm)
+      
+      df2 = data.frame(
+        max = max(hiat),
+        quant_1 = quantile(hiat, probs = 0.25, names = FALSE),
+        quant_3 = quantile(hiat, probs = 0.75, names = FALSE),
+        median = median(hiat),
+        n_hiat = length(hiat),
+        acc_sed = get_total_thickness(adm),
+        dist = distances[i],
+        case  = case
+      )
+      df = rbind(df, df2)
+    }
+  }
+  df$max[is.infinite(df$max)] = 0
+  df$quant_1[is.na(df$quant_1)] = 0
+  df$quant_3[is.na(df$quant_3)] = 0
+  df$median[is.na(df$median)] = 0
+  df$case = factor(df$case)
+  
+  p1 = df |> 
+    pivot_longer(cols = c("max", "quant_1", "quant_3", "median"),
+                 names_to = "measure",
+                 values_to = "value") |>
+    filter(case == "ra") |>
+    ggplot(aes(x = dist, y = value, color = measure)) +
+    geom_line(linewidth = 3) +
+    labs(x = "Distance from shore [km]",
+         y = "Value [Myr]",
+         title = "Ramp",
+         color = "Statistic") +
+    scale_color_discrete(labels = c("maximum", "median", "1st quantile", "3rd quantile")) +
+    theme(legend.position = c(0.9, 0.8)) +
+    scale_y_log10()
+  p2 = df  |>
+    pivot_longer(cols = c("max", "quant_1", "quant_3", "median"),
+                 names_to = "measure",
+                 values_to = "value") |>
+    filter(case == "pl") |>
+    ggplot(aes(x = dist, y = value, color = measure)) +
+    geom_line(linewidth = 3)  +
+    labs(x = "Distance from shore [km]",
+         y = "Value [Myr]",
+         title = "Platform",
+         color = "Statistic") +
+    scale_color_discrete(labels = c("maximum", "median", "1st quantile", "3rd quantile")) +
+    theme(legend.position = c(0.9, 0.8)) + 
+    scale_y_log10()
+  p3 = ggpubr::ggarrange(p2, p1, ncol = 2, nrow = 1, labels = LETTERS[1:2],common.legend = TRUE, legend = "bottom")
+  return(p3)
+}
+p = plot_gap_statistics()
+p
+ggsave(filename = "figs/gap_statistics.png",
+       plot = p)
+
+plot_hiat_duration = function(pos = seq(3, 21, by = 3)){
+  stopifnot(all(pos %in% distances))
+  
+  names = c("dist", "case", "hiat_duration")
+  df = data.frame( matrix(nrow = 0, ncol = length(names)))
+  names(df) = names
+  
+  for (case in names(adm_comb)){
+    for (i in seq_along(pos)){
+      adm = adm_comb[[case]][[i]]
+      hiat = admtools::get_hiat_duration(adm)
+      df3 = data.frame(dist = rep(pos[i], length(hiat)),
+                       case = rep(case, length(hiat)),
+                       hiat_duration = hiat)
+      df = rbind(df, df3)
+    }
+  }
+  df$dist = factor(df$dist)
+  labels = paste(pos, "km")
+  p1 = df |> 
+    filter(case == "pl") |>
+    ggplot(aes(x = hiat_duration, y = dist, fill = dist)) +
+    geom_density_ridges(bandwidth = 0.1) +
+    theme_ridges()+
+    geom_vline(xintercept = c(0.001, 0.1, 1),
+               linetype = "dashed") +
+    scale_x_log10() +
+    ggtitle("Platform") + 
+    theme_classic()+
+    labs(x = "Hiatus duration [Myr]",
+         y = "Frequency",
+         fill = "Distance from shore") +
+    scale_fill_discrete(labels = labels) 
+  p1
+  
+  p2 = df |> filter(case == "ra") |>
+    ggplot(aes(x = hiat_duration, y = dist, fill = dist)) +
+    geom_density_ridges(bandwidth = 0.1) +
+    theme_ridges() +
+    geom_vline(xintercept = c(0.001, 0.1, 1),
+               linetype = "dashed") +
+    scale_x_log10() +
+    theme_classic() +
+    ggtitle("Ramp") +
+    labs(x = "Hiatus duration [Myr]",
+         y = "Frequency",
+         fill = "Distance from shore") +
+    scale_fill_discrete(labels = labels)
+  p2
+  p3 = ggpubr::ggarrange(p1, p2, nrow = 1, ncol = 2, common.legend = TRUE, legend = "bottom", labels = LETTERS[1:2])
+  return(p3)
+}
+p = plot_hiat_duration()
+p
+ggsave("figs/hiatus_duration_comp.png", p)
+
+plot_no_of_hiat = function(pos = seq(1.5, 21, by = 1.5)){
+  stopifnot(all(pos %in% distances))
+  
+  names = c("dist", "case", "n")
+  df = data.frame( matrix(nrow = 0, ncol = length(names)))
+  names(df) = names
+  
+  for (case in names(adm_comb)){
+    for (i in seq_along(pos)){
+      adm = adm_comb[[case]][[i]]
+      th = admtools::get_hiat_no(adm)
+      df3 = data.frame(dist = rep(pos[i], length(th)),
+                       case = rep(case, length(th)),
+                       n = th)
+      df = rbind(df, df3)
+    }
+  }
+  
+  p = df |>
+    ggplot(aes(x = dist, y = n, color = case)) +
+    geom_line(linewidth = 3) +
+    labs(title = "Number of Hiatuses",
+         y = "Number of hiatuses",
+         x = "Distance from shore [km]",
+         color = "Geometry") +
+    scale_color_discrete(labels = c("Platform", "Ramp")) +
+    theme(legend.position = c(0.1,0.9)) +
+    ylim(c(0, max(df$n)))
+  return(p)
+}
+p = plot_no_of_hiat()
+p
+ggsave("figs/no_of_hiatuses.png", p)
+
+plot_accumulated_sediment = function(pos = seq(3, 21, by = 1.5)){
+  stopifnot(all(pos %in% distances))
+  
+  names = c("dist", "case", "thickness")
+  df = data.frame( matrix(nrow = 0, ncol = length(names)))
+  names(df) = names
+  
+  for (case in names(adm_comb)){
+    for (i in seq_along(pos)){
+      adm = adm_comb[[case]][[i]]
+      th = admtools::get_total_thickness(adm)
+      df3 = data.frame(dist = rep(pos[i], length(th)),
+                       case = rep(case, length(th)),
+                       thickness = th)
+      df = rbind(df, df3)
+    }
+  }
+  
+  p = df |>
+    ggplot(aes(x = dist, y = thickness, color = case)) +
+    geom_line(linewidth = 3) +
+    labs(title = "Section thickness",
+         y = "Section thickness [m]",
+         x = "Distance from shore [km]",
+         color = "Geometry") +
+    scale_color_discrete(labels = c("Platform", "Ramp")) +
+    theme(legend.position = c(0.1, 0.9))
+  return(p)
+}
+p = plot_accumulated_sediment()
+p
+ggsave("figs/section_thickness.png", p)
+
+#### Extinctions by systems tract ####
+
+plot_ext_scenario_comparison = function(rate, dist, case, title){
+  stopifnot(dist %in% distances)
+  stopifnot(case %in% cases)
+  
+  n_locc = 1000
+  
+  names = c("ext_scen", "case", "dist", "l_occ_h")
+  df = data.frame(matrix(nrow = 0, ncol = length(names)))
+  names(df) = names
+  rate = rate
+
+  for (scen in names(ext_scen)){
+        f = ext_scen[[scen]]
+        adm = adm_comb[[case]][[which(distances == dist)]]
+        t_ext = p3_var_rate(x = f,
+                            from = admtools::min_time(adm),
+                            to = admtools::max_time(adm),
+                            n = n_locc,
+                            f_max = 25)
+        l_occ_h = rep(NA, length(t_ext))
+        for (j in 1:length(t_ext)){
+          l_occ = last_occ(t_ext = t_ext[j],
+                           rate = rate,
+                           adm = adm)
+          l_occ_h[j] = l_occ["h"]
+        }
+        df2 = data.frame(ext_scen = rep(scen, length(l_occ_h)),
+                         case = rep(case, length(l_occ_h)),
+                         dist = rep(dist, length(l_occ_h)),
+                         l_occ_h = l_occ_h)
+        df = rbind(df, df2)
+  }
+  df$case = factor(df$case)
+  df$ext_scen = factor(df$ext_scen, levels = c("constant", "HST", "RST", "LST", "TST"),
+                       ordered = TRUE)
+  
+  st_sep_time_mod = c(0,st_sep_time, 4)
+  st_sep_strat = time_to_strat(st_sep_time_mod, adm, destructive = FALSE)
+  st_pres = !(diff(st_sep_strat) == 0)
+  st_names = st_labels
+  st_names_used = st_names[st_pres]
+  st_sep_strat_used = st_sep_strat[st_pres]
+  df_text = data.frame(time = 0.5* (head(st_sep_strat_used, -1) + tail(st_sep_strat_used, -1)),
+                       height = rep(2.5, length(st_sep_strat_used)-1),
+                       label = st_names_used)
+  
+  p = df |>
+    filter(!is.na(l_occ_h)) |>
+    ggplot(aes(x = l_occ_h, y = ext_scen, fill = ext_scen)) +
+    geom_density_ridges(stat = "binline",
+                        breaks = seq(0,admtools::max_height(adm), length.out = 30),
+                        scale = 0.9)+
+    geom_vline(xintercept = tail(head(st_sep_strat_used, -1),-1),
+               linetype = "dashed",
+               color = "black") +
+    geom_text(data = df_text,
+              aes(x = time,
+                  y = height,
+                  label = label),
+              inherit.aes = FALSE) +
+    coord_flip() +
+    labs(title = title,
+         y = "Extinction scenario",
+         x = "Stratigraphic height [m]",
+         fill = "Extinction scenario")
+  return(p)
+}
+
+p1 = plot_ext_scenario_comparison(rate = 10, dist = 15, case = "pl", title = "Platform proximal slope")
+p2 = plot_ext_scenario_comparison(rate = 10, dist = 3, case = "pl", title = "Platform top")
+p3 = ggpubr::ggarrange(p2,p1, ncol = 2, nrow =1, common.legend = TRUE, legend = "bottom", labels = LETTERS[1:2])
+>>>>>>> Stashed changes
 p3
 ggsave("figs/last_occ.png", p3)
 
