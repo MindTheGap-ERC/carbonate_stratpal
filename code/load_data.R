@@ -70,6 +70,7 @@ distances_km = paste(distances, "km")
 
 st_sep_time = seq(0.25, 3.75, by = 0.5)
 st_labels = c("TST", "HST", "RST","LST","TST","HST", "RST", "LST", "TST")
+st_labels_en = c("TST1", "HST1", "RST1","LST1","TST2","HST2", "RST2", "LST2", "TST3")
 
 ext_scen = list()
 ext_scen[["HST"]] = approxfun(x = c(0.25,0.5, 0.75,2.25, 2.5, 2.75), y = c(1, 25,1, 1, 25, 1), rule = 2)
