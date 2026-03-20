@@ -10,7 +10,7 @@ const TAG2 = "ramp"
 
 function main()
 header, profile = read_slice("$(PATH)/$(TAG1).h5", :profile)
-    columns = [profile[i] for i in 11:10:141]
+    columns = [profile[i] for i in 1:150]
     data_export(
         CSV(:sediment_accumulation_curve => "$(PATH)/$(TAG1)_sac.csv",
             :age_depth_model => "$(PATH)/$(TAG1)_adm.csv",
@@ -20,7 +20,7 @@ header, profile = read_slice("$(PATH)/$(TAG1).h5", :profile)
          header,
          columns)
 header, profile = read_slice("$(PATH)/$(TAG2).h5", :profile)
-    columns = [profile[i] for i in 11:10:141]
+    columns = [profile[i] for i in 1:150]
     data_export(
         CSV(:sediment_accumulation_curve => "$(PATH)/$(TAG2)_sac.csv",
             :age_depth_model => "$(PATH)/$(TAG2)_adm.csv",

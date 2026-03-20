@@ -3,8 +3,10 @@ tag2 = "ramp"
 
 adm_data_pl = read.csv(paste0("data/", tag1, "_adm.csv"))
 wd_data_pl = read.csv(paste0("data/", tag1, "_wd.csv"))
+sac_data_pl = read.csv(paste0("data/", tag1, "_sac.csv"))
 adm_data_ra = read.csv(paste0("data/", tag2, "_adm.csv"))
 wd_data_ra = read.csv(paste0("data/", tag2, "_wd.csv"))
+sac_data_ra = read.csv(paste0("data/", tag2, "_sac.csv"))
 t = adm_data_pl$time..Myr.
 t_steps = adm_data_pl$timestep...
 
@@ -30,7 +32,19 @@ for (i in 1:(length(adm_data_pl)-2)){
   adm_list_ra[[i]] = admtools::tp_to_adm(t = adm_data_ra$time..Myr.,
                                h = adm_data_ra[, paste0("adm_", i, "..m.")])
 }
+adm_comb = list(ra = adm_list_ra, pl = adm_list_pl)
 
+#### Sediment accumulation curves ####
+sac_list_pl = list()
+sac_list_ra = list()
+for (i in 1:(length(sac_data_pl)-2)){
+  sac_list_pl[[i]] = admtools::tp_to_sac(t = sac_data_pl$time..Myr.,
+                                         h = sac_data_pl[, paste0("sac_", i, "..m.")])
+  sac_list_ra[[i]] = admtools::tp_to_sac(t = sac_data_ra$time..Myr.,
+                                         h = sac_data_ra[, paste0("sac_", i, "..m.")])
+}
+sac_comb = list(ra = sac_list_ra,
+                pl = sac_list_pl)
 #### Water depth ####
 wd_pl = list()
 wd_ra = list()
@@ -50,7 +64,6 @@ sl = list(t = t,
           sl = amplitude1 * sin(2 * pi * t/ period1) + amplitude2 * sin(2 * pi * t / period2))
 
 wd_comb = list(ra = wd_ra, pl = wd_pl)
-adm_comb = list(ra = adm_list_ra, pl = adm_list_pl)
 cases = c("ra", "pl")
 
 distances_km = paste(distances, "km")

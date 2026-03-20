@@ -19,7 +19,9 @@ const LITHIFICATION_TIME_RAMP = 2u"kyr"
 const INIT_SL = t -> 0u"m"
 const MAIN_SL = t -> AMPLITUDE1 * sin(2π * t / PERIOD1) + AMPLITUDE2 * sin(2π * t / PERIOD2)
 
-const DENUDATION_EMP = EmpiricalDenudation(precip = 1.0u"m")
+const DENUDATION_EMP_RAMP = EmpiricalDenudation(precip = 0.5u"m")
+const DENUDATION_EMP_PLATFORM = EmpiricalDenudation(precip = 2.0u"m")
+
 
 function get_init_topography(header, volume)    
     n_steps = size(volume.sediment_thickness)[3]

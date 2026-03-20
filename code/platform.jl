@@ -79,7 +79,7 @@ const INPUT_INIT_RUN = WDn.Input(
     depositional_resolution=DEPOSITIONAL_RESOLUTION,
     facies=FACIES_PLATFORM,
     lithification_time = LITHIFICATION_TIME_PLATFORM,
-    denudation = DENUDATION_EMP)
+    denudation = DENUDATION_EMP_PLATFORM)
 
 println("Running platform pre-run")
 run_model(Model{WDn}, INPUT_INIT_RUN, "$(PATH)/$(TAG)_prerun.h5")
@@ -106,7 +106,7 @@ const INPUT_MAIN_RUN = WDn.Input(
     depositional_resolution=DEPOSITIONAL_RESOLUTION,
     facies=FACIES_PLATFORM,
     lithification_time = LITHIFICATION_TIME_PLATFORM,
-    denudation = DENUDATION_EMP)
+    denudation = DENUDATION_EMP_PLATFORM)
 
 println("Running platform main run")
 run_model(Model{WDn}, INPUT_MAIN_RUN, "$(PATH)/$(TAG).h5")
