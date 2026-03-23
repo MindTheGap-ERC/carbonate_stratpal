@@ -4,7 +4,7 @@ using CarboKitten.Export: read_header, read_volume, read_slice, group_datasets
 using CarboKitten.Utility: in_units_of
 using HDF5
 using Unitful
-#using CairoMakie
+using CairoMakie
 using CarboKitten.BoundaryTrait
 using CarboKitten.Stencil: convolution
 
@@ -92,4 +92,4 @@ ax = Axis(fig[3, 3], title = "sea level curve",xlabel = "sealevel [m]",
 limits = (nothing, (header.axes.t[1] |> in_units_of(u"Myr"), header.axes.t[end]|> in_units_of(u"Myr"))))
 lines!(ax, header.sea_level |> in_units_of(u"m") , header.axes.t|> in_units_of(u"Myr"))
 
-save("figs/test.png", fig)
+save("figs/ms/fig1.png", fig)

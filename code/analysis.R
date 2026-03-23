@@ -64,9 +64,9 @@ plot_age_depth_models = function(pos = seq(3, 21, by = 3), plot_st = TRUE){
     max_height = max_height$height[!is.na(max_height$height)] |> max()
     df_text = data.frame(time = 0.5* (head(st_sep_time_mod, -1) + tail(st_sep_time_mod, -1)),
                          height = rep(max_height, length(st_sep_time_mod)-1),
-                         label = c("TST","HST", "RST","LST","TST","HST", "RST", "LST", "TST"))
+                         label = st_labels_en)
     
-    p1 = p1 +  geom_vline(xintercept = head(tail(st_sep_time, -1), -1),
+    p1 = p1 +  geom_vline(xintercept = head(tail(st_sep_time_mod, -1), -1),
                           linetype = "dashed",
                           color = "black",
                           lwd = 0.5) +
@@ -91,9 +91,9 @@ plot_age_depth_models = function(pos = seq(3, 21, by = 3), plot_st = TRUE){
     max_height = max_height$height[!is.na(max_height$height)] |> max()
     df_text = data.frame(time = 0.5* (head(st_sep_time_mod, -1) + tail(st_sep_time_mod, -1)),
                          height = rep(max_height, length(st_sep_time_mod)-1),
-                         label = c("TST","HST", "RST","LST","TST","HST", "RST", "LST", "TST"))
+                         label = st_labels_en)
     
-    p2 = p2 +  geom_vline(xintercept = head(tail(st_sep_time, -1), -1),
+    p2 = p2 +  geom_vline(xintercept = head(tail(st_sep_time_mod, -1), -1),
                           linetype = "dashed",
                           color = "black",
                           lwd = 0.5) +
@@ -296,7 +296,7 @@ plot_condensation_ratio = function(pos = seq(3, 21, by = 3)){
     p1 = df |> 
       filter(system == "pl") |>
       ggplot(aes(x = proportion_height, y = cond_ratio, color = distance)) +
-      geom_line() +
+      geom_step(direction = "mid") +
       geom_hline(yintercept = 1, linetype = "dashed") +
       coord_flip() +
       scale_y_log10(limits = y_lim) +
@@ -308,7 +308,7 @@ plot_condensation_ratio = function(pos = seq(3, 21, by = 3)){
     p2 = df |> 
       filter(system == "ra") |>
       ggplot(aes(x = proportion_height, y = cond_ratio, color = distance)) +
-      geom_line() +
+      geom_step(direction = "mid") +
       geom_hline(yintercept = 1, linetype = "dashed") +
       coord_flip() +
       scale_y_log10(limits = y_lim) +
@@ -351,7 +351,7 @@ plot_prop_time_vs_height = function(pos = seq(3, 21, by = 3)){
     }
   }
   
-  df$dist = factor(df$dist)
+  df$dist = factor(df$dist, ordered = TRUE, levels = paste(pos, "km"))
   df$system = factor(df$system)
   
   p1 = df |>
@@ -369,7 +369,7 @@ plot_prop_time_vs_height = function(pos = seq(3, 21, by = 3)){
                  color = "black",
                  linetype = "dashed")
   p2 = df |>
-    filter(system == "ra" & dist %in% pos_interest) |>
+    filter(system == "ra" ) |>
     ggplot(aes(x = prop_time, y = prop_height, color = dist)) +
     geom_line() +
     labs(y = y_label,
@@ -459,7 +459,7 @@ plot_lo_by_rate = function(case, pos, rates, title, plot_st = TRUE){
 }
 
 p1 = plot_lo_by_rate(case = "pl",
-                     pos = 3, 
+                     pos = 10.5, 
                      rates = c(3,10,30,100, Inf),
                      title = '')
 ggsave(filename = "figs/ms/fig5.png", plot = p1)
@@ -613,7 +613,7 @@ plot_hiat_duration = function(pos = seq(3, 21, by = 3)){
   p1 = df |> 
     filter(case == "pl") |>
     ggplot(aes(x = hiat_duration, y = dist, fill = dist)) +
-    geom_density_ridges(bandwidth = 0.08, scale = 1) +
+    geom_density_ridges(stat = "density_ridges", bandwidth = 0.08, scale = 1) +
     theme_ridges()+
     geom_vline(xintercept = c(0.001, 0.1, 1),
                linetype = "dashed") +
@@ -627,7 +627,7 @@ plot_hiat_duration = function(pos = seq(3, 21, by = 3)){
   p2 = df |> 
     filter(case == "ra") |>
     ggplot(aes(x = hiat_duration, y = dist, fill = dist)) +
-    geom_density_ridges(bandwidth = 0.08, scale = 1) +
+    geom_density_ridges(stat = "density_ridges",bandwidth = 0.08, scale = 1) +
     theme_ridges()+
     geom_vline(xintercept = c(0.001, 0.1, 1),
                linetype = "dashed") +
@@ -815,7 +815,7 @@ plot_ext_comp = function(){
                          common.legend = TRUE,
                          legend = "bottom", 
                          labels = LETTERS[1:2])
-  ggsave(filename = "figs/ms/ext_scen_comparison.png",
+  ggsave(filename = "figs/ms/fig6.png",
          plot = p3)
   
 }
@@ -899,7 +899,7 @@ plot_spat_corr_ext = function(rate,
                             labs = labs[is_pres],
                             dist = factor(rep(plot_pos, sum(is_pres))))
       df_text = rbind(df_text, df_text1)
-      p = p + geom_text(data = df_text |> filter(dist %in% c(3, 12)),
+      p = p + geom_text(data = df_text |> filter(dist %in% c(7.5, 12)),
                         aes(x = pos, y = dist, label = labs),
                         position = position_nudge(y = -  0.15))
     }
@@ -912,10 +912,12 @@ plot_spat_corr_ext = function(rate,
 }
 
 p = plot_spat_corr_ext(rate = 10, 
-                       case = "pl", 
-                       ext_sce = "RST",
+                       case = "ra", 
+                       ext_sce = "LST",
                        pos = c(3,7.5,10.5,12,18))
 p
+ggsave(filename = "figs/ms/fig8.png",
+       plot = p)
 
 if (!dir.exists("figs/spat_comp/")){dir.create("figs/spat_comp/", recursive = TRUE)}
 for (case in cases){
@@ -926,18 +928,18 @@ for (case in cases){
       p = plot_spat_corr_ext(rate = rate, 
                              case = case, 
                              ext_sce = ext_scenario,
-                             pos = c(3,7.5,10.5,12,15))
+                             pos = c(3,7.5,10.5,12,18))
       p
       ggsave(filename = paste0("figs/spat_comp/spat_comp_",case, "_", rate, "_", ext_scenario,".png"))
     }
   }
 }
 
-ggsave(filename = "figs/ms/spat_corr.png",
+ggsave(filename = "figs/ms/fig7.png",
        plot = plot_spat_corr_ext(rate = 10,
                                  case = "pl",
-                                 ext_sce = "RST",
-                                 pos = c(3,7.5, 10.5,12)))
+                                 ext_sce = "LST",
+                                 pos = c(7.5, 10.5,12)))
 
 
 
@@ -1026,4 +1028,17 @@ h_ext = time_to_strat(t_ext, adm, destructive = FALSE)
 t_last_occ = strat_to_time(highest_occ, adm)
 offset_range_t = t_ext - t_last_occ
 offset_range_h = h_ext - highest_occ
+
+#### Sedimentation rates ####
+pos = c(3,7.5, 10.5, 12, 18)
+for (case in cases){
+  for (i in seq_along(pos)){
+    adm = adm_comb[[case]][[which(pos[i] == distances)]]
+    s = sed_rate_l_fun(adm)
+    h = seq(admtools::min_height(adm), admtools::max_height(adm), length.out = 40)
+    plot(h, s(h), ylim = range(c(0, s(h))),
+         type = "l",
+         main = paste0(case, pos[i]))
+  }
+}
 

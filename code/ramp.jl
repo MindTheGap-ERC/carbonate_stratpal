@@ -106,7 +106,7 @@ const INPUT_MAIN_RUN = WDn.Input(
     depositional_resolution=DEPOSITIONAL_RESOLUTION,
     facies=FACIES_RAMP,
     lithification_time = LITHIFICATION_TIME_RAMP,
-    denudation = DENUDATION_EMP_PLATFORM)
+    denudation = DENUDATION_EMP_RAMP)
     
 println("Running ramp main run")
 run_model(Model{WDn}, INPUT_MAIN_RUN, "$(PATH)/$(TAG).h5")
