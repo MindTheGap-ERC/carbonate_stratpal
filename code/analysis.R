@@ -193,7 +193,7 @@ plot_wd_time_domain = function(pos = seq(3, 21, by = 3), plot_st = TRUE){
 }
 p = plot_wd_time_domain(pos = c(3,7.5,10.5,12,18))
 p
-ggsave("figs/sm/sfig1.png", p)
+ggsave("figs/sm/sfig11.png", p)
 
 #### Plot: Water depth in the stratigraphic domain ####
 plot_wd_strat_domain = function(pos = seq(3, 21, by = 3)){
@@ -386,7 +386,7 @@ plot_prop_time_vs_height = function(pos = seq(3, 21, by = 3)){
 }
 p = plot_prop_time_vs_height(pos = c(3,7.5,10.5,12,18))
 p
-ggsave("figs/sm/prop_time_vs_height.png", plot = p)
+ggsave("figs/sm/sfig10_prop_time_vs_height.png", plot = p)
 
 #### Plot: Abundance bias on last occurrences ####
 plot_lo_by_rate = function(case, pos, rates, title, plot_st = TRUE){
@@ -396,7 +396,7 @@ plot_lo_by_rate = function(case, pos, rates, title, plot_st = TRUE){
   n_locc = 1000
   y_axis_label = "Stratigraphic height [m]"
   legend_title = "Fossil abundance [#/Myr]"
-  x_axis_label = "Last occurrences"
+  x_axis_label = "Fossil abundance [#/Myr]"
   title = title
   
   names = c("l_occ_h","rate")
@@ -436,7 +436,7 @@ plot_lo_by_rate = function(case, pos, rates, title, plot_st = TRUE){
     st_names_used = st_labels_en[st_pres]
     st_sep_strat_used = st_sep_strat[st_pres]
     df_text = data.frame(time = 0.5* (head(st_sep_strat_used, -1) + tail(st_sep_strat_used, -1)),
-                         height = rep(2.5, length(st_sep_strat_used)-1),
+                         height = rep(3.5, length(st_sep_strat_used)-1),
                          label = st_names_used)
     
     p1 = p1 +
@@ -454,15 +454,49 @@ plot_lo_by_rate = function(case, pos, rates, title, plot_st = TRUE){
          x = y_axis_label,
          y = x_axis_label,
          fill = legend_title) +
-    coord_flip()
+    coord_flip() + 
+    theme(legend.position = "none")
   return(p1)
 }
 
 p1 = plot_lo_by_rate(case = "pl",
                      pos = 10.5, 
-                     rates = c(3,10,30,100, Inf),
+                     rates = c(2,5,10,22,46,100),
                      title = '')
 ggsave(filename = "figs/ms/fig5.png", plot = p1)
+
+plot_lo_by_rate_pl = function(){
+  rates = c(2,5,10,22,46,100)
+  pos = c(3,7.5, 10.5,12,18)
+  case = "pl"
+  pl_list = list()
+  for (i in seq_along(pos)){
+    pl_list[[i]] = plot_lo_by_rate(case = case,
+                                   pos = pos[i],
+                                   rates = rates,
+                                   title = pos[i])
+  }
+  p = ggarrange( plotlist = pl_list, nrow = 3, ncol = 2)
+  ggsave("figs/sm/sfig12_lo_in_platform.png", plot = p)
+}
+
+plot_lo_by_rate_ra = function(){
+  rates = c(2,5,10,22,46,100)
+  pos = c(3,7.5, 10.5,12,18)
+  case = "ra"
+  pl_list = list()
+  for (i in seq_along(pos)){
+    pl_list[[i]] = plot_lo_by_rate(case = case,
+                                   pos = pos[i],
+                                   rates = rates,
+                                   title = pos[i])
+  }
+  p = ggarrange( plotlist = pl_list, nrow = 3, ncol = 2)
+  ggsave("figs/sm/sfig13_lo_in_ramp.png", plot = p)
+}
+
+plot_lo_by_rate_pl()
+plot_lo_by_rate_ra()
 
 plot_lo_comparison = function(){
   rates = c(3,10,30,100)
@@ -517,7 +551,7 @@ plot_completeness = function(){
 }
 p = plot_completeness()
 p
-ggsave(filename = "figs/completeness.png",
+ggsave(filename = "figs/sm/sfig5_completeness.png",
        plot = p)
 
 #### Plot gap statistics ####
@@ -588,7 +622,7 @@ plot_gap_statistics = function(){
 }
 p = plot_gap_statistics()
 p
-ggsave(filename = "figs/gap_statistics.png",
+ggsave(filename = "figs/sm/sfig9_gap_statistics.png",
        plot = p)
 #### Plot hiatus durations ####
 plot_hiat_duration = function(pos = seq(3, 21, by = 3)){
@@ -648,7 +682,7 @@ plot_hiat_duration = function(pos = seq(3, 21, by = 3)){
 }
 p = plot_hiat_duration(pos = c(3,7.5,10.5,12,18))
 p
-ggsave("figs/hiatus_duration_comp.png", p)
+ggsave("figs/sm/sfig6_hiatus_duration.png", p)
 
 #### Plot number of hiatuses ####
 plot_no_of_hiat = function(){
@@ -679,7 +713,7 @@ plot_no_of_hiat = function(){
 }
 p = plot_no_of_hiat()
 p
-ggsave("figs/no_of_hiatuses.png", p)
+ggsave("figs/sm/sfig7_no_of_hiatuses.png", p)
 
 #### Plot section thickness ####
 plot_accumulated_sediment = function(){
@@ -714,7 +748,7 @@ plot_accumulated_sediment = function(){
 }
 p = plot_accumulated_sediment()
 p
-ggsave("figs/section_thickness.png", p)
+ggsave("figs/sm/sfig8_section_thickness.png", p)
 
 #### Extinctions by systems tract ####
 
@@ -782,7 +816,8 @@ plot_ext_scenario_comparison = function(rate, dist, case, title){
     labs(title = title,
          y = "Extinction scenario",
          x = "Stratigraphic height [m]",
-         fill = "Extinction scenario")
+         fill = "Extinction scenario") +
+    theme(legend.position = "none")
   return(p)
 }
 
@@ -820,6 +855,40 @@ plot_ext_comp = function(){
   
 }
 plot_ext_comp()
+
+plot_ext_scen_pl = function(){
+  pos = c(3, 7.5, 10.5, 12, 18)
+  case = "pl"
+  rate = 33
+  pl_list = list()
+  for (i in seq_along(pos)){
+    pl_list[[i]] = plot_ext_scenario_comparison(rate = rate,
+                                                dist = pos[i],
+                                                case = case,
+                                                title = pos[i])
+  }
+  
+  p = ggarrange(plotlist = pl_list, nrow = 3, ncol = 2)
+  ggsave(filename = "figs/sm/sfig14_ext_scen_platform.png")
+}
+plot_ext_scen_pl()
+
+plot_ext_scen_ra = function(){
+  pos = c(3, 7.5, 10.5, 12, 18)
+  case = "ra"
+  rate = 33
+  pl_list = list()
+  for (i in seq_along(pos)){
+    pl_list[[i]] = plot_ext_scenario_comparison(rate = rate,
+                                                dist = pos[i],
+                                                case = case,
+                                                title = pos[i])
+  }
+  
+  p = ggarrange(plotlist = pl_list, nrow = 3, ncol = 2)
+  ggsave(filename = "figs/sm/sfig15_ext_scen_ramp.png")
+}
+plot_ext_scen_ra()
 
 
 
@@ -918,6 +987,49 @@ p = plot_spat_corr_ext(rate = 10,
 p
 ggsave(filename = "figs/ms/fig8.png",
        plot = p)
+
+plot_spat_corr_summary_platform = function(){
+  rate = 10
+  case = "pl"
+  ext_scenario_names = names(ext_scen)
+  pos = c(3, 7.5, 10.5, 12, 18)
+  plot_list = list()
+  for (i in seq_along(ext_scenario_names)){
+    plot_list[[i]] = plot_spat_corr_ext(rate = rate,
+                                        case = case,
+                                        ext_sce = ext_scenario_names[i],
+                                        pos = pos)
+  }
+  p = ggarrange(plotlist = plot_list,
+                ncol = 2,
+                nrow = 3)
+  ggsave(filename = "figs/sm/sfig16_spat_corr_platform.png",
+         plot = p)
+  
+}
+plot_spat_corr_summary_platform()
+
+plot_spat_corr_summary_ramp = function(){
+  rate = 10
+  case = "ra"
+  ext_scenario_names = names(ext_scen)
+  pos = c(3, 7.5, 10.5, 12, 18)
+  plot_list = list()
+  for (i in seq_along(ext_scenario_names)){
+    plot_list[[i]] = plot_spat_corr_ext(rate = rate,
+                                        case = case,
+                                        ext_sce = ext_scenario_names[i],
+                                        pos = pos)
+  }
+  p = ggarrange(plotlist = plot_list,
+                ncol = 2,
+                nrow = 3)
+  ggsave(filename = "figs/sm/sfig17_spat_corr_ramp.png",
+         plot = p)
+  
+}
+plot_spat_corr_summary_ramp()
+
 
 if (!dir.exists("figs/spat_comp/")){dir.create("figs/spat_comp/", recursive = TRUE)}
 for (case in cases){

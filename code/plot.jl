@@ -34,9 +34,9 @@ end
 
 function plot_preruns()
     fig = summary_plot("data/$(TAG1)_prerun.h5")
-    save("figs/$(TAG1)_prerun_summary.png", fig)
+    save("figs/sm/sfig1_$(TAG1)_prerun_summary.png", fig)
     fig = summary_plot("data/$(TAG2)_prerun.h5")
-    save("figs/$(TAG2)_prerun_summary.png", fig)   
+    save("figs/sm/sfig2_$(TAG2)_prerun_summary.png", fig)   
 end
 end
 
