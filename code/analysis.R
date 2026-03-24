@@ -1142,15 +1142,101 @@ offset_range_t = t_ext - t_last_occ
 offset_range_h = h_ext - highest_occ
 
 #### Sedimentation rates ####
-pos = c(3,7.5, 10.5, 12, 18)
-for (case in cases){
-  for (i in seq_along(pos)){
-    adm = adm_comb[[case]][[which(pos[i] == distances)]]
-    s = sed_rate_l_fun(adm)
-    h = seq(admtools::min_height(adm), admtools::max_height(adm), length.out = 40)
-    plot(h, s(h), ylim = range(c(0, s(h))),
-         type = "l",
-         main = paste0(case, pos[i]))
+plot_sed_rate = function(pos = c(3,7.5, 10.5, 12, 18),
+                         subset = 100,
+                         plot_st = TRUE){
+  
+  ext_factor = 1.1
+  st_sep_time_mod = c(-0.2, st_sep_time, 4.2)
+  
+  names = c("t", "s", "pos", "case")
+  df = data.frame(matrix(nrow = 0, ncol = length(names)))
+  names(df) = names
+  
+  for (case in cases){
+    for (i in seq_along(pos)){
+      adm = adm_comb[[case]][[which(pos[i] == distances)]]
+      t = get_T_tp(adm)
+      h = get_L_tp(adm)
+      sel = seq(1, length(t), by = subset)
+      h_sel = h[sel]
+      t_sel = t[sel]
+      t_midpoint = 0.5 * (tail(t_sel,-1) + head(t_sel, -1))
+      sed = diff(h_sel)/diff(t_sel)
+      df = rbind(df,
+                 data.frame(t = t_midpoint,
+                            s = sed,
+                            pos = rep(paste(pos[i], "km"), length(sed)),
+                            case = rep(case, length(sed))))
+    }
   }
+  df$case = factor(df$case)
+  df$pos = factor(df$pos, levels = paste(pos, "km"))
+  ylim = range(df$s)
+  p1 = df |>
+    filter(case == "pl") |>
+    ggplot(aes(x = t, y = s, color = pos)) +
+    geom_step(direction = "mid") +
+    labs(x = "Elapsed model time [Myr]",
+         y = "Sedimentation rate [m/Myr]",
+         title = "Platform",
+         color = "Distance") +
+    ylim(ext_factor * ylim)
+  
+  if (plot_st){
+    max_sed = max(ylim)
+    df_text = data.frame(time = 0.5* (head(st_sep_time_mod, -1) + tail(st_sep_time_mod, -1)),
+                         height = rep(1.05 * max_sed, length(st_sep_time_mod)-1),
+                         label = st_labels_en)
+    p1 = p1 +
+      geom_vline(xintercept = head(tail(st_sep_time_mod, -1),-1),
+                 linetype = "dashed",
+                 color = "black",
+                 lwd = 0.5) +
+      geom_text(data = df_text,
+                aes(x = time,
+                    y = height,
+                    label = label),
+                inherit.aes = FALSE)
+  }
+  
+  p2 = df |>
+    filter(case == "ra") |>
+    ggplot(aes(x = t, y = s, color = pos)) +
+    geom_step(direction = "mid") +
+    labs(x = "Elapsed model time [Myr]",
+         y = "Sedimentation rate [m/Myr]",
+         title = "Ramp",
+         color = "Distance") +
+    ylim(ext_factor * ylim)
+  if (plot_st){
+    max_sed = max(ylim)
+    df_text = data.frame(time = 0.5* (head(st_sep_time_mod, -1) + tail(st_sep_time_mod, -1)),
+                         height = rep(1.05 * max_sed, length(st_sep_time_mod)-1),
+                         label = st_labels_en)
+    p2 = p2 +
+      geom_vline(xintercept = head(tail(st_sep_time_mod, -1),-1),
+                 linetype = "dashed",
+                 color = "black",
+                 lwd = 0.5) +
+      geom_text(data = df_text,
+                aes(x = time,
+                    y = height,
+                    label = label),
+                inherit.aes = FALSE)
+  }
+  
+  p3 = ggarrange(p1,
+                 p2, 
+                 nrow = 1,
+                 ncol = 2,
+                 common.legend = TRUE,
+                 legend = "bottom",
+                 labels = LETTERS[1:2])
+  return(p3)
+  
 }
-
+p = plot_sed_rate()
+p
+ggsave(filename = "figs/sm/00_sedrate.png",
+       plot = p)
