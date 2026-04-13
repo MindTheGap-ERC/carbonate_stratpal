@@ -80,9 +80,13 @@ include("code/extract_data.jl")
 include("code/pub_figs.jl")
 ```
 
+8. In the RStudio IDE, open the file `carbonate_stratpal.Rproj`. This automatically install the `renv` package (if not already installed). Then run
 
+```{R}
+renv::restore()
+```
 
-After generating the data, you can run the analysis in R using
+to install all required R packages in their correct versions. Now you can run the code using
 
 ```{R}
 source("code/analysis.R")
