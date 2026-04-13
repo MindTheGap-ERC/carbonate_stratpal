@@ -9,12 +9,14 @@ library(ggpubr)
 library(ggridges)
 
 #### Load data ####
-source("code/load_data.R")
+source("code/load_data_and_constants.R")
 
 #### Plot: Age-depth models ####
 plot_age_depth_models = function(pos = seq(3, 21, by = 3), plot_st = TRUE){
+  #' pos: positions of adms
+  #' plot_st: plot systems tracts?
   stopifnot(any( pos %in% distances))
-  st_sep_time_mod = c(-0.2,seq(0.25, 3.75, by = 0.5), 4.2)
+  st_sep_time_mod = c(-0.2,st_sep_time, 4.2)
   names = c("time", "height", "distance", "system","lty")
   df = data.frame(matrix(nrow = 0, ncol = length(names)))
   names(df) = names
@@ -106,13 +108,15 @@ plot_age_depth_models = function(pos = seq(3, 21, by = 3), plot_st = TRUE){
                          labels = LETTERS[1:2])
   return(p3)
 }
-p = plot_age_depth_models(pos = c(3,7.5,10.5,12,18), plot_st = TRUE)
+p = plot_age_depth_models(pos = positions_examined, plot_st = TRUE)
 p
 ggsave("figs/ms/fig2.png", p)
 
 
 #### Plot: Water depths in time domain ####
 plot_wd_time_domain = function(pos = seq(3, 21, by = 3), plot_st = TRUE){
+  # pos: positions for water depth
+  # plot_st: plot systems tracts?
   stopifnot(any( pos %in% distances))
   st_sep_time_mod = c(-0.2,st_sep_time, 4.2)
   title_platform = "Platform"
@@ -191,12 +195,13 @@ plot_wd_time_domain = function(pos = seq(3, 21, by = 3), plot_st = TRUE){
   p3 = ggpubr::ggarrange(p2, p1, ncol = 2, nrow = 1, labels = LETTERS[1:2], legend = "bottom", common.legend = TRUE)
   return(p3)
 }
-p = plot_wd_time_domain(pos = c(3,7.5,10.5,12,18))
+p = plot_wd_time_domain(pos = positions_examined)
 p
-ggsave("figs/sm/sfig12.png", p)
+ggsave("figs/sm/sfig12_wd_time_domain.png", p)
 
 #### Plot: Water depth in the stratigraphic domain ####
 plot_wd_strat_domain = function(pos = seq(3, 21, by = 3)){
+  # pos: distance from shore for plot
   stopifnot(all(pos %in% distances))
   names = c("wd", "proportion_height", "distance", "system")
   df = data.frame(matrix(nrow = 0, ncol = length(names)))
@@ -251,14 +256,16 @@ plot_wd_strat_domain = function(pos = seq(3, 21, by = 3)){
   return(p3)
 }
 
-p = plot_wd_strat_domain(pos = c(3,7.5,10.5,12,18))
+p = plot_wd_strat_domain(pos = positions_examined)
 p
 ggsave("figs/ms/fig3.png", p)
 
 #### Plot: condensation ratio ####
 
 plot_condensation_ratio = function(pos = seq(3, 21, by = 3)){
+  # pos: distance from shore
   stopifnot(all(pos %in% distances))
+  # bin width over which condensation ratio is calculated
   bin_width_m = 4
   names = c("cond_ratio", "proportion_height", "distance", "system")
   df = data.frame(matrix(nrow = 0, ncol = length(names)))
@@ -320,8 +327,9 @@ plot_condensation_ratio = function(pos = seq(3, 21, by = 3)){
   p3 = ggpubr::ggarrange(p1, p2,  nrow = 1, ncol = 2, common.legend = TRUE, legend = "bottom", labels = LETTERS[1:2])
   return(p3)
 }
-
-ggsave("figs/ms/fig4.png", plot = plot_condensation_ratio(pos = c(3,7.5,10.5,12,18)))
+p = plot_condensation_ratio(pos = positions_examined)
+p
+ggsave("figs/ms/fig4.png", plot = p)
 
 #### Plot: Cumulative distribution of time vs height ####
 plot_prop_time_vs_height = function(pos = seq(3, 21, by = 3)){
@@ -384,16 +392,22 @@ plot_prop_time_vs_height = function(pos = seq(3, 21, by = 3)){
                  linetype = "dashed")
   p3 = ggpubr::ggarrange(p1, p2,  nrow = 1, ncol = 2, common.legend = TRUE, legend = "bottom", labels = LETTERS[1:2])
 }
-p = plot_prop_time_vs_height(pos = c(3,7.5,10.5,12,18))
+p = plot_prop_time_vs_height(pos = positions_examined)
 p
 ggsave("figs/sm/sfig11_prop_time_vs_height.png", plot = p)
 
 #### Plot: Abundance bias on last occurrences ####
 plot_lo_by_rate = function(case, pos, rates, title, plot_st = TRUE){
+  # case: "ra" or "pl", which simulation?
+  # pos: distance from shore (in km)
+  # rates: numeric vector, rate of foss. occ per Myr for each taxon
+  # title: title for plot
+  # plot_st: plot systems tracts?
   stopifnot(case %in% cases)
   stopifnot(pos %in% distances)
-  
+  # no of extinctions observed
   n_locc = 1000
+  
   y_axis_label = "Stratigraphic height [m]"
   legend_title = "Fossil abundance [#/Myr]"
   x_axis_label = "Fossil abundance [#/Myr]"
@@ -407,7 +421,7 @@ plot_lo_by_rate = function(case, pos, rates, title, plot_st = TRUE){
   
   for (j in seq_along(rates)){
     rate = rates[j]
-    t_ext = p3(10000, from = min_time(adm), to = max_time(adm), n = 1000)
+    t_ext = p3(1, from = min_time(adm), to = max_time(adm), n = n_locc)
     l_occ_h = rep(NA, length(t_ext))
     if (is.finite(rate)){
       for (i in seq_along(t_ext)){
@@ -415,7 +429,7 @@ plot_lo_by_rate = function(case, pos, rates, title, plot_st = TRUE){
         l_occ_h[i] = x["h"]
       }
     }
-    if (is.infinite(rate)){
+    if (is.infinite(rate)){ # special case: infinate rate -> directly transform last occ 
       l_occ_h = time_to_strat(t_ext, adm, destructive = FALSE)
     }
     df = rbind(df,
@@ -461,13 +475,14 @@ plot_lo_by_rate = function(case, pos, rates, title, plot_st = TRUE){
 
 p1 = plot_lo_by_rate(case = "pl",
                      pos = 10.5, 
-                     rates = c(2,5,10,22,46,100),
+                     rates = rates_used,
                      title = '')
 ggsave(filename = "figs/ms/fig5.png", plot = p1)
 
 plot_lo_by_rate_pl = function(){
-  rates = c(2,5,10,22,46,100)
-  pos = c(3,7.5, 10.5,12,18)
+  # plot signor-lipps effect for all positions in platform
+  rates = rates_used
+  pos = positions_examined
   case = "pl"
   pl_list = list()
   for (i in seq_along(pos)){
@@ -481,8 +496,9 @@ plot_lo_by_rate_pl = function(){
 }
 
 plot_lo_by_rate_ra = function(){
-  rates = c(2,5,10,22,46,100)
-  pos = c(3,7.5, 10.5,12,18)
+  # plot signor-lipps effect for all positions in ramp
+  rates = rates_used
+  pos = positions_examined
   case = "ra"
   pl_list = list()
   for (i in seq_along(pos)){
@@ -499,7 +515,7 @@ plot_lo_by_rate_pl()
 plot_lo_by_rate_ra()
 
 plot_lo_comparison = function(){
-  rates = c(3,10,30,100)
+  rates = rates_shortened
   p1 = plot_lo_by_rate(case = "pl",
                        pos = 3, 
                        rates = rates,
@@ -596,7 +612,7 @@ plot_gap_statistics = function(){
          y = "Value [Myr]",
          title = "Ramp",
          color = "Statistic") +
-    scale_color_discrete(labels = c("maximum", "median", "1st quantile", "3rd quantile")) +
+    scale_color_discrete(labels = c("Maximum", "Median", "1st Quartile", "3rd Quartile")) +
     theme(legend.position = c(0.9, 0.8))
   p2 = df  |>
     pivot_longer(cols = c("max", "quant_1", "quant_3", "median"),
@@ -609,7 +625,7 @@ plot_gap_statistics = function(){
          y = "Value [Myr]",
          title = "Platform",
          color = "Statistic") +
-    scale_color_discrete(labels = c("maximum", "median", "1st quantile", "3rd quantile")) +
+    scale_color_discrete(labels = c("Maximum", "Median", "1st Quartile", "3rd Quartile")) +
     theme(legend.position = c(0.9, 0.8))
   p3 = ggpubr::ggarrange(p1,
                          p2, 
@@ -626,7 +642,10 @@ ggsave(filename = "figs/sm/sfig10_gap_statistics.png",
        plot = p)
 #### Plot hiatus durations ####
 plot_hiat_duration = function(pos = seq(3, 21, by = 3)){
+  # pos: distances from shore
   stopifnot(all(pos %in% distances))
+  
+  dur_highlighted = c(0.001, 0.1, 1) # highlighted hiatus durations
   
   names = c("dist", "case", "hiat_duration")
   df = data.frame( matrix(nrow = 0, ncol = length(names)))
@@ -649,7 +668,7 @@ plot_hiat_duration = function(pos = seq(3, 21, by = 3)){
     ggplot(aes(x = hiat_duration, y = dist, fill = dist)) +
     geom_density_ridges(stat = "density_ridges", bandwidth = 0.08, scale = 1) +
     theme_ridges()+
-    geom_vline(xintercept = c(0.001, 0.1, 1),
+    geom_vline(xintercept = dur_highlighted,
                linetype = "dashed") +
     scale_x_log10() +
     ggtitle("Platform") + 
@@ -663,7 +682,7 @@ plot_hiat_duration = function(pos = seq(3, 21, by = 3)){
     ggplot(aes(x = hiat_duration, y = dist, fill = dist)) +
     geom_density_ridges(stat = "density_ridges",bandwidth = 0.08, scale = 1) +
     theme_ridges()+
-    geom_vline(xintercept = c(0.001, 0.1, 1),
+    geom_vline(xintercept = dur_highlighted,
                linetype = "dashed") +
     scale_x_log10() +
     ggtitle("Ramp") + 
@@ -680,7 +699,7 @@ plot_hiat_duration = function(pos = seq(3, 21, by = 3)){
                          labels = LETTERS[1:2])
   return(p3)
 }
-p = plot_hiat_duration(pos = c(3,7.5,10.5,12,18))
+p = plot_hiat_duration(pos = positions_examined)
 p
 ggsave("figs/sm/sfig7_hiatus_duration.png", p)
 
@@ -717,7 +736,7 @@ ggsave("figs/sm/sfig8_no_of_hiatuses.png", p)
 
 #### Plot section thickness ####
 plot_accumulated_sediment = function(){
-  
+  subsidence_total = 80 # total subsidence in m over the 4 Myr simulated
   names = c("dist", "case", "th")
   df = data.frame( matrix(nrow = 0, ncol = length(names)))
   names(df) = names
@@ -743,7 +762,7 @@ plot_accumulated_sediment = function(){
     scale_color_discrete(labels = c("Platform", "Ramp")) +
     theme(legend.position = c(0.1, 0.9)) +
     ylim(c(0,max(df$th))) +
-    geom_hline(yintercept = 80, linetype = "dashed")
+    geom_hline(yintercept = subsidence_total, linetype = "dashed")
   return(p)
 }
 p = plot_accumulated_sediment()
@@ -753,6 +772,10 @@ ggsave("figs/sm/sfig9_section_thickness.png", p)
 #### Extinctions by systems tract ####
 
 plot_ext_scenario_comparison = function(rate, dist, case, title){
+  # rate: rate of fossil occurrences per Myr for each taxon
+  # dist: distance from shore
+  # case: "ra" or "pl", which simulation?
+  # title: plot title
   stopifnot(dist %in% distances)
   stopifnot(case %in% cases)
   
@@ -823,6 +846,7 @@ plot_ext_scenario_comparison = function(rate, dist, case, title){
 
 
 plot_ext_scen_by_rate = function(rate, pos = c(3,10.5)){
+  # compare ext scenarios at different locations
   p1 = plot_ext_scenario_comparison(rate = rate, 
                                     dist = pos[1],
                                     case = "ra",
@@ -841,8 +865,14 @@ for (rate in c(1,3,10,30,100,300,1000,3000)){
 }
 
 plot_ext_comp = function(){
-  p1 = plot_ext_scenario_comparison(rate = 30, dist = 3, case = "pl", title = "Platform top")
-  p2 = plot_ext_scenario_comparison(rate = 30, dist = 10.5, case = "pl", title = "Platform prograding edge")
+  p1 = plot_ext_scenario_comparison(rate = 30,
+                                    dist = positions_examined[1],
+                                    case = "pl",
+                                    title = "Platform top")
+  p2 = plot_ext_scenario_comparison(rate = 30,
+                                    dist = positions_examined[3],
+                                    case = "pl",
+                                    title = "Platform prograding edge")
   p3 = ggpubr::ggarrange(p1,
                          p2,
                          ncol = 2, 
@@ -857,7 +887,7 @@ plot_ext_comp = function(){
 plot_ext_comp()
 
 plot_ext_scen_pl = function(){
-  pos = c(3, 7.5, 10.5, 12, 18)
+  pos = positions_examined
   case = "pl"
   rate = 33
   pl_list = list()
@@ -874,7 +904,7 @@ plot_ext_scen_pl = function(){
 plot_ext_scen_pl()
 
 plot_ext_scen_ra = function(){
-  pos = c(3, 7.5, 10.5, 12, 18)
+  pos = positions_examined
   case = "ra"
   rate = 33
   pl_list = list()
@@ -899,6 +929,12 @@ plot_spat_corr_ext = function(rate,
                               pos = seq(3, 21, by = 3),
                               plot_st = TRUE,
                               plot_txt = TRUE){
+  # rate: rate of foss. occ per Myr for each taxon
+  # case: simulation case
+  # ext_sce: extinction scenario
+  # pos: distances from shore
+  # plot_st: plot systems tracts?
+  # plot_txt: plot systems tracts annotations?
   stopifnot(all(pos %in% distances))
   stopifnot(case %in% cases)
   stopifnot(ext_sce %in% names(ext_scen))
@@ -983,7 +1019,7 @@ plot_spat_corr_ext = function(rate,
 p = plot_spat_corr_ext(rate = 10, 
                        case = "ra", 
                        ext_sce = "LST",
-                       pos = c(3,7.5,10.5,12,18))
+                       pos = positions_examined)
 p
 ggsave(filename = "figs/ms/fig8.png",
        plot = p)
@@ -992,7 +1028,7 @@ plot_spat_corr_summary_platform = function(){
   rate = 10
   case = "pl"
   ext_scenario_names = names(ext_scen)
-  pos = c(3, 7.5, 10.5, 12, 18)
+  pos = positions_examined
   plot_list = list()
   for (i in seq_along(ext_scenario_names)){
     plot_list[[i]] = plot_spat_corr_ext(rate = rate,
@@ -1013,7 +1049,7 @@ plot_spat_corr_summary_ramp = function(){
   rate = 10
   case = "ra"
   ext_scenario_names = names(ext_scen)
-  pos = c(3, 7.5, 10.5, 12, 18)
+  pos = positions_examined
   plot_list = list()
   for (i in seq_along(ext_scenario_names)){
     plot_list[[i]] = plot_spat_corr_ext(rate = rate,
@@ -1040,7 +1076,7 @@ for (case in cases){
       p = plot_spat_corr_ext(rate = rate, 
                              case = case, 
                              ext_sce = ext_scenario,
-                             pos = c(3,7.5,10.5,12,18))
+                             pos = positions_examined)
       p
       ggsave(filename = paste0("figs/spat_comp/spat_comp_",case, "_", rate, "_", ext_scenario,".png"))
     }
@@ -1051,7 +1087,7 @@ ggsave(filename = "figs/ms/fig7.png",
        plot = plot_spat_corr_ext(rate = 10,
                                  case = "pl",
                                  ext_sce = "LST",
-                                 pos = c(7.5, 10.5,12)))
+                                 pos = positions_examined[2:4]))
 
 
 
@@ -1142,9 +1178,12 @@ offset_range_t = t_ext - t_last_occ
 offset_range_h = h_ext - highest_occ
 
 #### Sedimentation rates ####
-plot_sed_rate = function(pos = c(3,7.5, 10.5, 12, 18),
+plot_sed_rate = function(pos = positions_examined,
                          subset = 100,
                          plot_st = TRUE){
+  # pos: distances from shore
+  # subset: integer, how many steps of the original time increment are combined. Effectively temporal resolutions
+  # plot_st: plot systems tracts?
   
   ext_factor = 1.1
   st_sep_time_mod = c(-0.2, st_sep_time, 4.2)
