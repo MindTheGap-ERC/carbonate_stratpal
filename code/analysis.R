@@ -193,7 +193,7 @@ plot_wd_time_domain = function(pos = seq(3, 21, by = 3), plot_st = TRUE){
 }
 p = plot_wd_time_domain(pos = c(3,7.5,10.5,12,18))
 p
-ggsave("figs/sm/sfig11.png", p)
+ggsave("figs/sm/sfig12.png", p)
 
 #### Plot: Water depth in the stratigraphic domain ####
 plot_wd_strat_domain = function(pos = seq(3, 21, by = 3)){
@@ -386,7 +386,7 @@ plot_prop_time_vs_height = function(pos = seq(3, 21, by = 3)){
 }
 p = plot_prop_time_vs_height(pos = c(3,7.5,10.5,12,18))
 p
-ggsave("figs/sm/sfig10_prop_time_vs_height.png", plot = p)
+ggsave("figs/sm/sfig11_prop_time_vs_height.png", plot = p)
 
 #### Plot: Abundance bias on last occurrences ####
 plot_lo_by_rate = function(case, pos, rates, title, plot_st = TRUE){
@@ -477,7 +477,7 @@ plot_lo_by_rate_pl = function(){
                                    title = pos[i])
   }
   p = ggarrange( plotlist = pl_list, nrow = 3, ncol = 2)
-  ggsave("figs/sm/sfig12_lo_in_platform.png", plot = p)
+  ggsave("figs/sm/sfig13_lo_in_platform.png", plot = p)
 }
 
 plot_lo_by_rate_ra = function(){
@@ -492,7 +492,7 @@ plot_lo_by_rate_ra = function(){
                                    title = pos[i])
   }
   p = ggarrange( plotlist = pl_list, nrow = 3, ncol = 2)
-  ggsave("figs/sm/sfig13_lo_in_ramp.png", plot = p)
+  ggsave("figs/sm/sfig14_lo_in_ramp.png", plot = p)
 }
 
 plot_lo_by_rate_pl()
@@ -551,7 +551,7 @@ plot_completeness = function(){
 }
 p = plot_completeness()
 p
-ggsave(filename = "figs/sm/sfig5_completeness.png",
+ggsave(filename = "figs/sm/sfig6_completeness.png",
        plot = p)
 
 #### Plot gap statistics ####
@@ -622,7 +622,7 @@ plot_gap_statistics = function(){
 }
 p = plot_gap_statistics()
 p
-ggsave(filename = "figs/sm/sfig9_gap_statistics.png",
+ggsave(filename = "figs/sm/sfig10_gap_statistics.png",
        plot = p)
 #### Plot hiatus durations ####
 plot_hiat_duration = function(pos = seq(3, 21, by = 3)){
@@ -682,7 +682,7 @@ plot_hiat_duration = function(pos = seq(3, 21, by = 3)){
 }
 p = plot_hiat_duration(pos = c(3,7.5,10.5,12,18))
 p
-ggsave("figs/sm/sfig6_hiatus_duration.png", p)
+ggsave("figs/sm/sfig7_hiatus_duration.png", p)
 
 #### Plot number of hiatuses ####
 plot_no_of_hiat = function(){
@@ -713,7 +713,7 @@ plot_no_of_hiat = function(){
 }
 p = plot_no_of_hiat()
 p
-ggsave("figs/sm/sfig7_no_of_hiatuses.png", p)
+ggsave("figs/sm/sfig8_no_of_hiatuses.png", p)
 
 #### Plot section thickness ####
 plot_accumulated_sediment = function(){
@@ -748,7 +748,7 @@ plot_accumulated_sediment = function(){
 }
 p = plot_accumulated_sediment()
 p
-ggsave("figs/sm/sfig8_section_thickness.png", p)
+ggsave("figs/sm/sfig9_section_thickness.png", p)
 
 #### Extinctions by systems tract ####
 
@@ -869,7 +869,7 @@ plot_ext_scen_pl = function(){
   }
   
   p = ggarrange(plotlist = pl_list, nrow = 3, ncol = 2)
-  ggsave(filename = "figs/sm/sfig14_ext_scen_platform.png")
+  ggsave(filename = "figs/sm/sfig15_ext_scen_platform.png")
 }
 plot_ext_scen_pl()
 
@@ -886,7 +886,7 @@ plot_ext_scen_ra = function(){
   }
   
   p = ggarrange(plotlist = pl_list, nrow = 3, ncol = 2)
-  ggsave(filename = "figs/sm/sfig15_ext_scen_ramp.png")
+  ggsave(filename = "figs/sm/sfig16_ext_scen_ramp.png")
 }
 plot_ext_scen_ra()
 
@@ -1003,7 +1003,7 @@ plot_spat_corr_summary_platform = function(){
   p = ggarrange(plotlist = plot_list,
                 ncol = 2,
                 nrow = 3)
-  ggsave(filename = "figs/sm/sfig16_spat_corr_platform.png",
+  ggsave(filename = "figs/sm/sfig17_spat_corr_platform.png",
          plot = p)
   
 }
@@ -1024,7 +1024,7 @@ plot_spat_corr_summary_ramp = function(){
   p = ggarrange(plotlist = plot_list,
                 ncol = 2,
                 nrow = 3)
-  ggsave(filename = "figs/sm/sfig17_spat_corr_ramp.png",
+  ggsave(filename = "figs/sm/sfig18_spat_corr_ramp.png",
          plot = p)
   
 }
@@ -1238,5 +1238,5 @@ plot_sed_rate = function(pos = c(3,7.5, 10.5, 12, 18),
 }
 p = plot_sed_rate()
 p
-ggsave(filename = "figs/sm/00_sedrate.png",
+ggsave(filename = "figs/sm/sfig5_sedrate.png",
        plot = p)
