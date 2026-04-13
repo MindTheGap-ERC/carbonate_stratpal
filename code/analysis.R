@@ -328,14 +328,15 @@ plot_lo_by_rate = function(case, pos, rates, title, plot_st = TRUE){
   return(p1)
 }
 
-plot_fig5 = function(){
+plot_fig5 = function(seed){
+  set.seed(seed)
   p = plot_lo_by_rate(case = "pl",
                       pos = positions_examined[3], 
                       rates = rates_used,
                       title = '')
   ggsave(filename = "figs/ms/fig5.png", plot = p)
 }
-plot_fig5()
+plot_fig5(seed = seed_main + 5)
 
 #### Figure 6: Extinctions by systems tract ####
 plot_ext_scenario_comparison = function(rate, dist, case, title){
@@ -411,7 +412,8 @@ plot_ext_scenario_comparison = function(rate, dist, case, title){
   return(p)
 }
 
-plot_fig6 = function(){
+plot_fig6 = function(seed){
+  set.seed(seed)
   rate = 30 # last occ. per Myr for each taxon
   p1 = plot_ext_scenario_comparison(rate = rate,
                                     dist = positions_examined[1],
@@ -431,7 +433,7 @@ plot_fig6 = function(){
   ggsave(filename = "figs/ms/fig6.png",
          plot = p3)
 }
-plot_fig6()
+plot_fig6(seed = seed_main + 6)
 
 #### Figure 7 and Figure 8: Spatial correlation of extinction scenarios ####
 plot_spat_corr_ext = function(rate, 
@@ -527,7 +529,8 @@ plot_spat_corr_ext = function(rate,
   return(p)
 }
 
-plot_fig7 = function(){
+plot_fig7 = function(seed){
+  set.seed(seed)
   rate = 10
   ggsave(filename = "figs/ms/fig7.png",
          plot = plot_spat_corr_ext(rate = rate,
@@ -535,9 +538,10 @@ plot_fig7 = function(){
                                    ext_sce = "LST",
                                    pos = positions_examined[2:4]))
 }
-plot_fig7()
+plot_fig7(seed = seed_main + 7)
 
-plot_fig8 = function(){
+plot_fig8 = function(seed){
+  set.seed(seed)
   rate = 10
   p = plot_spat_corr_ext(rate = rate, 
                          case = "ra", 
@@ -546,7 +550,7 @@ plot_fig8 = function(){
   ggsave(filename = "figs/ms/fig8.png",
          plot = p)
 }
-plot_fig8()
+plot_fig8(seed = seed_main + 8)
 
 #### Supp Figure 5: Sedimentation rates ####
 plot_sed_rate = function(pos = positions_examined,
@@ -1068,8 +1072,9 @@ plot_sfig12()
 
 #### Supp Figure 13 and 14: Signor lipps effect in ramp and platform ####
 
-plot_sfig13 = function(){
+plot_sfig13 = function(seed){
   # plot signor-lipps effect for all positions in platform
+  set.seed(seed)
   rates = rates_used
   pos = positions_examined
   case = "pl"
@@ -1083,10 +1088,11 @@ plot_sfig13 = function(){
   p = ggarrange( plotlist = pl_list, nrow = 3, ncol = 2)
   ggsave("figs/sm/sfig13_lo_in_platform.png", plot = p)
 }
-plot_sfig13()
+plot_sfig13(seed = seed_supp + 13)
 
-plot_sfig14 = function(){
+plot_sfig14 = function(seed){
   # plot signor-lipps effect for all positions in ramp
+  set.seed(seed)
   rates = rates_used
   pos = positions_examined
   case = "ra"
@@ -1100,10 +1106,11 @@ plot_sfig14 = function(){
   p = ggarrange( plotlist = pl_list, nrow = 3, ncol = 2)
   ggsave("figs/sm/sfig14_lo_in_ramp.png", plot = p)
 }
-plot_sfig14()
+plot_sfig14(seed = seed_supp + 14)
 
 #### Supp Figures 15 and 16: Extinction scenarios ####
-plot_sfig15 = function(){
+plot_sfig15 = function(seed){
+  set.seed(seed)
   pos = positions_examined
   case = "pl"
   rate = 33
@@ -1118,9 +1125,10 @@ plot_sfig15 = function(){
   p = ggarrange(plotlist = pl_list, nrow = 3, ncol = 2)
   ggsave(filename = "figs/sm/sfig15_ext_scen_platform.png")
 }
-plot_sfig15()
+plot_sfig15(seed = seed_supp + 15)
 
-plot_sfig16 = function(){
+plot_sfig16 = function(seed){
+  set.seed(seed)
   pos = positions_examined
   case = "ra"
   rate = 33
@@ -1136,11 +1144,12 @@ plot_sfig16 = function(){
   ggsave(filename = "figs/sm/sfig16_ext_scen_ramp.png")
 }
 
-plot_sfig16()
+plot_sfig16(seed = seed_supp + 16)
 
 #### Supp Figures 17 and 18: Spatial correlations of extinction scenarios ####
 
-plot_sfig17 = function(){
+plot_sfig17 = function(seed){
+  set.seed(seed)
   rate = 10
   case = "pl"
   ext_scenario_names = names(ext_scen)
@@ -1159,9 +1168,10 @@ plot_sfig17 = function(){
          plot = p)
   
 }
-plot_sfig17()
+plot_sfig17(seed = seed_supp + 17)
 
-plot_sfig18 = function(){
+plot_sfig18 = function(seed){
+  set.seed(seed)
   rate = 10
   case = "ra"
   ext_scenario_names = names(ext_scen)
@@ -1181,12 +1191,13 @@ plot_sfig18 = function(){
   
 }
 
-plot_sfig18()
+plot_sfig18(seed = seed_supp + 18)
 
 
 
 #### Parameter scan: extinction scenario by rate ####
 
+set.seed(seed_supp + 19)
 plot_ext_scen_by_rate = function(rate, pos = c(3,10.5)){
   # compare ext scenarios at different locations
   p1 = plot_ext_scenario_comparison(rate = rate, 
@@ -1208,6 +1219,7 @@ for (rate in c(1,3,10,30,100,300,1000,3000)){
 
 
 #### UNUSED FIGURE: comparison of extinction scenarios ####
+
 plot_lo_comparison = function(){
   rates = rates_shortened
   p1 = plot_lo_by_rate(case = "pl",
@@ -1222,19 +1234,19 @@ plot_lo_comparison = function(){
   return(p3)
 }
 
-plot_figUNKNOWN = function(){
+plot_figUNKNOWN = function(seed){
+  set.seed(seed)
   p = plot_lo_comparison()
   ggsave("figs/ms_unknown_fig_no.png", p)
 }
-plot_figUNKNOWN()
+plot_figUNKNOWN(seed = seed_supp + 20)
 
 #### Figures: spatial comparison of extinction scenarios ####
+set.seed(seed_supp + 21)
 if (!dir.exists("figs/spat_comp/")){dir.create("figs/spat_comp/", recursive = TRUE)}
 for (case in cases){
   for (ext_scenario in names(ext_scen)){
     for (rate in c(5,10,30)){
-      print(case)
-      
       p = plot_spat_corr_ext(rate = rate, 
                              case = case, 
                              ext_sce = ext_scenario,

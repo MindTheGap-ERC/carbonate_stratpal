@@ -91,3 +91,8 @@ positions_examined = c(3,7.5,10.5,12,18)
 #### Rates of foss occ ####
 rates_used = c(2,5,10,22,46,100)
 rates_shortened = c(3,10,30,100)
+
+#### Random seeds ####
+# taken from random.org
+seed_main =  622834 # for figs in ms
+seed_supp =  732759 # for figs in supp material
