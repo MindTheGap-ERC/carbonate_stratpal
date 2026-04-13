@@ -62,27 +62,25 @@ this will download and precompile all dependencies. It will take a while when yo
 
 4. Exit the package mode by pressing the backspace button. This will bring you back to the normal Julia prompt.
 
-5. Run a script using the command `include`, for example:
+5. Run the simulations via the command
 
 ```{julia}
-include("src/run.jl")
+include("code/run_all.jl")
 ```
-to generate the data, then load the plotting script
+
+6. Extract data to .csv for use in R via
 
 ```{julia}
-include("src/plot.jl")
+include("code/extract_data.jl")
 ```
 
-and call it for the file you want to plot
-```julia
-Plot_Profile.plot("data/", "carbonate_stratpal_1.h5")
-```
+7. Plot the figures by running
 
 ```{julia}
-include("src/extract_data.jl")
+include("code/pub_figs.jl")
 ```
 
-to extract water depth & age-depth models as .csv files.
+
 
 After generating the data, you can run the analysis in R using
 
