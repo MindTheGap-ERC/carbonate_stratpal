@@ -91,8 +91,21 @@ positions_examined = c(3,7.5,10.5,12,18)
 #### Rates of foss occ ####
 rates_used = c(2,5,10,22,46,100)
 rates_shortened = c(3,10,30,100)
+spat_comp_rate = 30 # rate used for the spatial comparison
+systract_com_rate = 10 # sampling rate used for comparison of systems tracts
+
+# no of extinctions for conditioning
+n_ext = 1000 
 
 #### Random seeds ####
 # taken from random.org
 seed_main =  622834 # for figs in ms
 seed_supp =  732759 # for figs in supp material
+
+##### Plotting constants ####
+width_2_col_cm = 18
+width_1_col_cm = 9
+st_text_size = 2.5 # text size of system tract labels (passed to geom_text)
+
+## labels ##
+label_height_absolute = "Stratigraphic Height [m]"
