@@ -160,7 +160,7 @@ plot_wd_strat_domain = function(pos = seq(3, 21, by = 3)){
   res_distances = pos |> paste("km")
   title_ramp = "Ramp"
   title_platform = "Platform"
-  wd_label = "Water Depth [m]"
+  wd_label = label_wd
   height_label = "Relative Height [-]"
   legend_title = "Distance from Shore"
   
@@ -645,7 +645,7 @@ plot_sed_rate = function(pos = positions_examined,
     filter(case == "pl") |>
     ggplot(aes(x = t, y = s, color = pos)) +
     geom_step(direction = "mid") +
-    labs(x = "Elapsed Model Time [Myr]",
+    labs(x = label_time_emt,
          y = "Sedimentation Rate [m/Myr]",
          title = "Platform",
          color = "Distance from Shore") +
@@ -674,7 +674,7 @@ plot_sed_rate = function(pos = positions_examined,
     filter(case == "ra") |>
     ggplot(aes(x = t, y = s, color = pos)) +
     geom_step(direction = "mid") +
-    labs(x = "Elapsed model time [Myr]",
+    labs(x = label_time_emt,
          y = "Sedimentation rate [m/Myr]",
          title = "Ramp",
          color = "Distance") +
@@ -731,7 +731,7 @@ plot_completeness = function(){
   for (case in names(adm_comb)){
     for (i in seq_along(distances)){
       adm = adm_comb[[case]][[i]]
-      comp = get_completeness(adm)
+      comp = get_completeness(adm) * 100
       df1 = data.frame(dist = distances[i],
                        case = case,
                        comp = comp)
@@ -742,9 +742,9 @@ plot_completeness = function(){
   p = df |>
     ggplot(aes(x = dist, y = comp, color = case)) + 
     geom_line(linewidth = 3) +
-    ylim(c(0,1)) +
+    ylim(c(0,100)) +
     labs(x = "Distance from Shore [km]",
-         y = "Completeness [-]",
+         y = "Completeness [%]",
          title = "Stratigraphic Completeness",
          color = "Geometry") +
     scale_color_discrete(labels = c("Platform", "Ramp")) +
@@ -1081,7 +1081,7 @@ plot_wd_time_domain = function(pos, plot_st = TRUE){
   title_platform = "Platform"
   title_ramp = "Ramp"
   x_lab_title = "Elapsed Model Time [Myr]"
-  y_lab_title = "Water depth [m]"
+  y_lab_title = label_wd
   legend_label = "Distance from Shore"
   pos_interest = paste(pos, "km")
   

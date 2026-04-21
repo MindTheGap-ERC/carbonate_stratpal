@@ -109,3 +109,5 @@ st_text_size = 2.5 # text size of system tract labels (passed to geom_text)
 
 ## labels ##
 label_height_absolute = "Stratigraphic Height [m]"
+label_time_emt = "Elapsed Model Time [Myr]"
+label_wd = "Water Depth [m]"
