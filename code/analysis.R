@@ -288,7 +288,7 @@ plot_lo_by_rate = function(case, pos, rates, title, plot_st = TRUE){
   stopifnot(case %in% cases)
   stopifnot(pos %in% distances)
   # no of extinctions observed
-  n_locc = n_locc
+  n_locc = n_ext
   
   y_axis_label = "Stratigraphic Height [m]"
   legend_title = "Sampling Rate [Fossils/Myr]"
@@ -303,7 +303,7 @@ plot_lo_by_rate = function(case, pos, rates, title, plot_st = TRUE){
   
   for (j in seq_along(rates)){
     rate = rates[j]
-    t_ext = p3(1, from = min_time(adm), to = max_time(adm), n = n_locc)
+    t_ext = p3(1, from = min_time(adm), to = max_time(adm), n = n_ext)
     l_occ_h = rep(NA, length(t_ext))
     if (is.finite(rate)){
       for (i in seq_along(t_ext)){
@@ -379,7 +379,7 @@ plot_ext_scenario_comparison = function(rate, dist, case, title){
   stopifnot(dist %in% distances)
   stopifnot(case %in% cases)
   
-  n_locc = n_locc
+  n_locc = n_ext
   
   names = c("ext_scen", "case", "dist", "l_occ_h")
   df = data.frame(matrix(nrow = 0, ncol = length(names)))
@@ -492,7 +492,7 @@ plot_spat_corr_ext = function(rate,
   stopifnot(ext_sce %in% names(ext_scen))
   ext_s = ext_scen[[ext_sce]]
   
-  n_locc = n_locc
+  n_locc = n_ext
   
   names = c("dist", "l_occ_h")
   df = data.frame(matrix(nrow = 0, ncol = length(names)))
@@ -1173,9 +1173,71 @@ plot_sfig12 = function(){
 plot_sfig12()
 
 
-#### Supp Figure 13 and 14: Signor lipps effect in ramp and platform ####
+#### Supp Figure 13: Extinction scenarios ####
+plot_sfig13_extinction_scenarios_time = function(){
+  y_limit = 1700
+  names = c("t", "rate", "ext_scen")
+  df = data.frame(matrix(nrow = 0, ncol = length(names)))
+  for (ext_scenario in names(ext_scen)){
+    f = ext_scen[[ext_scenario]]
+    resc = ext_rate_rescaler_ext
+    if (ext_scenario == "constant"){resc = ext_rate_rescaler_const}
+    df2 = data.frame(t = t,
+                     rate = f(t) * resc,
+                     ext_scen = rep(ext_scenario, length(t)))
+    df = rbind(df, df2)
+  }
+  df$ext_scen = factor(df$ext_scen)
+  
+  st_sep_time_mod = c(-0.2, st_sep_time, 4.2)
+  df_text = data.frame(time = 0.5* (head(st_sep_time_mod, -1) + tail(st_sep_time_mod, -1)),
+                       height = rep(y_limit, length(st_labels_en)),
+                       label = st_labels_en)
+  plot_list = list()
+  titles = c("constant" = "Constant Extinction Rate",
+             "TST" = "Extinction in TST",
+             "HST" = "Extinction in HST",
+             "RST" = "Extinction in RST",
+             "LST" = "Extinction in LST")
+  for (i in seq_along(ext_scen)){
+    case = names(ext_scen)[i]
+    p = df |>
+      filter(ext_scen == case) |>
+      ggplot(aes(x = t, y = rate, color = ext_scen)) +
+      geom_line(linewidth = 2) +
+      labs(x = label_time_emt,
+           y = label_ext_rate,
+           title = titles[case]) +
+      ylim( c(0,y_limit)) +
+      geom_vline(xintercept = st_sep_time,
+                 linetype = "dashed") +
+      theme(legend.position = "none") +
+      geom_text(data = df_text,
+                aes(x = time,
+                    y = height,
+                    label = label),
+                inherit.aes = FALSE,
+                size = st_text_size)
+    plot_list[[i]] = p
+  }
+  p = ggarrange(plotlist = plot_list,
+                nrow = 3,
+                ncol = 2,
+                labels = LETTERS[1:5])
+  ggsave(filename = "figs/sm/sfig13_ext_rates_time.png",
+         plot = p,
+         width = width_2_col_cm,
+         height = 20,
+         units = "cm",
+         bg = "white")
+}
+plot_sfig13_extinction_scenarios_time()
 
-plot_sfig13 = function(seed){
+
+
+#### Supp Figure 14 and 15: Signor lipps effect in ramp and platform ####
+
+plot_sfig14 = function(seed){
   # plot signor-lipps effect for all positions in platform
   set.seed(seed)
   rates = rates_used
@@ -1190,16 +1252,16 @@ plot_sfig13 = function(seed){
   }
   p = ggarrange( plotlist = pl_list, nrow = 3, ncol = 2,
                  labels = LETTERS[1:5])
-  ggsave(filename = "figs/sm/sfig13_lo_in_platform.png",
+  ggsave(filename = "figs/sm/sfig14_lo_in_platform.png",
          plot = p,
          width = width_2_col_cm,
          height = 20,
          units = "cm",
          bg = "white")
 }
-plot_sfig13(seed = seed_supp + 13)
+plot_sfig14(seed = seed_supp + 13)
 
-plot_sfig14 = function(seed){
+plot_sfig15= function(seed){
   # plot signor-lipps effect for all positions in ramp
   set.seed(seed)
   rates = rates_used
@@ -1214,17 +1276,17 @@ plot_sfig14 = function(seed){
   }
   p = ggarrange( plotlist = pl_list, nrow = 3, ncol = 2,
                  labels = LETTERS[1:5])
-  ggsave(filename = "figs/sm/sfig14_lo_in_ramp.png", 
+  ggsave(filename = "figs/sm/sfig15_lo_in_ramp.png", 
          plot = p,
          width = width_2_col_cm,
          height = 20,
          units = "cm",
          bg = "white")
 }
-plot_sfig14(seed = seed_supp + 14)
+plot_sfig15(seed = seed_supp + 14)
 
-#### Supp Figures 15 and 16: Extinction scenarios ####
-plot_sfig15 = function(seed){
+#### Supp Figures 16 and 17: Extinction scenarios ####
+plot_sfig16 = function(seed){
   set.seed(seed)
   pos = positions_examined
   case = "pl"
@@ -1241,16 +1303,16 @@ plot_sfig15 = function(seed){
   
   p = ggarrange(plotlist = pl_list, nrow = 3, ncol = 2,
                 labels = LETTERS[1:5])
-  ggsave(filename = "figs/sm/sfig15_ext_scen_platform.png",
+  ggsave(filename = "figs/sm/sfig16_ext_scen_platform.png",
          plot = p,
          width = width_2_col_cm,
          height = 20,
          units = "cm",
          bg = "white")
 }
-plot_sfig15(seed = seed_supp + 15)
+plot_sfig16(seed = seed_supp + 15)
 
-plot_sfig16 = function(seed){
+plot_sfig17 = function(seed){
   set.seed(seed)
   pos = positions_examined
   case = "ra"
@@ -1267,7 +1329,7 @@ plot_sfig16 = function(seed){
   
   p = ggarrange(plotlist = pl_list, nrow = 3, ncol = 2,
                 labels = LETTERS[1:5])
-  ggsave(filename = "figs/sm/sfig16_ext_scen_ramp.png",
+  ggsave(filename = "figs/sm/sfig17_ext_scen_ramp.png",
          plot = p,
          width = width_2_col_cm,
          height = 20,
@@ -1275,11 +1337,11 @@ plot_sfig16 = function(seed){
          bg = "white")
 }
 
-plot_sfig16(seed = seed_supp + 16)
+plot_sfig17(seed = seed_supp + 16)
 
-#### Supp Figures 17 and 18: Spatial correlations of extinction scenarios ####
+#### Supp Figures 18 and 19: Spatial correlations of extinction scenarios ####
 
-plot_sfig17 = function(seed){
+plot_sfig18 = function(seed){
   set.seed(seed)
   rate = spat_comp_rate
   case = "pl"
@@ -1302,7 +1364,7 @@ plot_sfig17 = function(seed){
                 ncol = 2,
                 nrow = 3,
                 labels = LETTERS[1:5])
-  ggsave(filename = "figs/sm/sfig17_spat_corr_platform.png",
+  ggsave(filename = "figs/sm/sfig18_spat_corr_platform.png",
          plot = p,
          width = width_2_col_cm,
          height = 20,
@@ -1310,9 +1372,9 @@ plot_sfig17 = function(seed){
          bg = "white")
   
 }
-plot_sfig17(seed = seed_supp + 17)
+plot_sfig18(seed = seed_supp + 17)
 
-plot_sfig18 = function(seed){
+plot_sfig19 = function(seed){
   set.seed(seed)
   rate = spat_comp_rate
   case = "ra"
@@ -1335,7 +1397,7 @@ plot_sfig18 = function(seed){
                 ncol = 2,
                 nrow = 3,
                 labels = LETTERS[1:5])
-  ggsave(filename = "figs/sm/sfig18_spat_corr_ramp.png",
+  ggsave(filename = "figs/sm/sfig19_spat_corr_ramp.png",
          plot = p,
          width = width_2_col_cm,
          height = 20,
@@ -1344,7 +1406,7 @@ plot_sfig18 = function(seed){
   
 }
 
-plot_sfig18(seed = seed_supp + 18)
+plot_sfig19(seed = seed_supp + 18)
 
 
 
@@ -1409,6 +1471,4 @@ for (case in cases){
     }
   }
 }
-
-
 

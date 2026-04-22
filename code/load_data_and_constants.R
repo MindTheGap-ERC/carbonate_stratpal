@@ -96,7 +96,8 @@ systract_com_rate = 10 # sampling rate used for comparison of systems tracts
 
 # no of extinctions for conditioning
 n_ext = 1000 
-
+ext_rate_rescaler_ext = n_ext / 16 # rescaling factor to arrive at mean 1000 ext over 4 Myr
+ext_rate_rescaler_const = 250
 #### Random seeds ####
 # taken from random.org
 seed_main =  622834 # for figs in ms
@@ -111,3 +112,4 @@ st_text_size = 2.5 # text size of system tract labels (passed to geom_text)
 label_height_absolute = "Stratigraphic Height [m]"
 label_time_emt = "Elapsed Model Time [Myr]"
 label_wd = "Water Depth [m]"
+label_ext_rate = "Extinction Rate [#/Myr]"
