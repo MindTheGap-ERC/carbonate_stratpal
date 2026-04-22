@@ -38,8 +38,16 @@ function plot_preruns()
     fig = summary_plot("data/$(TAG2)_prerun.h5")
     save("figs/sm/sfig2_$(TAG2)_prerun_summary.png", fig)   
 end
+
+function plot_transition_runs()
+    fig = summary_plot("data/ramp_to_platform.h5")
+    save("figs/sm/sfig20_ramp_to_platform_summary.png", fig)
+    fig = summary_plot("data/platform_to_ramp.h5")
+    save("figs/sm/sfig21_platform_to_ramp.png", fig) 
+end
 end
 
 Plot_Profile.plot_platform()
 Plot_Profile.plot_ramp()
 Plot_Profile.plot_preruns()
+Plot_Profile.plot_transition_runs()
