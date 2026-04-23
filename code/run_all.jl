@@ -1,4 +1,6 @@
 include("ramp.jl")
 include("platform.jl")
 include("extract_data.jl")
+include("ramp_to_platform.jl")
+include("platform_to_ramp.jl")
 include("plot.jl")
