@@ -9,7 +9,7 @@ using CarboKitten.Denudation: Dissolution, EmpiricalDenudation, PhysicalErosion
 
 using CarboKitten.Models: WithDenudation as WDn
 
-Random.seed!(255827)
+Random.seed!(288772)
 
 const PATH = "data"
 const TAG = "platform_to_ramp"

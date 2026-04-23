@@ -41,9 +41,9 @@ end
 
 function plot_transition_runs()
     fig = summary_plot("data/ramp_to_platform.h5")
-    save("figs/sm/sfig20_ramp_to_platform_summary.png", fig)
+    save("figs/sm/sfig21_ramp_to_platform_summary.png", fig)
     fig = summary_plot("data/platform_to_ramp.h5")
-    save("figs/sm/sfig21_platform_to_ramp.png", fig) 
+    save("figs/sm/sfig20_platform_to_ramp.png", fig) 
 end
 end
 
