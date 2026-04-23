@@ -6,8 +6,7 @@ DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 HDF5 = "f67ccb44-e63f-5c2f-98bd-6dc0ccc4ba2f"
 ImageMagick = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
 Interpolations = "a98d9a8b-a2ab-59e6-89dd-64a1c18fca59"
-OpenCV = "f878e3a2-a245-4720-8660-60795d644f2a"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 
 [sources]
-CarboKitten = {rev = "7b4cbda8e66a4d27a7a6785e72e7d06896026eef", url = "https://github.com/MindTheGap-ERC/CarboKitten.jl"}
+CarboKitten = {rev = "893a9087ea3c6366dec5b666e3ea9f7228cff5df", url = "https://github.com/MindTheGap-ERC/CarboKitten.jl"}
