@@ -34,16 +34,16 @@ end
 
 function plot_preruns()
     fig = summary_plot("data/$(TAG1)_prerun.h5")
-    save("figs/ms/sfig1_$(TAG1)_prerun_summary.png", fig)
+    save("figs/sm/sfig1_$(TAG1)_prerun_summary.png", fig)
     fig = summary_plot("data/$(TAG2)_prerun.h5")
-    save("figs/ms/sfig2_$(TAG2)_prerun_summary.png", fig)   
+    save("figs/sm/sfig2_$(TAG2)_prerun_summary.png", fig)   
 end
 
 function plot_transition_runs()
     fig = summary_plot("data/ramp_to_platform.h5")
-    save("figs/ms/sfig21_ramp_to_platform_summary.png", fig)
+    save("figs/sm/sfig21_ramp_to_platform_summary.png", fig)
     fig = summary_plot("data/platform_to_ramp.h5")
-    save("figs/ms/sfig20_platform_to_ramp.png", fig) 
+    save("figs/sm/sfig20_platform_to_ramp.png", fig) 
 end
 end
 
