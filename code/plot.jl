@@ -1,5 +1,6 @@
 module Plot
 import CairoMakie
+using CarboKitten.Algorithms: skeleton
 import CarboKitten.Visualization: summary_plot, sediment_profile, sediment_profile!, production_curve!
 using CarboKitten.Export: Header, Data, DataSlice, read_header, read_volume, read_slice, group_datasets
 using CarboKitten.Utility: in_units_of
@@ -26,6 +27,12 @@ const Amount = typeof(1.0u"m")
 const Length = typeof(1.0u"m")
 const Time = typeof(1.0u"Myr")
 
+const time_axis_label = "Elapsed model time [Myr]"
+const water_depth_label = "Water depth [m]"
+const production_label = "Production [m/Myr]"
+const distance_label = "Distance from shore [km]"
+const depth_label = "Depth [m]"
+
 TAG1 = "platform"
 TAG2 = "ramp"
 
@@ -48,6 +55,24 @@ end
 function profile_plot!(f::F, ax::Axis, header::Header, data::DataSlice; mesh_args...) where {F}
     color = f.(eachslice(data.deposition, dims=(2, 3)))
     profile_plot!(ax, header, data; color=color, mesh_args...)
+end
+
+function plot_unconformities(ax::Axis, header::Header, data::DataSlice, minwidth::Int; kwargs...)
+    n_facies, n_x, n_t = size(data.production)
+    total_subsidence = (header.axes.t[end] - header.axes.t[1]) * header.subsidence_rate
+    initial_topography = header.initial_topography[data.slice...]
+    sc = stratigraphic_column(data)
+    h = repeat(initial_topography .- total_subsidence, 1, n_t+1)
+    @views h[:, 2:end] .+= cumsum(sum(sc, dims=1)[1,:,:], dims=2)
+    x = header.axes.x |> in_units_of(u"km")
+    combined_acc = dropdims(sum(sc, dims = 1), dims = 1) |> in_units_of(u"m")
+    wi = data.write_interval
+    hiatus = skeleton(combined_acc .< 0.000001, minwidth=minwidth)
+
+    if !isempty(hiatus[1])
+        verts = [(x[pt[1]], h[pt...] |> in_units_of(u"m")) for pt in hiatus[1]]
+        linesegments!(ax, vec(permutedims(verts[hiatus[2]])); kwargs...)
+    end
 end
 
 function profile_plot!(ax::Axis, header::Header, data::DataSlice; color::AbstractArray, mesh_args...)
@@ -90,7 +115,8 @@ end
 function sediment_profile!(ax::Axis, header::Header, data::DataSlice;
                            show_unconformities::Union{Nothing,Bool,Int} = true,
                            show_coeval_lines::Union{Bool,Tuple{Int, Int},Vector{Int},Vector{Time}} = true,
-                           show_sealevel::Bool = true)
+                           show_sealevel::Bool = true,
+                           title = "Sediment profile")
     x = header.axes.x |> in_units_of(u"km")
     t = header.axes.t |> in_units_of(u"Myr")
 
@@ -108,11 +134,17 @@ function sediment_profile!(ax::Axis, header::Header, data::DataSlice;
     plot = profile_plot!(argmax, ax, header, data; alpha=1.0,
         colormap=cgrad(Makie.wong_colors()[1:n_facies], n_facies, categorical=true))
 
-    minwidth = show_unconformities
-    #plot_unconformities(ax, header, data, h, minwidth; label = "unconformities",
-    #                    color=:white, linestyle=:dash, linewidth=1)
+    minwidth = 10
+    if show_unconformities
+        plot_unconformities(ax, header, data,minwidth; label = "unconformities",
+                        color=:white, linestyle=:dash, linewidth=1)
+    end
 
-    ax.title = "Sediment profile"
+    if show_coeval_lines
+        coeval_lines!(ax, header, data, age_depth_model(header, data), collect(st_div); color=:black, linestyle=:dash)
+    end
+
+    ax.title = title
     return plot
 end
 
@@ -242,7 +274,7 @@ plot_supp_fig = function(tag, name)
     ax_sed = Axis(fig[1,1])
     ax_wheel = Axis(fig[2,1])
     linkxaxes!(ax_sed, ax_wheel)
-    sediment_profile!(ax_sed, header, data, show_coeval_lines=false)
+    sediment_profile!(ax_sed, header, data, show_coeval_lines=false, show_unconformities = true)
     coeval_lines!(ax_sed, header, data, adm, collect(st_div); color=:black, linestyle=:dash)
     for loc in sampl_loc
         lines!(ax_sed,fill(loc, 2) |> in_units_of(u"km"), [-180, 0],color=:black, linestyle=:solid)
@@ -286,49 +318,72 @@ plot_supp_fig = function(tag, name)
     end
 
     linkyaxes!(ax_wheel, ax_sl)
+    Label(fig[1,1, TopLeft()], "A")
+    Label(fig[2,1, TopLeft()], "B")
+    Label(fig[2,2, TopLeft()], "C")
     save(name, fig)
 end
 
-plot_sfig3() = plot_supp_fig( TAG1, "figs/sm/sfig3_platfrom_detail.png")
+plot_sfig3() = plot_supp_fig( TAG1, "figs/sm/sfig3_platform_detail.png")
 plot_sfig4() = plot_supp_fig(TAG2, "figs/sm/sfig4_ramp_detail.png")
 
 
 plot_fig1 = function()
+    subfig_label_fontsize = 24
     fig = Figure(size=(1200, 1000), backgroundcolor=:gray80)
 
     header, data = read_slice("data/$(TAG1).h5", :profile)
     ax = Axis(fig[1:2, 1:2])
-    sediment_profile!(ax, header, data, show_unconformities = true, show_coeval_lines = false)
-    #coeval_lines!(ax, header, data, [0.25:0.5:3.75;]u"Myr", linewidth = 3, color = :black, linestyle = :solid)
+    sediment_profile!(ax, header, data, show_unconformities = true, show_coeval_lines = false, title = "Platform profile")
+    coeval_lines!(ax, header, data, age_depth_model(header, data), [0.25:0.5:3.75;]u"Myr", linewidth = 2, color = :black, linestyle = :solid)
+    ax.xlabel = distance_label
+    ax.ylabel = depth_label
+    Label(fig[1:2, 1:2, TopLeft()], "A", fontsize = subfig_label_fontsize)
 
     header, data = read_slice("data/$(TAG2).h5", :profile)
     ax = Axis(fig[1:2, 4:5])
-    sediment_profile!(ax, header, data, show_unconformities = true, show_coeval_lines = false)
-    #coeval_lines!(ax, header, data, [0.25:0.5:3.75;]u"Myr", linewidth = 3, color = :black, linestyle = :solid)
+    sediment_profile!(ax, header, data, show_unconformities = true, show_coeval_lines = false, title = "Ramp profile")
+    coeval_lines!(ax, header, data, age_depth_model(header, data), [0.25:0.5:3.75;]u"Myr", linewidth = 2, color = :black, linestyle = :solid)
+    ax.xlabel = distance_label
+    ax.ylabel = depth_label
+    Label(fig[1:2, 4:5, TopLeft()], "D",fontsize = subfig_label_fontsize)
 
     ax = Axis(fig[1, 3])
     max_depth = minimum(header.initial_topography)
     h5open("data/$(TAG1).h5", "r") do fid
         production_curve!(ax, fid["input"], max_depth=max_depth)
     end
+    ax.ylabel = water_depth_label
+    ax.xlabel = production_label
+    ax.title = "Production Platform"
+    Label(fig[1, 3, TopLeft()], "B", fontsize = subfig_label_fontsize)
 
     ax = Axis(fig[2, 3])
     max_depth = minimum(header.initial_topography)
     h5open("data/$(TAG2).h5", "r") do fid
         production_curve!(ax, fid["input"], max_depth=max_depth)
     end
+    ax.ylabel = water_depth_label
+    ax.xlabel = production_label
+    ax.title = "Production Ramp"
+
+    Label(fig[2,3, TopLeft()], "C",fontsize = subfig_label_fontsize)
 
     ax = Axis(fig[3, 4:5])
     header, data = read_slice("data/$(TAG2).h5", :profile)
     dominant_facies!(ax, header, data)
+    Label(fig[3,4:5, TopLeft()], "G",fontsize = subfig_label_fontsize)
 
     ax = Axis(fig[3, 1:2])
     header, data = read_slice("data/$(TAG1).h5", :profile)
     dominant_facies!(ax, header, data)
+    Label(fig[3, 1:3, TopLeft()], "E",fontsize = subfig_label_fontsize)
 
-    ax = Axis(fig[3, 3], title = "sea level curve",xlabel = "sealevel [m]",
+    ax = Axis(fig[3, 3], title = "Eustatic sea level",xlabel = "Sea level [m]",
     limits = (nothing, (header.axes.t[1] |> in_units_of(u"Myr"), header.axes.t[end]|> in_units_of(u"Myr"))))
     lines!(ax, header.sea_level |> in_units_of(u"m") , header.axes.t|> in_units_of(u"Myr"))
+    ax.ylabel = time_axis_label
+    Label(fig[3,3, TopLeft()], "F",fontsize = subfig_label_fontsize)
 
     save("figs/ms/fig1.png", fig)
 
@@ -346,7 +401,7 @@ function plot_sfig2()
 end
 
 function plot_sfig20()
-    fig = summary_plot("data/platform_to_ramp.h5")
+    fig = summary_plot("data/platform_to_ramp.h5")    
     save("figs/sm/sfig20_platform_to_ramp.png", fig) 
 end
 
@@ -357,10 +412,11 @@ end
 
 end
 
+Plot.plot_fig1()
+
 Plot.plot_sfig1()
 Plot.plot_sfig2()
 Plot.plot_sfig3()
 Plot.plot_sfig4()
-Plot.plot_fig1()
 Plot.plot_sfig20()
 Plot.plot_sfig21()
