@@ -32,6 +32,7 @@ const water_depth_label = "Water depth [m]"
 const production_label = "Production [m/Myr]"
 const distance_label = "Distance from shore [km]"
 const depth_label = "Depth [m]"
+const subfig_label_fontsize = 24
 
 TAG1 = "platform"
 TAG2 = "ramp"
@@ -318,9 +319,9 @@ plot_supp_fig = function(tag, name)
     end
 
     linkyaxes!(ax_wheel, ax_sl)
-    Label(fig[1,1, TopLeft()], "A")
-    Label(fig[2,1, TopLeft()], "B")
-    Label(fig[2,2, TopLeft()], "C")
+    Label(fig[1,1, TopLeft()], "A", fontsize=subfig_label_fontsize)
+    Label(fig[2,1, TopLeft()], "B", fontsize=subfig_label_fontsize)
+    Label(fig[2,2, TopLeft()], "C", fontsize=subfig_label_fontsize)
     save(name, fig)
 end
 
@@ -329,7 +330,6 @@ plot_sfig4() = plot_supp_fig(TAG2, "figs/sm/sfig4_ramp_detail.png")
 
 
 plot_fig1 = function()
-    subfig_label_fontsize = 24
     fig = Figure(size=(1200, 1000), backgroundcolor=:gray80)
 
     header, data = read_slice("data/$(TAG1).h5", :profile)
