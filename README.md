@@ -4,12 +4,6 @@ Build upon the work of Anna Jansen and Sidney Bickerton
 
 ## Authors
 
-__Sidney Bickerton__
-Utrecht University  
-email: s.j.bickerton [at] uu.nl  
-
-__Anna Jansen__
-
 __Niklas Hohmann__  
 Utrecht University  
 email: n.h.hohmann [at] uu.nl  
@@ -28,84 +22,36 @@ email: x.liu6 [at] uu.nl
 Web page: [www.uu.nl/staff/XLiu6](https://www.uu.nl/staff/XLiu6)  
 ORCID: [0000-0002-3851-116X](https://orcid.org/0000-0002-3851-116X)
 
+__Sidney Bickerton__
+
+__Anna Jansen__
+
+## Usage
+
+For reproducibility instructions, see REPRODUCEME.md
 
 ## Requirements
 
-Base R (version >= 4.2) and the RStudio IDE, Julia >= 1.10
-
-
-
-### Installation and running instructions
-
-#### Running a CarboKitten model
-
-You need to have Julia. Follow [the instructions on its webpage](https://julialang.org/downloads/).
-
-1. Clone this repository and go to its folder
-
-2. Open Julia (either in your terminal or in VS Code)
-
-3. Initialize all dependencies by typing the following:
-
-```{julia}
-using Pkg
-```
-
-press `]` to enter the package mode and there type:
-
-```{julia}
-activate .
-instantiate
-```
-
-this will download and precompile all dependencies. It will take a while when you run it the first time, but each next time you run a Julia script in this repo will be much faster.
-
-4. Exit the package mode by pressing the backspace button. This will bring you back to the normal Julia prompt.
-
-5. Run the simulations via the command
-
-```{julia}
-include("code/run_all.jl")
-```
-
-6. Extract data to .csv for use in R via
-
-```{julia}
-include("code/extract_data.jl")
-```
-
-7. Plot the figures by running
-
-```{julia}
-include("code/pub_figs.jl")
-```
-
-8. In the RStudio IDE, open the file `carbonate_stratpal.Rproj`. This automatically install the `renv` package (if not already installed). Then run
-
-```{R}
-renv::restore()
-```
-
-to install all required R packages in their correct versions. Now you can run the code using
-
-```{R}
-source("code/analysis.R")
-```
-
-This will generate figures under `figs/`
+Base R v4.5.3 and the RStudio IDE, Julia 1.12.6
 
 ## Repository structure
 
 * code: Julia & R scripts
 * data: model outputs. Initially empty, filled after CarboKitten is run.
 * figs: figures. Initially empty, filled after CarboKitten/the R code is run
+    * ms/: figures for manuscript
+    * sm/: figures for supplementary materials
+* renv: `renv` setup
 * .gitignore: untracked files
+* .Rprofile: R session/project setup
 * carbonate_stratpal.Rproj: R project file
 * CONTRIBUTING.md: contribution guidelines
 * LICENSE: Apache 2.0 License text
 * Manifest.toml: Julia project infrastructure
 * Project.toml: Julia project infrastructure
-* README.md: this file
+* README.md: you are here
+* renv.lock: lock file for `renv`
+* REPRODUCEME.md: Instructions for reproduction
 
 ## Copyright
 
