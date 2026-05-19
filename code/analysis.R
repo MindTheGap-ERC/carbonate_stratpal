@@ -445,7 +445,7 @@ plot_ext_scenario_comparison = function(rate, dist, case, title){
                                 "HST" = "HST",
                                 "RST" = "RST",
                                 "LST" = "LST",
-                                "TST" = "LST"))
+                                "TST" = "TST"))
   return(p)
 }
 
