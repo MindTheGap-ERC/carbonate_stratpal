@@ -2,8 +2,8 @@
 
 ## Simulating Carbonate Platforms
 
-**Required data**: None
-**Generated data**: Carbonate platform data under `data/` as `.h5` or `.csv` files, and summary figures under `figs/`
+**Required data**: None  
+**Generated data**: Carbonate platform data under `data/` as `.h5` or `.csv` files, and summary figures under `figs/`  
 
 After installing Julia via [Juliaup](https://github.com/JuliaLang/juliaup), run
 
@@ -23,7 +23,7 @@ to run all carbonate platform simulations, extract data as .csv from them, and p
 
 ## Stratigraphic Paleobiology Simulations
 
-**Required data:** Carbonate platform data as generated above
+**Required data:** Carbonate platform data as generated above  
 **Generated data:** Figures under `figs/`
 
 Open the file `carbonate_stratpal.Rproj` in the RStudio IDE. This will open the project, set all paths correctly, and install the `renv` package (if not already installed). Next, run
@@ -34,7 +34,7 @@ renv::restore()
 
 to install all required packages in their correct versions.
 
-Runing
+Running
 
 ```R
 source("code/analysis.R")
