@@ -606,6 +606,142 @@ plot_fig9 = function(seed){
 }
 plot_fig9(seed = seed_main + 8)
 
+#### Figure 10: Range offset ####
+plot_range_offset = function(seed){
+  set.seed(seed)
+  get_range_offset = function(case, pos){
+    index = which(pos == distances)
+    t_ext = p3(100, from = 0, to = 4, n = 1)
+    sampling_rate = 10^runif(1, min = log10(2), max = 2)
+    wd_opt = runif(1, min = 0, max = 120)
+    wd_tol = rgamma(1, shape = 1, scale  = 10) # water depth tolerance, mean 10, variance 100
+    
+    niche = snd_niche(opt = wd_opt,
+                      tol = wd_tol,
+                      cutoff_val = 0)
+    wd_change = approxfun(x = wd_comb[[case]][[index]]$t, y = wd_comb[[case]][[index]]$wd)
+    x = range_offset(t_ext = t_ext,
+                     rate = sampling_rate,
+                     adm = adm_comb[[case]][[index]],
+                     niche = niche,
+                     gc = wd_change)
+    return(x)
+  }
+  
+  names = c("case", "dist", "ro", "roh")
+  df_ro = data.frame(matrix(nrow = 0, ncol = length(names)))
+  names(df_ro) = names
+  n = 1000
+  for (case in cases){
+    for (pos in positions_examined){
+      ro = c()
+      roh = c()
+      while (length(ro) < n){
+        x = get_range_offset(case, pos)
+        if (!is.na(x["t"])){
+          ro = c(ro, x["t"])
+          roh = c(roh, x["h"])
+        }
+      }
+      df2 = data.frame(case = rep(case, n),
+                       dist = rep(pos, n),
+                       ro = unname(ro),
+                       roh = unname(roh))
+      df_ro = rbind(df_ro, df2)
+    }
+  }
+  ro_axis_label = "Temporal range offset [Myr]"
+  roh_axis_label = "Stratigraphic range offset [m]"
+  dist_label = "Distance from shore [km]"
+  p1 = df_ro |>
+    mutate(dist = as.factor(dist)) |>
+    filter(case == "pl") |>
+    ggplot(aes(x = dist, y = ro, fill = dist)) +
+    geom_violin() +
+    geom_boxplot(width = 0.1,
+                 outlier.shape = NA) +
+    labs(title = "Platform",
+         y = ro_axis_label,
+         x = dist_label) +
+    theme(legend.position = "none")
+  p2 = df_ro |>
+    mutate(dist = as.factor(dist)) |>
+    filter(case == "ra") |>
+    ggplot(aes(x = dist, y = ro, fill = dist)) +
+    geom_violin() +
+    geom_boxplot(width = 0.1,
+                 outlier.shape = NA) +
+    labs(title = "Ramp",
+         y = ro_axis_label,
+         x = dist_label) +
+    theme(legend.position = "none")
+  p3 = df_ro |>
+    mutate(dist = as.factor(dist)) |>
+    filter(case == "pl") |>
+    ggplot(aes(x = dist, y = roh, fill = dist)) +
+    geom_violin() +
+    geom_boxplot(width = 0.1,
+                 outlier.shape = NA) +
+    labs(title = "Platform",
+         y = roh_axis_label,
+         x = dist_label) +
+    ylim(0, 120) +
+    theme(legend.position = "none")
+  p4 = df_ro |>
+    mutate(dist = as.factor(dist)) |>
+    filter(case == "ra") |>
+    ggplot(aes(x = dist, y = roh, fill = dist)) +
+    geom_violin() +
+    geom_boxplot(width = 0.1,
+                 outlier.shape = NA) +
+    labs(title = "Ramp",
+         y = roh_axis_label,
+         x = dist_label) +
+    ylim(0, 120) +
+    theme(legend.position = "none")
+  p = ggarrange(p1, p2, p3, p4,
+                ncol = 2,
+                nrow = 2,
+                labels = LETTERS[1:4])
+  
+  df_ro |>
+    group_by(case, dist) |>
+    reframe(
+      across(ro,
+             ~quantile(.x,
+                       probs = c(0.25, 0.5, 0.75)),
+             .names = "{.col}"
+      ),
+      quartile = c("Q1", "Median", "Q3")
+    ) |>
+    mutate(across(c(ro), function(x) round(x, digits = 2))) |>
+    write.csv("data/range_offset_temp_stats.csv")
+  
+  df_ro |>
+    group_by(case, dist) |>
+    reframe(
+      across(roh,
+             ~quantile(.x,
+                       probs = c(0.25, 0.5, 0.75)),
+             .names = "{.col}"
+      ),
+      quartile = c("Q1", "Median", "Q3")
+    ) |>
+    mutate(across(c(roh), function(x) round(x, digits = 1))) |>
+    write.csv("data/range_offset_strat_stats.csv")
+  return(p)
+}
+
+ggsave(filename = "figs/ms/fig10_range_offset.png",
+       plot = plot_range_offset(seed_main + 37),
+       bg = "white",
+       width =  width_2_col_cm,
+       height = width_2_col_cm,
+       units = "cm")
+
+
+
+
 #### Supp Figure 5: Sedimentation rates ####
 plot_sed_rate = function(pos = positions_examined,
                          subset = 100,
