@@ -12,6 +12,7 @@ data/*.h5
 *.jpeg
 *.png
 *.pdf
+!figs/ms/fig5.pdf
 
 # don't save data files
 *.csv
