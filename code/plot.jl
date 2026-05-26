@@ -348,24 +348,25 @@ plot_fig1 = function()
     ax.ylabel = depth_label
     Label(fig[1:2, 4:5, TopLeft()], "D",fontsize = subfig_label_fontsize)
 
-    ax = Axis(fig[1, 3])
+    ax_prod1 = Axis(fig[1, 3])
     max_depth = minimum(header.initial_topography)
     h5open("data/$(TAG1).h5", "r") do fid
-        production_curve!(ax, fid["input"], max_depth=max_depth)
+        production_curve!(ax_prod1, fid["input"], max_depth=max_depth)
     end
-    ax.ylabel = water_depth_label
-    ax.xlabel = production_label
-    ax.title = "Production Platform"
+    ax_prod1.ylabel = water_depth_label
+    ax_prod1.xlabel = production_label
+    ax_prod1.title = "Production Platform"
     Label(fig[1, 3, TopLeft()], "B", fontsize = subfig_label_fontsize)
 
-    ax = Axis(fig[2, 3])
+    ax_prod2 = Axis(fig[2, 3])
     max_depth = minimum(header.initial_topography)
     h5open("data/$(TAG2).h5", "r") do fid
-        production_curve!(ax, fid["input"], max_depth=max_depth)
+        production_curve!(ax_prod2, fid["input"], max_depth=max_depth)
     end
-    ax.ylabel = water_depth_label
-    ax.xlabel = production_label
-    ax.title = "Production Ramp"
+    ax_prod2.ylabel = water_depth_label
+    ax_prod2.xlabel = production_label
+    ax_prod2.title = "Production Ramp"
+    linkxaxes!(ax_prod1, ax_prod2)
 
     Label(fig[2,3, TopLeft()], "C",fontsize = subfig_label_fontsize)
 
