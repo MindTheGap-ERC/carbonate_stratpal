@@ -22,9 +22,11 @@ email: x.liu6 [at] uu.nl
 Web page: [www.uu.nl/staff/XLiu6](https://www.uu.nl/staff/XLiu6)  
 ORCID: [0000-0002-3851-116X](https://orcid.org/0000-0002-3851-116X)
 
-__Sidney Bickerton__
+__Sidney Bickerton__  
+ORCID: [0009-0006-3299-1234](https://orcid.org/0009-0006-3299-1234)
 
-__Anna Jansen__
+__Anna Jansen__  
+ORCID: [0009-0004-4179-844X](https://orcid.org/0009-0004-4179-844X)
 
 ## Usage
 
@@ -70,6 +72,12 @@ Carbonate production data is taken from
 * Burgess, P. M. (2013). CarboCAT: A cellular automata model of heterogeneous carbonate strata. Computers & geosciences, 53, 129-140.
 Eustatic sea level data it taken from 
 * Holland, S. M., & Patzkowsky, M. E. (2015). The stratigraphy of mass extinction. Palaeontology, 58(5), 903-924.
+
+## Citation
+
+To cite this repository, please use
+
+* Hohmann, N., Jansen, A., Bickerton, S., Liu, X., & Jarochowska, E. (2026). Supplementary Code for "Stratigraphic Paleobiology of Carbonate Systems". Zenodo. https://doi.org/10.5281/zenodo.20393030
 
 ## Funding information
 
