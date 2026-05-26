@@ -1,5 +1,7 @@
 # Stratigraphic paleobiology of carbonate systems
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20393031.svg)](https://doi.org/10.5281/zenodo.20393031)
+
 Build upon the work of Anna Jansen and Sidney Bickerton
 
 ## Authors
