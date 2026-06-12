@@ -1,6 +1,6 @@
 # Stratigraphic Paleobiology of Carbonate Systems: Supplementary Code
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20393031.svg)](https://doi.org/10.5281/zenodo.20393031)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20670764.svg)](https://doi.org/10.5281/zenodo.20670764)
 
 Build upon the work of Anna Jansen and Sidney Bickerton
 
@@ -79,7 +79,7 @@ Eustatic sea level data it taken from
 
 To cite this repository, please use
 
-* Hohmann, N., Jansen, A., Bickerton, S., Liu, X., & Jarochowska, E. (2026). Supplementary Code for "The Stratigraphic Paleobiology of Carbonate Systems". Zenodo. https://doi.org/10.5281/zenodo.20393030
+* Hohmann, N., Jansen, A., Bickerton, S., Liu, X., & Jarochowska, E. (2026). Stratigraphic Paleobiology of Carbonate Systems: Supplementary Code (1.0.1). Zenodo. https://doi.org/10.5281/zenodo.20670764
 
 ## Funding information
 
