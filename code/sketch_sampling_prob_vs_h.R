@@ -79,3 +79,34 @@ p_all = ggarrange(row1, row2, row3,
                   labels = c("A", "B", "C"),
                   common.legend = TRUE, legend.grob = leg, legend = "bottom")
 p_all
+
+## seq strat ratio
+sl_func = function(x) {15 * sin(2 * pi * x / 2) + 2.5 * sin(2 * pi * x / 0.2)}
+
+subs_rate = 20 # m/Myr
+pos = 7.5
+case = "ra"
+idx    = which(distances == pos)
+adm    = adm_comb[[case]][[idx]]
+h_res = 10
+
+h_rel = seq(min_height(adm), admtools::max_height(adm), by = h_res)
+t_rel = h_rel |>
+  strat_to_time(adm)
+sed_rates = time_to_strat(t_rel, adm, destructive = FALSE) |> diff()
+acc_space = c(sl_func(t_rel) + subs_rate* t_rel) |> diff()
+
+df = data.frame(
+  t_start = head(h_rel, -1),
+  t_end   = tail(h_rel, -1),
+  ratio   = acc_space / sed_rates
+)
+
+ggplot(df) +
+  geom_rect(aes(xmin = t_start, xmax = t_end, ymin = 0, ymax = ratio),
+            fill = "steelblue", colour = "white", linewidth = 0.2) +
+  geom_hline(yintercept = 1, linetype = "dashed") +
+  labs(x = "Height", y = "Accommodation/sedimentation") +
+  theme_minimal() +
+  coord_flip()
+
