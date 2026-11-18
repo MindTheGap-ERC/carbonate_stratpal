@@ -1,7 +1,6 @@
 module Plot
-import CairoMakie
 using CarboKitten.Algorithms: skeleton
-import CarboKitten.Visualization: summary_plot, sediment_profile, sediment_profile!, production_curve!
+import CarboKitten.Visualization: sediment_profile!, production_curve!
 using CarboKitten.Export: Header, Data, DataSlice, read_header, read_volume, read_slice, group_datasets
 using CarboKitten.Utility: in_units_of
 using CarboKitten.Output.Abstract: stratigraphic_column
@@ -10,18 +9,77 @@ using Unitful
 using CarboKitten.BoundaryTrait
 using CarboKitten.Stencil: convolution
 using CairoMakie
-import CairoMakie
-
 
 const na = [CartesianIndex()]
 
+#### Print settings ####
+# Same style as the figures of the phylostrat project.
+# Figures are designed at final print size for a B5 dissertation (176 x 250 mm page).
+# Figure sizes are given in pt (1 pt = 1/72 in), so font sizes and line widths below
+# correspond to their printed size. Raster output is written at `DPI`.
+const MM = 72 / 25.4                 # pt per mm
+const TEXT_WIDTH = 130 * MM          # usable text width on a B5 page [pt]
+const DPI = 600
+const PX_PER_UNIT = DPI / 72
+
+const LW_MAIN = 1.0                  # data lines
+const LW_SEA_LEVEL = 0.6             # sea level curve (thin: high-frequency signal)
+const LW_COEVAL = 0.8                # time lines / coeval lines
+const LW_SAMPLING = 0.8              # sampling positions
+# unconformities were drawn with linewidth = 1 in the original 1200 px wide figure.
+# Scale to keep their original size relative to the figure.
+const LW_UNCONFORMITY = TEXT_WIDTH / 1200
+const LW_SEALEVEL_PROFILE = 2.5      # end sea level in sediment profiles
+const PANEL_LABEL_SIZE = 11
+const HEADER_SIZE = 9                # figure/column headers
+const ST_LABEL_SIZE = 6              # systems tract labels
+
+const PRINT_THEME = Theme(
+    fontsize = 8,
+    figure_padding = (2, 6, 2, 2),
+    backgroundcolor = :white,
+    Axis = (
+        titlesize = 8.5,
+        titlefont = :bold,
+        titlealign = :left,
+        xlabelsize = 8,
+        ylabelsize = 8,
+        xticklabelsize = 7,
+        yticklabelsize = 7,
+        spinewidth = 0.6,
+        xtickwidth = 0.6,
+        ytickwidth = 0.6,
+        xticksize = 3,
+        yticksize = 3,
+        xgridvisible = false,
+        ygridvisible = false,
+        xlabelpadding = 2,
+        ylabelpadding = 2,
+    ),
+    Colorbar = (
+        labelsize = 8,
+        ticklabelsize = 7,
+        size = 8,
+        spinewidth = 0.6,
+        tickwidth = 0.6,
+        ticksize = 3,
+    ),
+    Lines = (linewidth = LW_MAIN,),
+)
+
+panel_label!(pos, txt) = Label(pos, txt; fontsize = PANEL_LABEL_SIZE, font = :bold,
+    padding = (0, 6, 4, 0), halign = :right)
+
+header_label!(pos, txt) = Label(pos, txt; fontsize = HEADER_SIZE, font = :bold, tellwidth = false)
+
+save_print(fname, fig) = save(fname, fig; px_per_unit = PX_PER_UNIT)
+
+#### Constants ####
 const sampl_loc = [3, 7.5, 10.5, 12, 18]u"km"
 const st_div = 0.25u"Myr":0.5u"Myr":3.75u"Myr"
 const st_labels = ["TST1", "HST1", "RST1", "LST1", "TST2", "HST2", "RST2", "LST2", "TST3"]
 const st_pos = [0.125u"Myr", 0.5u"Myr":0.5u"Myr":3.5u"Myr"..., 3.875u"Myr"]
-const pos_linestyle=:solid
-const pos_linewidth=2
-const pos_color=:black
+const st_label_x = 15u"km"           # horizontal position of systems tract labels in Wheeler diagrams
 const Rate = typeof(1.0u"m/Myr")
 const Amount = typeof(1.0u"m")
 const Length = typeof(1.0u"m")
@@ -32,11 +90,15 @@ const water_depth_label = "Water depth [m]"
 const production_label = "Production [m/Myr]"
 const distance_label = "Distance from shore [km]"
 const depth_label = "Depth [m]"
-const subfig_label_fontsize = 24
+const sea_level_label = "Sea level [m]"
+
+const FACIES_TICKS = (1:3, ["Euphotic", "Oligophotic", "Aphotic"])
+const FACIES_LABEL = "Dominant carbonate factory"
 
 TAG1 = "platform"
 TAG2 = "ramp"
 
+#### Low level plotting ####
 function explode_quad_vertices(v::Array{Float64,3})
     w, h, d = size(v)
     points = zeros(Float64, w, h - 1, 2, d)
@@ -67,7 +129,6 @@ function plot_unconformities(ax::Axis, header::Header, data::DataSlice, minwidth
     @views h[:, 2:end] .+= cumsum(sum(sc, dims=1)[1,:,:], dims=2)
     x = header.axes.x |> in_units_of(u"km")
     combined_acc = dropdims(sum(sc, dims = 1), dims = 1) |> in_units_of(u"m")
-    wi = data.write_interval
     hiatus = skeleton(combined_acc .< 0.000001, minwidth=minwidth)
 
     if !isempty(hiatus[1])
@@ -78,7 +139,6 @@ end
 
 function profile_plot!(ax::Axis, header::Header, data::DataSlice; color::AbstractArray, mesh_args...)
     x = header.axes.x |> in_units_of(u"km")
-    t = header.axes.t |> in_units_of(u"Myr")
 
     n_facies, n_x, n_t = size(data.production)
     total_subsidence = (header.axes.t[end] - header.axes.t[1]) * header.subsidence_rate
@@ -92,15 +152,14 @@ function profile_plot!(ax::Axis, header::Header, data::DataSlice; color::Abstrac
     @views verts[:, :, 2] .= h |> in_units_of(u"m")
     v, f = explode_quad_vertices(verts)
 
-    total_subsidence = header.subsidence_rate * (header.axes.t[end] - header.axes.t[1])
-    bedrock = (header.initial_topography[data.slice...] .- total_subsidence) |> in_units_of(u"m")
+    bedrock = (initial_topography .- total_subsidence) |> in_units_of(u"m")
     lower_limit = minimum(bedrock) - 20
     band!(ax, x, lower_limit, bedrock; color=:gray, label="initial topography")
     lines!(ax, x, bedrock; color=:black, label="initial topography")
     ylims!(ax, lower_limit + 10, nothing)
     xlims!(ax, x[1], x[end])
-    ax.xlabel = "Distance from shore [km]"
-    ax.ylabel = "Depth [m]"
+    ax.xlabel = distance_label
+    ax.ylabel = depth_label
 
     c = reshape(color, n_x * n_t)
     mesh!(ax, v, f; color=vcat(c, c), mesh_args...)
@@ -108,25 +167,15 @@ end
 
 function plot_sealevel!(ax::Axis, header::Header)
     sea_level = header.sea_level[end] |> in_units_of(u"m")
-    hlines!(ax, sea_level, color=:lightblue, linewidth=5, label="end sea level")
+    hlines!(ax, sea_level, color=:lightblue, linewidth=LW_SEALEVEL_PROFILE, label="end sea level")
 end
-
-
 
 function sediment_profile!(ax::Axis, header::Header, data::DataSlice;
                            show_unconformities::Union{Nothing,Bool,Int} = true,
                            show_coeval_lines::Union{Bool,Tuple{Int, Int},Vector{Int},Vector{Time}} = true,
                            show_sealevel::Bool = true,
                            title = "Sediment profile")
-    x = header.axes.x |> in_units_of(u"km")
-    t = header.axes.t |> in_units_of(u"Myr")
-
-    n_facies, n_x, n_t = size(data.production)
-    total_subsidence = (header.axes.t[end] - header.axes.t[1]) * header.subsidence_rate
-    initial_topography = header.initial_topography[data.slice...]
-    sc = stratigraphic_column(data)
-    h = repeat(initial_topography .- total_subsidence, 1, n_t+1)
-    @views h[:, 2:end] .+= cumsum(sum(sc, dims=1)[1,:,:], dims=2)
+    n_facies = size(data.production)[1]
 
     if show_sealevel
         plot_sealevel!(ax, header)
@@ -137,12 +186,13 @@ function sediment_profile!(ax::Axis, header::Header, data::DataSlice;
 
     minwidth = 10
     if show_unconformities
-        plot_unconformities(ax, header, data,minwidth; label = "unconformities",
-                        color=:white, linestyle=:dash, linewidth=1)
+        plot_unconformities(ax, header, data, minwidth; label = "unconformities",
+                        color=:white, linestyle=:dash, linewidth=LW_UNCONFORMITY)
     end
 
     if show_coeval_lines
-        coeval_lines!(ax, header, data, age_depth_model(header, data), collect(st_div); color=:black, linestyle=:dash)
+        coeval_lines!(ax, header, data, age_depth_model(header, data), time_lines_in_range(header, st_div);
+            color=:black, linestyle=:dash, linewidth=LW_COEVAL)
     end
 
     ax.title = title
@@ -165,7 +215,6 @@ water_depth(header::Header, data::DataSlice) =
         h .- (s.+l)[na, :]
     end
 
-
 function dominant_facies!(ax::Axis, header::Header, data::DataSlice;
     show::Symbol = :both,
     smooth_size::NTuple{2,Int} = (3, 11),
@@ -185,13 +234,12 @@ function dominant_facies!(ax::Axis, header::Header, data::DataSlice;
     wd = zeros(Float64, length(header.axes.x), length(header.axes.t[1:wi:end]))
     blur(water_depth(header, data) / u"m", wd)
 
-    ax.ylabel = "Elapsed model time [Myr]"
-    ax.xlabel = "Distance from shore [km]"
+    ax.ylabel = time_axis_label
+    ax.xlabel = distance_label
     ax.title = "Wheeler diagram"
-    
+
     xkm = header.axes.x |> in_units_of(u"km")
     tmyr = header.axes.t[1:wi:end] |> in_units_of(u"Myr")
-
 
     ft = if show == :model
         dominant_facies = colormax(data.deposition)
@@ -229,11 +277,6 @@ function dominant_facies!(ax::Axis, header::Header, data::DataSlice;
             colorrange=(0.5, n_facies + 0.5),
             nan_color = :transparent)
     end
-
-    #contourf!(ax, xkm, tmyr, wd;
-    #    levels=[0.0, 10000.0], colormap=Reverse(:grays))
-    #contour!(ax, xkm, tmyr, wd;
-    #    levels=[0], color=:black, linewidth=2)
     return ft
 end
 
@@ -252,9 +295,6 @@ function coeval_lines!(ax::Axis, header::Header, data::DataSlice, adm::AbstractM
 end
 
 function age_depth_model(header::Header, data::DataSlice)
-    x = header.axes.x |> in_units_of(u"km")
-    t = header.axes.t |> in_units_of(u"Myr")
-
     n_facies, n_x, n_t = size(data.production)
     total_subsidence = (header.axes.t[end] - header.axes.t[1]) * header.subsidence_rate
     initial_topography = header.initial_topography[data.slice...]
@@ -264,152 +304,231 @@ function age_depth_model(header::Header, data::DataSlice)
     return h
 end
 
-plot_supp_fig = function(tag, name)
-    fig = Figure(size=(1200, 1000), backgroundcolor=:gray80)
+# time lines that fall within the simulated time interval (e.g. for the 1 Myr pre-runs)
+time_lines_in_range(header::Header, time_lines) =
+    Time[t for t in time_lines if header.axes.t[1] < t < header.axes.t[end]]
 
+#### Panels ####
+function my_profile!(ax::Axis, header::Header, data::DataSlice;
+                     time_lines = st_div,
+                     sampling_positions = nothing,
+                     title = "Sediment profile")
+    sediment_profile!(ax, header, data; show_coeval_lines = false, show_unconformities = true)
+    coeval_lines!(ax, header, data, age_depth_model(header, data), time_lines_in_range(header, time_lines);
+        linewidth = LW_COEVAL, color = :black, linestyle = :dash)
+    if !isnothing(sampling_positions)
+        vlines!(ax, sampling_positions |> in_units_of(u"km");
+            linewidth = LW_SAMPLING, linestyle = :solid, color = :black)
+    end
+    ax.xlabel = distance_label
+    ax.ylabel = depth_label
+    ax.title = title
+    return ax
+end
+
+function my_wheeler!(ax::Axis, header::Header, data::DataSlice;
+                     time_lines = st_div,
+                     sampling_positions = nothing,
+                     show_st_labels = false,
+                     title = "Wheeler diagram")
+    ft = dominant_facies!(ax, header, data, show = :both)
+    tl = time_lines_in_range(header, time_lines)
+    if !isempty(tl)
+        hlines!(ax, tl |> in_units_of(u"Myr"); linewidth = LW_COEVAL, color = :black, linestyle = :dash)
+    end
+    if !isnothing(sampling_positions)
+        vlines!(ax, sampling_positions |> in_units_of(u"km");
+            linewidth = LW_SAMPLING, linestyle = :solid, color = :black)
+    end
+    if show_st_labels
+        for (i, st_lab) in enumerate(st_labels)
+            text!(ax, st_label_x |> in_units_of(u"km"), st_pos[i] |> in_units_of(u"Myr");
+                text = st_lab, align = (:center, :center), fontsize = ST_LABEL_SIZE)
+        end
+    end
+    ax.xlabel = distance_label
+    ax.ylabel = time_axis_label
+    ax.title = title
+    return ft
+end
+
+function sea_level_panel!(ax::Axis, header::Header;
+                          time_lines = st_div,
+                          show_st_labels = false)
+    sl = header.sea_level |> in_units_of(u"m")
+    t = header.axes.t |> in_units_of(u"Myr")
+    lines!(ax, sl, t; linewidth = LW_SEA_LEVEL, color = :blue)
+    tl = time_lines_in_range(header, time_lines)
+    if !isempty(tl)
+        hlines!(ax, tl |> in_units_of(u"Myr"); linewidth = LW_COEVAL, color = :black, linestyle = :dash)
+    end
+    min_sl, max_sl = extrema(sl)
+    if min_sl == max_sl # constant sea level (pre-runs)
+        min_sl, max_sl = min_sl - 1, max_sl + 1
+    end
+    if show_st_labels
+        # extend the axis to the right to make room for the labels
+        text_x = max_sl + 0.15 * (max_sl - min_sl)
+        for (i, st_lab) in enumerate(st_labels)
+            text!(ax, text_x, st_pos[i] |> in_units_of(u"Myr");
+                text = st_lab, align = (:center, :center), fontsize = ST_LABEL_SIZE)
+        end
+        max_sl = max_sl + 0.3 * (max_sl - min_sl)
+    end
+    limits!(ax, min_sl, max_sl, t[1], t[end])
+    ax.title = "Eustatic sea level"
+    ax.xlabel = sea_level_label
+    ax.ylabel = time_axis_label
+    ax.xticks = LinearTicks(3)
+    return ax
+end
+
+function production_panel!(ax::Axis, input::String, max_depth; title = "Production profile")
+    h5open(input, "r") do fid
+        production_curve!(ax, fid["input"], max_depth = max_depth)
+    end
+    ax.xlabel = production_label
+    ax.ylabel = water_depth_label
+    ax.title = title # set after plotting, CarboKitten overwrites it
+    return ax
+end
+
+facies_colorbar!(pos, ft) = Colorbar(pos, ft; vertical = false, flipaxis = false,
+    ticks = FACIES_TICKS, label = FACIES_LABEL,
+    width = Relative(0.6), tellheight = true)
+
+#### Figures ####
+function plot_fig1()
+    fig = Figure(size = (TEXT_WIDTH, 165 * MM))
+
+    header_pl, data_pl = read_slice("data/$(TAG1).h5", :profile)
+    header_ra, data_ra = read_slice("data/$(TAG2).h5", :profile)
+
+    ax_profile_pl = Axis(fig[1:2, 1:2])
+    my_profile!(ax_profile_pl, header_pl, data_pl, title = "Platform profile")
+    panel_label!(fig[1:2, 1:2, TopLeft()], "A")
+
+    ax_profile_ra = Axis(fig[1:2, 4:5])
+    my_profile!(ax_profile_ra, header_ra, data_ra, title = "Ramp profile")
+    panel_label!(fig[1:2, 4:5, TopLeft()], "D")
+
+    max_depth = minimum(header_ra.initial_topography)
+    ax_prod_pl = Axis(fig[1, 3])
+    production_panel!(ax_prod_pl, "data/$(TAG1).h5", max_depth, title = "Platform\nproduction")
+    panel_label!(fig[1, 3, TopLeft()], "B")
+
+    ax_prod_ra = Axis(fig[2, 3])
+    production_panel!(ax_prod_ra, "data/$(TAG2).h5", max_depth, title = "Ramp\nproduction")
+    panel_label!(fig[2, 3, TopLeft()], "C")
+    linkxaxes!(ax_prod_pl, ax_prod_ra)
+    # narrow column: fewer ticks to avoid overlapping tick labels
+    ax_prod_pl.xticks = LinearTicks(3)
+    ax_prod_ra.xticks = LinearTicks(3)
+
+    ax_wheeler_pl = Axis(fig[3, 1:2])
+    ft = my_wheeler!(ax_wheeler_pl, header_pl, data_pl, title = "Platform Wheeler diagram")
+    panel_label!(fig[3, 1:2, TopLeft()], "E")
+
+    ax_sl = Axis(fig[3, 3])
+    sea_level_panel!(ax_sl, header_pl)
+    panel_label!(fig[3, 3, TopLeft()], "F")
+
+    ax_wheeler_ra = Axis(fig[3, 4:5])
+    my_wheeler!(ax_wheeler_ra, header_ra, data_ra, title = "Ramp Wheeler diagram")
+    panel_label!(fig[3, 4:5, TopLeft()], "G")
+
+    linkxaxes!(ax_profile_pl, ax_wheeler_pl)
+    linkxaxes!(ax_profile_ra, ax_wheeler_ra)
+    linkyaxes!(ax_wheeler_pl, ax_sl, ax_wheeler_ra)
+    # shared time axis: drop redundant labels on the sea level panel
+    hideydecorations!(ax_sl, ticks = false, grid = false)
+
+    facies_colorbar!(fig[4, 1:5], ft)
+
+    rowgap!(fig.layout, 6)
+    colgap!(fig.layout, 8)
+    colgap!(fig.layout, 3, 16) # room for the production x label next to the ramp profile y label
+    save_print("figs/ms/fig1.png", fig)
+end
+
+function plot_supp_fig(tag, name, case)
     header, data = read_slice("data/$(tag).h5", :profile)
 
-    adm = age_depth_model(header, data)
+    fig = Figure(size = (TEXT_WIDTH, 125 * MM))
+    header_label!(fig[0, 1:2], case)
 
+    ax_profile = Axis(fig[1, 1])
+    my_profile!(ax_profile, header, data, sampling_positions = sampl_loc)
+    panel_label!(fig[1, 1, TopLeft()], "A")
 
-    ax_sed = Axis(fig[1,1])
-    ax_wheel = Axis(fig[2,1])
-    linkxaxes!(ax_sed, ax_wheel)
-    sediment_profile!(ax_sed, header, data, show_coeval_lines=false, show_unconformities = true)
-    coeval_lines!(ax_sed, header, data, adm, collect(st_div); color=:black, linestyle=:dash)
-    for loc in sampl_loc
-        lines!(ax_sed,fill(loc, 2) |> in_units_of(u"km"), [-180, 0],color=:black, linestyle=:solid)
-    end
+    ax_wheeler = Axis(fig[2, 1])
+    ft = my_wheeler!(ax_wheeler, header, data, sampling_positions = sampl_loc, show_st_labels = true)
+    panel_label!(fig[2, 1, TopLeft()], "B")
 
+    ax_sl = Axis(fig[2, 2])
+    sea_level_panel!(ax_sl, header, show_st_labels = true)
+    panel_label!(fig[2, 2, TopLeft()], "C")
 
-    ft = dominant_facies!(ax_wheel, header, data, show=:both)
-    pos_min = header.axes.x |> in_units_of(u"km") |> minimum
-    pos_max = header.axes.x |> in_units_of(u"km") |> maximum
-    for st_bdr in st_div
-        lines!(ax_wheel, [pos_min, pos_max], fill(st_bdr, 2) |> in_units_of(u"Myr"),
-        color = :black,
-        linestyle=:dash)
-    end
-    for (i, st_lab) in enumerate(st_labels)
-        text!(ax_wheel, 15u"km" |> in_units_of(u"km"), st_pos[i] |> in_units_of(u"Myr"); text = st_lab,
-        align=(:center, :center) )
-    end
-    for loc in sampl_loc
-        lines!(ax_wheel, fill(loc, 2) |> in_units_of(u"km"), [header.axes.t[1], header.axes.t[end]] |> in_units_of(u"Myr"),
-        color=pos_color, linewidth=pos_linewidth,
-        linestyle=pos_linestyle)
-    end
+    linkxaxes!(ax_profile, ax_wheeler)
+    linkyaxes!(ax_wheeler, ax_sl)
+    hideydecorations!(ax_sl, ticks = false, grid = false)
 
-    Colorbar(fig[3,1], ft, vertical = false, ticks=(1:3, ["Euphotic", "Oligophotic", "Aphotic"]), label="Dominant Facies")
+    facies_colorbar!(fig[3, 1], ft)
 
-    min_sl = minimum(header.sea_level) |> in_units_of(u"m")
-    max_sl = maximum(header.sea_level) |> in_units_of(u"m")
-    fig_ext = 4
-    text_adjust = 2
-    ax_sl = Axis(fig[2, 2], title = "Sea level curve",xlabel = "Eustatic sea level [m]",
-    limits = ((min_sl, max_sl + fig_ext), (header.axes.t[1] |> in_units_of(u"Myr"), header.axes.t[end]|> in_units_of(u"Myr"))))
-    lines!(ax_sl, header.sea_level |> in_units_of(u"m") , header.axes.t|> in_units_of(u"Myr"))
-    for st_bdr in st_div
-        lines!(ax_sl, [min_sl, max_sl + fig_ext], fill(st_bdr, 2) |> in_units_of(u"Myr"),
-        color = :black, linestyle = :dash)
-    end
-    for (i, st_lab) in enumerate(st_labels)
-        text!(ax_sl, max_sl + text_adjust, st_pos[i] |> in_units_of(u"Myr"); text = st_lab ,
-        align = (:center, :center))
-    end
-
-    linkyaxes!(ax_wheel, ax_sl)
-    Label(fig[1,1, TopLeft()], "A", fontsize=subfig_label_fontsize)
-    Label(fig[2,1, TopLeft()], "B", fontsize=subfig_label_fontsize)
-    Label(fig[2,2, TopLeft()], "C", fontsize=subfig_label_fontsize)
-    save(name, fig)
+    colsize!(fig.layout, 1, Relative(0.72))
+    rowgap!(fig.layout, 6)
+    colgap!(fig.layout, 8)
+    save_print(name, fig)
 end
 
-plot_sfig3() = plot_supp_fig( TAG1, "figs/sm/sfig3_platform_detail.png")
-plot_sfig4() = plot_supp_fig(TAG2, "figs/sm/sfig4_ramp_detail.png")
+plot_sfig3() = plot_supp_fig(TAG1, "figs/sm/sfig3_platform_detail.png", "Platform")
+plot_sfig4() = plot_supp_fig(TAG2, "figs/sm/sfig4_ramp_detail.png", "Ramp")
 
+# replaces CarboKitten's `summary_plot`, same layout as the summary plots of phylostrat
+function my_summary_plot(input::String, fig_name::String, case::String; time_lines = st_div)
+    header, data = read_slice(input, :profile)
 
-plot_fig1 = function()
-    fig = Figure(size=(1200, 1000), backgroundcolor=:gray80)
+    fig = Figure(size = (TEXT_WIDTH, 125 * MM))
+    header_label!(fig[0, 1:2], case)
 
-    header, data = read_slice("data/$(TAG1).h5", :profile)
-    ax = Axis(fig[1:2, 1:2])
-    sediment_profile!(ax, header, data, show_unconformities = true, show_coeval_lines = false, title = "Platform profile")
-    coeval_lines!(ax, header, data, age_depth_model(header, data), [0.25:0.5:3.75;]u"Myr", linewidth = 2, color = :black, linestyle = :solid)
-    ax.xlabel = distance_label
-    ax.ylabel = depth_label
-    Label(fig[1:2, 1:2, TopLeft()], "A", fontsize = subfig_label_fontsize)
+    ax_profile = Axis(fig[1, 1])
+    my_profile!(ax_profile, header, data, time_lines = time_lines)
+    panel_label!(fig[1, 1, TopLeft()], "A")
 
-    header, data = read_slice("data/$(TAG2).h5", :profile)
-    ax = Axis(fig[1:2, 4:5])
-    sediment_profile!(ax, header, data, show_unconformities = true, show_coeval_lines = false, title = "Ramp profile")
-    coeval_lines!(ax, header, data, age_depth_model(header, data), [0.25:0.5:3.75;]u"Myr", linewidth = 2, color = :black, linestyle = :solid)
-    ax.xlabel = distance_label
-    ax.ylabel = depth_label
-    Label(fig[1:2, 4:5, TopLeft()], "D",fontsize = subfig_label_fontsize)
+    ax_production = Axis(fig[1, 2])
+    production_panel!(ax_production, input, minimum(header.initial_topography))
+    panel_label!(fig[1, 2, TopLeft()], "B")
 
-    ax_prod1 = Axis(fig[1, 3])
-    max_depth = minimum(header.initial_topography)
-    h5open("data/$(TAG1).h5", "r") do fid
-        production_curve!(ax_prod1, fid["input"], max_depth=max_depth)
-    end
-    ax_prod1.ylabel = water_depth_label
-    ax_prod1.xlabel = production_label
-    ax_prod1.title = "Production Platform"
-    Label(fig[1, 3, TopLeft()], "B", fontsize = subfig_label_fontsize)
+    ax_wheeler = Axis(fig[2, 1])
+    ft = my_wheeler!(ax_wheeler, header, data, time_lines = time_lines)
+    panel_label!(fig[2, 1, TopLeft()], "C")
 
-    ax_prod2 = Axis(fig[2, 3])
-    max_depth = minimum(header.initial_topography)
-    h5open("data/$(TAG2).h5", "r") do fid
-        production_curve!(ax_prod2, fid["input"], max_depth=max_depth)
-    end
-    ax_prod2.ylabel = water_depth_label
-    ax_prod2.xlabel = production_label
-    ax_prod2.title = "Production Ramp"
-    linkxaxes!(ax_prod1, ax_prod2)
+    ax_sl = Axis(fig[2, 2])
+    sea_level_panel!(ax_sl, header, time_lines = time_lines)
+    panel_label!(fig[2, 2, TopLeft()], "D")
 
-    Label(fig[2,3, TopLeft()], "C",fontsize = subfig_label_fontsize)
+    linkxaxes!(ax_profile, ax_wheeler)
+    linkyaxes!(ax_wheeler, ax_sl)
+    hideydecorations!(ax_sl, ticks = false, grid = false)
 
-    ax = Axis(fig[3, 4:5])
-    header, data = read_slice("data/$(TAG2).h5", :profile)
-    dominant_facies!(ax, header, data)
-    Label(fig[3,4:5, TopLeft()], "G",fontsize = subfig_label_fontsize)
+    facies_colorbar!(fig[3, 1], ft)
 
-    ax = Axis(fig[3, 1:2])
-    header, data = read_slice("data/$(TAG1).h5", :profile)
-    dominant_facies!(ax, header, data)
-    Label(fig[3, 1:3, TopLeft()], "E",fontsize = subfig_label_fontsize)
-
-    ax = Axis(fig[3, 3], title = "Eustatic sea level",xlabel = "Sea level [m]",
-    limits = (nothing, (header.axes.t[1] |> in_units_of(u"Myr"), header.axes.t[end]|> in_units_of(u"Myr"))))
-    lines!(ax, header.sea_level |> in_units_of(u"m") , header.axes.t|> in_units_of(u"Myr"))
-    ax.ylabel = time_axis_label
-    Label(fig[3,3, TopLeft()], "F",fontsize = subfig_label_fontsize)
-
-    save("figs/ms/fig1.png", fig)
-
-
+    colsize!(fig.layout, 1, Relative(0.68))
+    rowgap!(fig.layout, 6)
+    colgap!(fig.layout, 8)
+    save_print(fig_name, fig)
 end
 
-function plot_sfig1()
-    fig = summary_plot("data/$(TAG1)_prerun.h5")
-    save("figs/sm/sfig1_$(TAG1)_prerun_summary.png", fig)
-end
+# pre-runs have constant sea level, so no systems tracts: use evenly spaced time lines
+const prerun_time_lines = 0.25u"Myr":0.25u"Myr":0.75u"Myr"
+plot_sfig1() = my_summary_plot("data/$(TAG1)_prerun.h5", "figs/sm/sfig1_$(TAG1)_prerun_summary.png", "Platform pre-run";
+    time_lines = prerun_time_lines)
+plot_sfig2() = my_summary_plot("data/$(TAG2)_prerun.h5", "figs/sm/sfig2_$(TAG2)_prerun_summary.png", "Ramp pre-run";
+    time_lines = prerun_time_lines)
+plot_sfig20() = my_summary_plot("data/platform_to_ramp.h5", "figs/sm/sfig20_platform_to_ramp.png", "Platform to ramp")
+plot_sfig21() = my_summary_plot("data/ramp_to_platform.h5", "figs/sm/sfig21_ramp_to_platform.png", "Ramp to platform")
 
-function plot_sfig2()
-    fig = summary_plot("data/$(TAG2)_prerun.h5")
-    save("figs/sm/sfig2_$(TAG2)_prerun_summary.png", fig)  
-end
-
-function plot_sfig20()
-    fig = summary_plot("data/platform_to_ramp.h5")    
-    save("figs/sm/sfig20_platform_to_ramp.png", fig) 
-end
-
-function plot_sfig21()
-    fig = summary_plot("data/ramp_to_platform.h5")
-    save("figs/sm/sfig21_ramp_to_platform.png", fig)
-end
+set_theme!(PRINT_THEME)
 
 end
 
